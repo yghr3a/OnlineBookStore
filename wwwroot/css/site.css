@@ -1,22 +1,79 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background-color: #f9f9fb;
 }
+
+/* 导航栏 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: white;
+    padding: 0 30px;
+    height: 70px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    padding: 0 30px;
+    gap: 60px; /* 控制按钮之间的间距 */
+    align-items: center;
+}
+
+.nav-link{
+color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 20px;
+    transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+    opacity: 0.8;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.brand {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.navbar-right a {
+    margin-left: 25px;
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.navbar-right a:hover {
+    opacity: 0.8;
+}
+
+/* 主内容 */
+.content {
+    padding: 30px;
+    min-height: calc(100vh - 130px);
+}
+
+/* 页脚 */
+.footer {
+    text-align: center;
+    background: #333;
+    color: #bbb;
+    padding: 15px;
+}
+
+
