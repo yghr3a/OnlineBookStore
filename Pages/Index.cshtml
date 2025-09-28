@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
 </head>
 
-
 <div class="page">
 
     <div class="main-content">
@@ -16,8 +15,31 @@
             <div class="space-area"></div>
             <h1 class="big-title"> OnlineBookStore</h1>
             <div class="small-title">轻松购书,拉近你与书的距离</div>
+            <div class="content-container">
+                <p class="site-introduction">⚠本站点仅用于学习与展示⚠</p>
+                <p class="site-introduction">
+                    欢迎来到OnlineBookStore,这里是一个专注于提供优质图书的在线平台。无论你是文学爱好者、学术研究者，还是休闲读者，我们都能满足你的需求。
+                </p>
+            </div>
         </div>
             <div class="features-area">
+                <div class="content-container">
+                    <span class="content-title">
+                        搜索图书📕或者作者
+                    </span>
+                    <div class="content-body">
+                        <div class="search-bar">
+                            <input class="search-input" type="text" placeholder="请输入书名或作者..." />
+                            <button class="search-button" asp-page="/Search">搜索</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-container">
+                    <span class="content-title">
+                        最受欢迎的书📕
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

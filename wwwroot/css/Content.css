@@ -5,11 +5,13 @@
 /*文本区域*/
 .space-area {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 0px auto;
+    padding: 10px;
 }
 
 .big-title {
+    color: darkslategrey;
+    font-optical-sizing: auto;
     font-size: 40px;
     text-align: center;
     margin: 40px 0 20px 0;
@@ -18,13 +20,53 @@
 .small-title {
     color:gray;
     font-size: 20px;
-    text-align: center;
+    text-align: center; 
     margin: 30px 0 15px 0;
+}
+
+.site-introduction {
+    font-size: 20px;
+    text-align: center;
+    margin: 20px 0 10px 0;
+    color: #555;
+}
+
+/*搜索框*/
+.search-bar {
+    display: flex;
+    width: 100%; /* 占满父元素 */
+    margin: 0 auto; /* 居中 */
+    overflow: hidden;
+
+}
+
+.search-input {
+    flex: 1; /* 占父容器剩余空间 */
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px 0 0 8px; /* 左边圆角 */
+    outline: none;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0; /* 右边圆角 */
+    transition: background-color 0.2s;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
 }
 
 /*内容*/
 .content-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 20px auto;
     padding: 20px;
     background-color: white;
@@ -33,4 +75,20 @@
     font-size: 18px;
     line-height: 1.6;
     color: #333;
+}
+
+.content-title {
+    font-size: 20px;
+    text-align: left;
+    margin: 0px 0 10px 0;
+    color: deepskyblue;
+    padding-bottom: 8px; /* 下划线和文字之间的间距 */
+    border-bottom: 2px solid #007bff; /* 横线 */
+    display: block; /* 确保占满一行 */
+    width: 100%; /* 横线撑满整个板块宽度 */
+    box-sizing: border-box; /* 避免 padding 影响宽度 */
+}
+
+.content-body {
+    margin-top: 20px;
 }
