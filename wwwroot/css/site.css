@@ -23,14 +23,15 @@ body {
 
 .nav-right {
     display: flex;
-    padding: 0 30px;
-    gap: 60px; /* 控制按钮之间的间距 */
+    padding:10px;
+    gap:20px;
     align-items: center;
 }
 
-.nav-link{
-color: white;
+.nav-link {
+    color: white;
     text-decoration: none;
+    font-optical-sizing: auto;
     font-weight: 500;
     font-size: 20px;
     transition: opacity 0.2s;
