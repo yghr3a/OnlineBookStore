@@ -38,6 +38,24 @@
                     <span class="content-title">
                         最受欢迎的书📕
                     </span>
+                    <div class="book-grid">
+                        @foreach (var book in Model.Books)
+                        {
+                            <div class="book-card">
+                                <div class="book-cover-wrapper">
+                                @if (!string.IsNullOrEmpty(book.CoverImageUrl))
+                                {
+                                    <img src="@book.CoverImageUrl" alt="@book.Name" class="book-cover-image"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                }
+                                    <!--如果封面url为空,加载得比较慢或者是不可用了,则使用简便灰色作为封面-->
+                                    <div class="book-cover-placeholder">
+                                        <span class="book-title-overlay">@book.Name</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
