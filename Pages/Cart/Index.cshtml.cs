@@ -7,6 +7,7 @@ namespace OnlineBookStore.Pages.Cart
     {
         public void OnGet()
         {
+
         }
     }
 }
