@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
+using OnlineBookStore.Services;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace OnlineBookStore.Pages
@@ -8,27 +9,29 @@ namespace OnlineBookStore.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public List<BookViewModel> Books { get; set; }
+        private readonly BookService _bookService;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        private List<BookViewModel> _books;
+        public List<BookViewModel> Books
         {
-            _logger = logger;
+            get
+            {
+                if(_books == null)
+                    _books =  _bookService.GetPopularBooks().Result;
+
+                return _books;
+            }
         }
 
-        public void OnGet()
+        public IndexModel(ILogger<IndexModel> logger, BookService bookService)
         {
-            Books = new List<BookViewModel>
-            {
-                new BookViewModel { Name = "C#高级编程", CoverImageUrl = "/images/csharp.png" },
-                new BookViewModel { Name = "ASP.NET Core实战", CoverImageUrl = "/images/aspnet.png" },
-                new BookViewModel { Name = "设计模式指南", CoverImageUrl = "" },
-                new BookViewModel { Name = "C#高级编程", CoverImageUrl = "/images/csharp.png" },
-                new BookViewModel { Name = "ASP.NET Core实战", CoverImageUrl = "/images/aspnet.png" },
-                new BookViewModel { Name = "设计模式指南", CoverImageUrl = "" },
-                new BookViewModel { Name = "C#高级编程", CoverImageUrl = "/images/csharp.png" },
-                new BookViewModel { Name = "ASP.NET Core实战", CoverImageUrl = "/images/aspnet.png" },
-                new BookViewModel { Name = "设计模式指南", CoverImageUrl = "" } 
-            };
+            _logger = logger;
+            _bookService = bookService;
+        }
+
+        public async void OnGet()
+        {
+            _books = await _bookService.GetPopularBooks();
         }
     }
 }
