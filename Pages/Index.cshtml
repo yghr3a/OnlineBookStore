@@ -56,6 +56,22 @@
                             </div>
                         }
                     </div>
+
+                    <div class="page-change-body">
+                        <!-- 上一页按钮 -->
+                        <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)"
+                           class="next-last-page-btn"
+                           disabled="@(Model.PageIndex <= 1)">
+                            上一页
+                        </a>
+
+                        <!-- 下一页按钮 -->
+                        <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)"
+                       class="next-last-page-btn">
+                            下一页
+                        </a>
+                    </div>
+                
                 </div>
             </div>
         </div>
