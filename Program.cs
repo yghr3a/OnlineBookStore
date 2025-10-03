@@ -14,7 +14,7 @@ namespace OnlineBookStore
             builder.Services.AddRazorPages();
 
             // MySQL 配置, 若开发事件充分, 可将配置信息放进appsetting.json, 便于修改
-            var connectionString = "server=localhost;port=3306;database=demo;user=root;password=Abcd753!;";
+            var connectionString = "server=localhost;port=3306;database=online_book_store;user=root;password=Abcd753!;";
 
             // 将AppDbContext注册成服务
             builder.Services.AddDbContext<AppDbContext>(options =>

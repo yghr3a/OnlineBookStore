@@ -20,11 +20,12 @@ namespace OnlineBookStore.Repository
             _dbSet = context.Set<T>();
         }
 
-        // 获取全部实体
-        public async Task<IEnumerable<T>> GetAllAsync() { return await _dbSet.ToListAsync(); }
-        // 根据Id获取实体
+        // 异步获取全部实体
+        // 注意这里返回的是 List<T> 而不是 IEnumerable<T>, 是因为_dbset.ToListAsync() 返回的是 List<T>
+        public async Task<List<T>> GetAllAsync() { return await _dbSet.ToListAsync(); }
+        // 异步根据Id获取实体
         public async Task<T> GetByIdAsync(int id) { return await _dbSet.FindAsync(id); }
-        // 添加实体
+        // 异步添加实体
         public async Task Add(T entity) {await _dbSet.AddAsync(entity); }
         // 删除实体
         public void  Delete(T entity) { _dbSet.Remove(entity); }
