@@ -22,16 +22,46 @@ namespace OnlineBookStore.Repository
 
         // 异步获取全部实体
         // 注意这里返回的是 List<T> 而不是 IEnumerable<T>, 是因为_dbset.ToListAsync() 返回的是 List<T>
-        public async Task<List<T>> GetAllAsync() { return await _dbSet.ToListAsync(); }
+        public async Task<List<T>> GetAllAsync() => await _dbSet.ToListAsync(); 
         // 异步根据Id获取实体
-        public async Task<T?> GetByIdAsync(int id) { return await _dbSet.FindAsync(id); }
+        public async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id); 
         // 异步添加实体
-        public async Task Add(T entity) {await _dbSet.AddAsync(entity); }
+        public async Task Add(T entity) { await _dbSet.AddAsync(entity); }
         // 删除实体
         public void  Delete(T entity) { _dbSet.Remove(entity); }
         // 更改实体
         public void Update(T entity) {_dbSet.Update(entity); }
         // 保存更改
-        public async Task Save() {await _context.SaveChangesAsync(); }
+        public async Task Save() { await _context.SaveChangesAsync(); }
+
+        /// <summary>
+        /// 获取可查询的实体集合
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<T> AsQueryable() => _dbSet.AsQueryable();
+
+        // 个人觉得这个方法主要代替GetAllAsync, 因为按需分页获取数据更符合实际需求, 避免一次性加载过多数据
+        /// <summary>
+        /// 异步获取分页实体
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<List<T>> GetPagedAsync(int pageIndex, int pageSize)
+        {
+            return await _dbSet.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        /// <summary>
+        /// 异步获取分页实体, 支持自定义查询
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<List<T>> GetPagedAsync(IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
     }
 }

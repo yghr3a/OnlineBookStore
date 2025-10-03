@@ -13,7 +13,7 @@ namespace OnlineBookStore.Services
             {
                 var books = new List<Book>();
                 var random = new Random();
-                for (int i = 1; i <= 100; i++) // 生成100本测试书
+                for (int i = 1; i <= 4000; i++)
                 {
                     books.Add(new Book
                     {
