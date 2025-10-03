@@ -6,7 +6,8 @@ namespace OnlineBookStore
 {
     public class Program
     {
-        public static void Main(string[] args)
+        // 注意: 这里的 Main 方法是异步的, 以便在应用启动时执行异步的数据库填充操作
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -28,12 +29,20 @@ namespace OnlineBookStore
 
             var app = builder.Build();
 
+            // 在应用启动时填充数据库
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await SeedService.SeedBooksAsync(context);
+            }
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+
             }
 
 

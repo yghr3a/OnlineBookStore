@@ -23,7 +23,7 @@ namespace OnlineBookStore.Pages
         // [2025/10/3] 改为使用async Task类型
         public async Task OnGet()
         {
-            Books = await _bookService.GetPopularBooks();
+            Books = await _bookService.GetPopularBooksAsync();
         }
     }
 }
