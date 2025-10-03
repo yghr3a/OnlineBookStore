@@ -8,38 +8,49 @@ namespace OnlineBookStore.Services
     public class BookService
     {
         private Repository<Book> _bookRepository;
-        public BookService(Repository<Book> repository) 
+        public BookService(Repository<Book> repository)
         {
             _bookRepository = repository;
         }
 
         // 目前只是简单地返回所有图书, 以后可以根据销量等指标进行排序和筛选
+        // [2025/10/3] 增加了count参数, 用于指定获取的数量
+        // [2025/10/3] 使用了OrderByDescending对图书进行排序, 以确保返回的图书是热销的
         /// <summary>
         /// 获取热销图书列表
         /// </summary>
+        /// <param name="count"></param>
         /// <returns></returns>
         public async Task<List<BookViewModel>> GetPopularBooksAsync(int count = 30)
         {
             var books = await _bookRepository.GetAllAsync();
 
+            // 将实体转换为视图模型
             var bookVMs = books.Select(b => new BookViewModel()
             {
+                Id = b.Id,
                 Name = b.Name,
                 Author = b.Author,
                 Number = b.Number,
-                //Price = 100,         //  TODO: 这里应该是从另一个仓储获取价格
-                Sales = 100            // TODO: 这里应该是从另一个仓储获取销量
-            }).ToList().GetRange(0, count);
+                Price = b.Price,
+                Sales = b.Sales
+            }).ToList();
 
-            return bookVMs;
+            // 根据销量排序
+            var popularBookVMs = bookVMs.OrderByDescending(b => b.Sales).ToList();
+
+            // 获取前count个热销图书
+            var resultPopularBookVMs = popularBookVMs.GetRange(0, count);
+
+            return resultPopularBookVMs;
         }
 
         /// <summary>
         /// 获取所搜索图书列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<BookViewModel>> GetSearchedBooksAsync()
-        {
+        public async Task<List<BookViewModel>> GetSearchedBooksAsync(string keyWord, int pageIndex = 1, int pageSize = 30 )
+        { 
             throw new Exception("Not Implemented");
         }
 
