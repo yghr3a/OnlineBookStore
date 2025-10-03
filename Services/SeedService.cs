@@ -12,7 +12,7 @@ namespace OnlineBookStore.Services
             if (!context.Books.Any())
             {
                 var books = new List<Book>();
-
+                var random = new Random();
                 for (int i = 1; i <= 100; i++) // 生成100本测试书
                 {
                     books.Add(new Book
@@ -20,7 +20,8 @@ namespace OnlineBookStore.Services
                         Number = 1000 + i,
                         Name = $"测试书籍{i}",
                         Author = $"作者{i}",
-                        Price = 50 + i,
+                        Price = random.Next(20, 90),
+                        Sales = random.Next(30, 500),
                         CoverImageUrl = null, // 可以留空或填默认图片
                         Introduction = $"这是第{i}本书的介绍"
                     });
