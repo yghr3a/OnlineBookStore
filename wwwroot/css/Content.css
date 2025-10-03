@@ -141,4 +141,27 @@
     border-radius: 4px;
 }
 
+/*上下页按钮相关*/
+
+/*页面切换体*/
+.page-change-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    gap: 10px;
+}
+
+/*上下页切换按钮*/
+.next-last-page-btn {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
 
