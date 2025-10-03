@@ -16,33 +16,38 @@ namespace OnlineBookStore.Services
         // 目前只是简单地返回所有图书, 以后可以根据销量等指标进行排序和筛选
         // [2025/10/3] 增加了count参数, 用于指定获取的数量
         // [2025/10/3] 使用了OrderByDescending对图书进行排序, 以确保返回的图书是热销的
+        // [2025/10/4] 重构方法, 采用了分页获取实体模型以及查询注入的思路
         /// <summary>
         /// 获取热销图书列表
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public async Task<List<BookViewModel>> GetPopularBooksAsync(int count = 30)
+        public async Task<List<BookViewModel>> GetPopularBooksAsync(int pageIndex = 1, int pageSize = 50)
         {
-            var books = await _bookRepository.GetAllAsync();
+            // 获取书籍仓储的可查询对象
+            var query = _bookRepository.AsQueryable();
 
-            // 将实体转换为视图模型
-            var bookVMs = books.Select(b => new BookViewModel()
+            // 查询并按销量降序排序
+            var popularQuery = query.OrderByDescending(b => b.Sales);
+
+            // 分页获取热销书籍实体模型
+            var popularBookEMs = await _bookRepository.GetPagedAsync(popularQuery, pageIndex, pageSize);
+
+            // 转换为视图模型
+            // 后续可能需要使用AutoMapper等工具进行转换,
+            // 原本考虑视图模型需要访问多个仓储, 使用AutpMapper意义不大,
+            // 但目前视图模型的属性都来自单一实体模型, 最好还是使用AutoMapper
+            var popularBookVMs = popularBookEMs.Select(b => new BookViewModel()
             {
                 Id = b.Id,
+                Number = b.Number,
                 Name = b.Name,
                 Author = b.Author,
-                Number = b.Number,
                 Price = b.Price,
                 Sales = b.Sales
             }).ToList();
 
-            // 根据销量排序
-            var popularBookVMs = bookVMs.OrderByDescending(b => b.Sales).ToList();
-
-            // 获取前count个热销图书
-            var resultPopularBookVMs = popularBookVMs.GetRange(0, count);
-
-            return resultPopularBookVMs;
+            return popularBookVMs;
         }
 
         /// <summary>
