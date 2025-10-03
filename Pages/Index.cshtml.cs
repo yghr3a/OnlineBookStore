@@ -11,17 +11,7 @@ namespace OnlineBookStore.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly BookService _bookService;
 
-        private List<BookViewModel> _books;
-        public List<BookViewModel> Books
-        {
-            get
-            {
-                if(_books == null)
-                    _books =  _bookService.GetPopularBooks().Result;
-
-                return _books;
-            }
-        }
+        public List<BookViewModel> Books { get; set; } = new List<BookViewModel>();
 
         public IndexModel(ILogger<IndexModel> logger, BookService bookService)
         {
@@ -29,9 +19,11 @@ namespace OnlineBookStore.Pages
             _bookService = bookService;
         }
 
-        public async void OnGet()
+        // 业务方法不能使用 async void 类型函数
+        // [2025/10/3] 改为使用async Task类型
+        public async Task OnGet()
         {
-            _books = await _bookService.GetPopularBooks();
+            Books = await _bookService.GetPopularBooks();
         }
     }
 }
