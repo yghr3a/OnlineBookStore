@@ -60,14 +60,43 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
-        /// 根据Id获取图书详情
+        /// 根据书籍编号获取图书详情
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<BookViewModel> GetBookInformationByIdAsync(int id)
+        public async Task<BookViewModel> GetBookInformationByNumberAsync(int Number)
         {
-            throw new Exception("Not Implemented");
+            var query = _bookRepository.AsQueryable();
+            query = query.Where(b => b.Number == Number);
+
+            var bookEM = await _bookRepository.GetSingleByQueryAsync(query);
+
+            // TODO: 若果bookEM为null, 则抛出异常, 以后可以定义更具体的异常类型
+            // 目前先用通用的Exception类型
+            if (bookEM == null)
+            {
+                throw new Exception("Book Not Found");
+            }
+
+            // 转换为视图模型
+            // TODO: AutoMapper
+            var bookVM = new BookViewModel()
+            {
+                Id = bookEM.Id,
+                Number = bookEM.Number,
+                Name = bookEM.Name,
+                Authors = bookEM.Authors,
+                Publisher = bookEM.Publisher,
+                PublishYear = bookEM.PublishYear,
+                Category = bookEM.Categorys != null ? string.Join(", ", bookEM.Categorys) : null,
+                Introduction = bookEM.Introduction,
+                CoverImageUrl = bookEM.CoverImageUrl,
+                Price = bookEM.Price,
+                Sales = bookEM.Sales
+            };
+
+            return bookVM;
         }
 
     }

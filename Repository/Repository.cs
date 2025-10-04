@@ -63,5 +63,27 @@ namespace OnlineBookStore.Repository
         {
             return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
         }
+
+        // [2025/10/4] 书籍编号查询,订单编号查询等操作需要使用编号进行查询, Id是主键, 不应该暴露给外部使用
+        /// <summary>
+        /// 异步根据自定义查询获取单个实体
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<T?> GetSingleByQueryAsync(IQueryable<T> query)
+        {
+            return await query.FirstOrDefaultAsync();
+        }
+
+        // [2025/10/4] 根据自定义查询获取实体列表, 主要用于搜索等功能; 来自于GetPagedAsync方法的灵感
+        /// <summary>
+        /// 异步根据自定义查询获取实体列表
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<List<T>> GetListByQueryAsync(IQueryable<T> query)
+        {
+            return await query.ToListAsync();
+        }
     }
 }
