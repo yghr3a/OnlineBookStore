@@ -114,24 +114,56 @@
     transform: translateY(-5px);
 }
 
-/* 占位封面 */
-.book-cover-placeholder {
+/* 封面容器，控制比例 */
+.book-cover-wrapper {
+    position: relative;
     width: 100%;
-    height: 250px;
+    aspect-ratio: 3 / 4; /* 强制宽高比为 3:4 （竖版封面常用） */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 封面图片样式 */
+.book-cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 填充但不变形 */
+    display: block;
+    border-radius: 8px;
+}
+
+/* 占位封面，与封面同尺寸 */
+.book-cover-placeholder {
+    position: absolute;
+    inset: 0;
     background: linear-gradient(135deg, #d9d9d9, #f5f5f5);
-    display: none;
+    display: none;  /*默认不显示, 如果封面无法加载就会在img的onerror事件中设定为显示*/
     align-items: flex-end;
     justify-content: center;
     padding-bottom: 10px;
-    position: relative;
 }
 
-/* 书名覆盖在封面上 */
+/* 占位封面的默认显示版本 */
+.book-cover-placeholder-display {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #d9d9d9, #f5f5f5);
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+/* 封面标题 */
 .book-title-overlay {
     width: 100%;
-    padding: 5px 10px;
+    padding: 6px 10px;
     background: rgba(0, 0, 0, 0.6);
-    color: white;
+    color: #fff;
     font-weight: bold;
     font-size: 14px;
     text-align: center;
