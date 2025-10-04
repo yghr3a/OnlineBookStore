@@ -11,9 +11,17 @@
         // 图书名称
         public required string Name { get; set; }
 
-        // 图书作者
-        public string? Author { get; set; }
+        // 图书作者(可能不止一位)
+        public List<string?>? Authors { get; set; }
 
+        // 出版社
+        public string? Publisher { get; set; }
+
+        // 出版年份
+        public int? PublishYear { get; set; }
+
+        // 图书类别
+        public List<string?>? Categorys { get; set; }
 
         // 图书介绍
         public string? Introduction { get; set; }
