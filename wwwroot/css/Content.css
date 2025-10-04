@@ -162,6 +162,11 @@
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s;
+    text-decoration: none; /* 去掉下划线 */
+}
+
+.btn-link:hover {
+    background-color: #0056b3;
 }
 
 

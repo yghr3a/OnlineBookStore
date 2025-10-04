@@ -11,7 +11,7 @@
         // 图书名称
         public required string Name { get; set; }
 
-        // 图书作者(可能不止一位)
+        // 图书作者(可能不止一位)(EFCore自动建立子表)
         public List<string?>? Authors { get; set; }
 
         // 出版社
@@ -20,7 +20,7 @@
         // 出版年份
         public int? PublishYear { get; set; }
 
-        // 图书类别
+        // 图书类别(EFCore自动建立子表)
         public List<string?>? Categorys { get; set; }
 
         // 图书介绍
