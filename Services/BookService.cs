@@ -42,7 +42,7 @@ namespace OnlineBookStore.Services
                 Id = b.Id,
                 Number = b.Number,
                 Name = b.Name,
-                Author = b.Author,
+                Authors = b.Authors,
                 Price = b.Price,
                 Sales = b.Sales
             }).ToList();
