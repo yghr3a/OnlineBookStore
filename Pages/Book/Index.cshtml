@@ -17,12 +17,15 @@
                 <!-- 左：封面 -->
                 <!-- 封面这一块复用了主页面的灰色页面--></>
                 <div class="book-cover">
+                    <!--如果链接加载错误的话会将img本身给隐藏掉, 同时显示后面的占位封面-->
                     <img src="https://www.51books.org/uploads/tinymce/images/5e86091ea2f13f7a4b0568074be3f514666dc9cb74a99.jpg" alt="@Model.Book.Name" class="book-cover-introduction"
                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <!--如果封面url为空,加载得比较慢或者是不可用了,则使用简便灰色作为封面-->
-                    <div class="book-cover-placeholder">
+
+                    <div class="book-cover-placeholder-book-introduction">
                         <span class="book-title-overlay">@Model.Book.Name</span>
                     </div>
+
                 </div>
 
                 <!-- 右：信息 -->
