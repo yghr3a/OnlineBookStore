@@ -15,7 +15,7 @@
 	align-items: center;
 }
 
-/* 封面 */
+/* 封面, 图书详情页特供版 */
 .book-cover-introduction {
 	width: 220px;
 	height: auto;
@@ -23,6 +23,17 @@
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 封面占位符, 图书详情页特供版 */
+.book-cover-placeholder-book-introduction {
+	width: 220px;
+	height: 320px;
+	border-radius: 8px;
+	background-color: #f0f0f0;
+	display: none;/*默认为不显示*/
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
 /* 信息区整体, 左右布局*/
 .book-info {
 	flex: 1;
