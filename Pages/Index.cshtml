@@ -41,7 +41,7 @@
                 <div class="book-grid">
                     @foreach (var book in Model.Books)
                     {
-                        <div class="book-card">
+                        <a class="book-card" asp-page="./Book/Index" asp-route-BookNumber="@book.Number">
                             <div class="book-cover-wrapper">
                                 @if (string.IsNullOrEmpty(book.CoverImageUrl) == false)
                                 {
@@ -59,7 +59,7 @@
                                     </div>
                                 }
                             </div>
-                        </div>
+                        </a>
                     }
                 </div>
 
