@@ -4,9 +4,58 @@
 
 }
 
-<div>@Model.Book.Number</div>
-<div>@Model.Book.Name</div>
-<div>@Model.Book.Price</div>
-<div>@Model.Book.Authors</div>
-<div>@Model.Book.Sales</div>
-<div>@Model.Book.Introduction</div>
+<head>
+    <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/BookIntroduction.css" asp-append-version="true" />
+</head>
+
+<div class="main-content">
+	<div class="features-area">
+        <div class="content-container">
+            <!-- 介绍区 -->
+            <div class="book-intro">
+                <!-- 左：封面 -->
+                <!-- 封面这一块复用了主页面的灰色页面--></>
+                <div class="book-cover">
+                    <img src="https://www.51books.org/uploads/tinymce/images/5e86091ea2f13f7a4b0568074be3f514666dc9cb74a99.jpg" alt="@Model.Book.Name" class="book-cover-introduction"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <!--如果封面url为空,加载得比较慢或者是不可用了,则使用简便灰色作为封面-->
+                    <div class="book-cover-placeholder">
+                        <span class="book-title-overlay">@Model.Book.Name</span>
+                    </div>
+                </div>
+
+                <!-- 右：信息 -->
+                <div class="book-info">
+                    <!-- 书名 -->
+                    <h1 class="book-title">@Model.Book.Name</h1>
+
+                    <!-- 图书介绍 -->
+                    <div class="book-description">
+                        @Model.Book.Introduction
+                    </div>
+
+                    <!-- 信息栏 -->
+                    <div class="book-meta">
+                        <div class="meta-item">作者：@Model.Book.Authors?.FirstOrDefault()</div>
+                        <div class="meta-item">出版社：@Model.Book.Publisher</div>
+                        <div class="meta-item">出版年份：@Model.Book.PublishYear</div>
+                        <div class="meta-item">分类：@Model.Book.Category?.First()</div>
+                    </div>
+
+                    <!-- 操作区 -->
+                    <div class="book-actions">
+                        <!-- 左：价格 -->
+                        <div class="book-price">￥@Model.Book.PriceString</div>
+
+                        <!-- 右：按钮 -->
+                        <div class="book-buttons">
+                            <button class="btn-buy">立刻下单</button>
+                            <button class="btn-cart">加入购物车</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -43,7 +43,7 @@ namespace OnlineBookStore.Services
                 Number = b.Number,
                 Name = b.Name,
                 Authors = b.Authors,
-                Price = b.Price,
+                Price = ((float)b.Price),
                 Sales = b.Sales
             }).ToList();
 
@@ -92,7 +92,7 @@ namespace OnlineBookStore.Services
                 Category = bookEM.Categorys != null ? string.Join(", ", bookEM.Categorys) : null,
                 Introduction = bookEM.Introduction,
                 CoverImageUrl = bookEM.CoverImageUrl,
-                Price = bookEM.Price,
+                Price = ((float)bookEM.Price),
                 Sales = bookEM.Sales
             };
 

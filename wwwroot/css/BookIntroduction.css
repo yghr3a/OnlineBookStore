@@ -1,0 +1,148 @@
+﻿/*图书介绍*/
+.book-intro {
+	display: flex;
+	gap: 40px;
+	margin: 20px
+}
+
+
+/* 封面 */
+.book-cover {
+	margin: 20px;
+	flex: 0 0 320px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* 封面 */
+.book-cover-introduction {
+	width: 220px;
+	height: auto;
+	border-radius: 8px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 信息区整体, 左右布局*/
+.book-info {
+	flex: 1;
+	min-width: 280px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+/* 书名 */
+.book-title {
+	font-size: 26px;
+	font-weight: 700;
+	color: #222;
+	margin-bottom: 16px;
+}
+
+/* 简介 */
+.book-description {
+	font-size: 15px;
+	line-height: 1.8;
+	color: #555;
+	margin-bottom: 20px;
+}
+
+/* 信息栏（自适应两列） */
+.book-meta {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 8px 20px;
+	font-size: 14px;
+	color: #444;
+	margin-bottom: 24px;
+}
+
+/* 操作区域 */
+.book-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	border-top: 1px solid #eee;
+	padding-top: 16px;
+	margin-top: 8px;
+	gap: 10px;
+}
+
+/* 价格 */
+.book-price {
+	font-size: clamp(20px, 2.5vw, 26px);
+	font-weight: 700;
+	color: #e53935;
+}
+
+/* 按钮 */
+.book-buttons {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+	.book-buttons button {
+		padding: 10px 20px;
+		font-size: 15px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+.btn-buy {
+	background-color: #ff6b00;
+	color: #fff;
+	font-weight: 600;
+}
+
+	.btn-buy:hover {
+		background-color: #e65a00;
+	}
+
+.btn-cart {
+	background-color: #fff;
+	border: 2px solid #ff6b00;
+	color: #ff6b00;
+	font-weight: 600;
+}
+
+	.btn-cart:hover {
+		background-color: #fff5f0;
+	}
+
+
+/* 响应式：小屏幕优化 */
+@media (max-width: 768px) {
+	.book-intro {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.book-cover {
+		margin-bottom: 20px;
+	}
+
+	.book-info {
+		align-items: center;
+		text-align: center;
+	}
+
+	.book-meta {
+		grid-template-columns: 1fr;
+		text-align: center;
+	}
+
+	.book-actions {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.book-price {
+		margin-bottom: 10px;
+	}
+}

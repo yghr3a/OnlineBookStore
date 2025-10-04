@@ -33,7 +33,13 @@ namespace OnlineBookStore.Models.ViewModels
         public string? CoverImageUrl { get; set; }
 
         // 图书价格
-        public required decimal Price { get; set; }
+        public required float Price { get; set; }
+
+        // 格式化后的图书价格字符串, 保留两位小数
+        public string PriceString
+        {
+            get => Price.ToString("F2");
+        }
 
         // 图书销量
         public required int Sales { get; set; } = 0;
