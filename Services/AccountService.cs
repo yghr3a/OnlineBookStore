@@ -5,11 +5,11 @@ namespace OnlineBookStore.Services
 {
     public class AccountService
     {
-        private readonly Repository<User> responsity;
+        private Repository<User> _responsity;
 
-        public AccountService()
+        public AccountService(Repository<User> repository)
         {
-
+            _responsity = repository;
         }
     }
 }

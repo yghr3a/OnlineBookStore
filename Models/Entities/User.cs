@@ -2,7 +2,7 @@
 
 namespace OnlineBookStore.Models.Entities
 {
-    public class User
+    public class User : IEntityModel
     {
         // 用户Id
         public int Id { get; set; }
