@@ -1,6 +1,6 @@
 ﻿using OnlineBookStore.Models.Entities;
 
-namespace OnlineBookStore.Repository
+namespace OnlineBookStore.Respository
 {
     /// <summary>
     /// 泛型仓储接口, 定义了基本的CRUD操作

@@ -1,5 +1,5 @@
 ﻿using OnlineBookStore.Models.Entities;
-using OnlineBookStore.Repository;
+using OnlineBookStore.Respository;
 
 namespace OnlineBookStore.Services
 {

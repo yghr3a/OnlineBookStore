@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Models.Entities;
 
-namespace OnlineBookStore.Repository
+namespace OnlineBookStore.Respository
 {
     /// <summary>
     /// 泛型仓储类, 提供基本的增删查改操作
