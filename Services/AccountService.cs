@@ -5,9 +5,9 @@ namespace OnlineBookStore.Services
 {
     public class AccountService
     {
-        private Repository<User> _responsity;
+        private Respository<User> _responsity;
 
-        public AccountService(Repository<User> repository)
+        public AccountService(Respository<User> repository)
         {
             _responsity = repository;
         }

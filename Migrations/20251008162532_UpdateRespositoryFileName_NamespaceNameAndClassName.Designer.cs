@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OnlineBookStore.Repository;
+using OnlineBookStore.Respository;
 
 #nullable disable
 
 namespace OnlineBookStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251004074105_BookChangeAuthorsAndCategorysColume_AddPublisherAndPublisherYear")]
-    partial class BookChangeAuthorsAndCategorysColume_AddPublisherAndPublisherYear
+    [Migration("20251008162532_UpdateRespositoryFileName_NamespaceNameAndClassName")]
+    partial class UpdateRespositoryFileName_NamespaceNameAndClassName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

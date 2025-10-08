@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Services;
-using OnlineBookStore.Repository;
+using OnlineBookStore.Respository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace OnlineBookStore
 {
@@ -14,6 +15,19 @@ namespace OnlineBookStore
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            // 注册 Cookie 认证服务
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";       // 未登录时重定向
+                    options.AccessDeniedPath = "/Account/Denied";
+                    options.Cookie.Name = "BookStore.Auth";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7); // 可保持登录7天
+                });
+
+            // 添加 HttpContext 访问器服务, 以便在其他服务中访问当前请求的HttpContext
+            builder.Services.AddAuthorization();
+
             // MySQL 配置, 若开发事件充分, 可将配置信息放进appsetting.json, 便于修改
             var connectionString = "server=localhost;port=3306;database=online_book_store;user=root;password=Abcd753!;";
 
@@ -22,7 +36,7 @@ namespace OnlineBookStore
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // 注册泛型仓储服务, 注意这里注册的始开放泛型类型, 相当于注册了Repository所有的具体类型
-            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
+            builder.Services.AddScoped(typeof(Respository<>), typeof(Respository<>));
 
             // 注册图书服务类型
             builder.Services.AddScoped<BookService, BookService>();
@@ -44,7 +58,6 @@ namespace OnlineBookStore
                 app.UseHsts();
 
             }
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -7,8 +7,8 @@ namespace OnlineBookStore.Services
     // 图书服务, 提供与图书相关的业务逻辑
     public class BookService
     {
-        private Repository<Book> _bookRepository;
-        public BookService(Repository<Book> repository)
+        private Respository<Book> _bookRepository;
+        public BookService(Respository<Book> repository)
         {
             _bookRepository = repository;
         }
