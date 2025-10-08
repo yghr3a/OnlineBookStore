@@ -8,13 +8,13 @@ namespace OnlineBookStore.Respository
     /// 泛型仓储类, 提供基本的增删查改操作
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Repository<T> where T : class, IEntityModel
+    public class Respository<T> where T : class, IEntityModel
     {
         private AppDbContext _context;
         private DbSet<T> _dbSet;
 
         // 依赖注入, 获取应用数据库上下文
-        public Repository(AppDbContext context)
+        public Respository(AppDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
