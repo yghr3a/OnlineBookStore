@@ -19,14 +19,19 @@ namespace OnlineBookStore
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Account/Login";       // 未登录时重定向
-                    options.AccessDeniedPath = "/Account/Denied";
                     options.Cookie.Name = "BookStore.Auth";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(7); // 可保持登录7天
+                    options.Cookie.HttpOnly = true;           // JS 不能读取，减少 XSS 风险
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // 仅 HTTPS 传输
+                    options.Cookie.SameSite = SameSiteMode.Lax; // 或 Strict/None (注意与跨站情况)
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.SlidingExpiration = true; // 在有效期内每次验证都会刷新过期时间
+
                 });
 
             // 添加 HttpContext 访问器服务, 以便在其他服务中访问当前请求的HttpContext
-            builder.Services.AddAuthorization();
+            builder.Services.AddHttpContextAccessor();
 
             // MySQL 配置, 若开发事件充分, 可将配置信息放进appsetting.json, 便于修改
             var connectionString = "server=localhost;port=3306;database=online_book_store;user=root;password=Abcd753!;";

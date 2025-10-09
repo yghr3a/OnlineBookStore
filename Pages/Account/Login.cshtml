@@ -1,0 +1,24 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "用户登录";
+}
+
+<h2>用户登录</h2>
+
+<form method="post">
+    <div>
+        <label>用户名：</label>
+        <input asp-for="UserName" />
+    </div>
+    <div>
+        <label>密码：</label>
+        <input asp-for="Password" type="password" />
+    </div>
+    <button type="submit">登录</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p style="color:red">@Model.ErrorMessage</p>
+}
