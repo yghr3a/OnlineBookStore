@@ -1,0 +1,165 @@
+﻿/*涉及到身份验证相关操作页面所用样式文件, 登录,注册等页面*/
+
+/* 背景渐变 + 居中布局 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    /*渐变 + 模糊光圈效果*/
+    body::before {
+        content: "";
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        top: 10%;
+        left: 20%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+        filter: blur(80px);
+    }
+
+
+/* 主容器 */
+.main-content {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px;
+    text-align: center;
+}
+
+/* 顶部文字区域 */
+.text-area {
+    margin-bottom: 40px;
+    color: white;
+}
+
+.site-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.site-motto {
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* 登录框主体简约圆角白框*/
+.content-container-login {
+    width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    text-align: left;
+}
+
+/*渐变 + 模糊玻璃效果的登录框主体*/
+/*.content-container-login {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}*/
+/*感觉一般, 后面想要的话再改吧*/
+
+
+/* 登录标题 */
+.login-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4e54c8;
+}
+
+/* 输入区域 */
+.inputbox-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+    .inputbox-area label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .inputbox-area input {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+        .inputbox-area input:focus {
+            border-color: #4e54c8;
+        }
+
+/* 按钮区域 */
+.button-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-login, .btn-register {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-login {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: white;
+    margin-right: 10px;
+}
+
+    .btn-login:hover {
+        opacity: 0.9;
+    }
+
+.btn-register {
+    background-color: #eee;
+    color: #333;
+    text-decoration: none;
+    line-height: 40px;
+}
+
+    .btn-register:hover {
+        background-color: #ddd;
+    }
+
+/* 错误消息 */
+.error-message {
+    color: red;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* 响应式布局 */
+@media (max-width: 600px) {
+    .content-container-login {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .site-title {
+        font-size: 36px;
+    }
+}

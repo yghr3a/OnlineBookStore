@@ -1,4 +1,6 @@
-﻿/*图书介绍*/
+﻿/*书籍详情页面样式文件*/
+
+/*图书介绍*/
 .book-intro {
 	display: flex;
 	gap: 40px;

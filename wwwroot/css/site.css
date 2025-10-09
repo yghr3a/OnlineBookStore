@@ -1,80 +1,10 @@
-body {
-    margin: 0;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    background-color: #f9f9fb;
+/*全局样式文件*/
+
+/*全局盒模型，强烈推荐放在最前面（防止很多布局溢出） */
+html {
+    box-sizing: border-box;
 }
 
-/* 导航栏 */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(90deg, #4e54c8, #8f94fb);
-    color: white;
-    padding: 0 30px;
-    height: 70px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+*, *::before, *::after {
+    box-sizing: inherit;
 }
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.nav-right {
-    display: flex;
-    padding:10px;
-    gap:20px;
-    align-items: center;
-}
-
-.nav-link {
-    color: white;
-    text-decoration: none;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-size: 20px;
-    transition: opacity 0.2s;
-}
-
-.nav-link:hover {
-    opacity: 0.8;
-}
-
-.logo {
-    height: 40px;
-    margin-right: 10px;
-}
-
-.brand {
-    font-size: 25px;
-    font-weight: bold;
-}
-
-.navbar-right a {
-    margin-left: 25px;
-    color: white;
-    font-weight: 500;
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-
-.navbar-right a:hover {
-    opacity: 0.8;
-}
-
-/* 主内容 */
-.content {
-    padding: 30px;
-    min-height: calc(100vh - 130px);
-}
-
-/* 页脚 */
-.footer {
-    text-align: center;
-    background: #333;
-    color: #bbb;
-    padding: 15px;
-}
-
-

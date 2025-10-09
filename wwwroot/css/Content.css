@@ -1,6 +1,11 @@
-﻿body {
+﻿/* 1) 全局盒模型，强烈推荐放在最前面（防止很多布局溢出） */
+html {
+    box-sizing: border-box;
 }
 
+*, *::before, *::after {
+    box-sizing: inherit;
+}
 
 /*文本区域*/
 .space-area {
