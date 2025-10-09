@@ -32,5 +32,25 @@ namespace OnlineBookStore.Services
                 await context.SaveChangesAsync();
             }
         }
+
+        public static async Task SeedUserAsync(AppDbContext context)
+        {
+            // 检查是否已有数据，避免重复插入
+            if (!context.Users.Any())
+            {
+                var user = new User()
+                {
+                    Number = 1001,
+                    UserName = "testuser",
+                    UserRole = Models.Role.Customer,
+                    PasswordHash = "password", // 这里为了简单起见, 直接存储明文密码, 生产环境请使用哈希密码
+                    Email = "test@onlinebookstore",
+                    RegistrationDate = DateTime.Now
+                };
+
+                await context.Users.AddAsync(user);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

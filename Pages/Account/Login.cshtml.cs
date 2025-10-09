@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using OnlineBookStore.Services;
 
 namespace OnlineBookStore.Pages.Account
 {
@@ -14,39 +15,49 @@ namespace OnlineBookStore.Pages.Account
         public string Password { get; set; } = "";
         public string? ErrorMessage { get; set; }
 
+        private AccountService _accountService;
+
+        public LoginModel(AccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
         public void OnGet()
         {
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // 这里模拟登录验证，可替换为数据库校验
-            if (UserName == "test" && Password == "123456")
-            {
-                var claims = new List<Claim>
-                {
-                new Claim(ClaimTypes.NameIdentifier, "1"),
-                new Claim(ClaimTypes.Name, UserName),
-                new Claim(ClaimTypes.Email, "test@example.com")
-                };
+            var userVerifyResult = await _accountService.VerifyLoggedInUserInformation(UserName, Password);
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            if (userVerifyResult.IsValid == true)
+            {
+                // 身份声明
+                var claimsIdentity = new ClaimsIdentity(userVerifyResult.ClaimList, CookieAuthenticationDefaults.AuthenticationScheme);
+                
+                // 认证属性
                 var authProperties = new AuthenticationProperties
                 {
                     IsPersistent = true // 是否保持登录
                 };
 
+                // 具体的登录操作交给页面层处理而非服务层
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties
                 );
 
+                // 登录成功, 跳转到首页
                 return RedirectToPage("/Index");
             }
+            else
+            {
+                ErrorMessage = "用户名或密码错误";
+                ModelState.AddModelError("", "用户名或密码错误");
+                return Page();
+            }
 
-            ModelState.AddModelError("", "用户名或密码错误");
-            return Page();
         }
     }
 }
