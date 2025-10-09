@@ -1,4 +1,5 @@
-﻿using OnlineBookStore.Models.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Respository;
 
 namespace OnlineBookStore.Services
@@ -33,17 +34,20 @@ namespace OnlineBookStore.Services
             }
         }
 
-        public static async Task SeedUserAsync(AppDbContext context)
+        public static async Task SeedUserAsync(AppDbContext context, IPasswordHasher<User> passwordHasher)
         {
             // 检查是否已有数据，避免重复插入
             if (!context.Users.Any())
             {
+                // 生成测试用户的密码哈希, 这里使用简单密码"123456", 同时并没有传递User对象, 因为User对象在哈希计算中未被使用
+                var passwordHash = passwordHasher.HashPassword(null, "123456");
+
                 var user = new User()
                 {
                     Number = 1001,
                     UserName = "testuser",
                     UserRole = Models.Role.Customer,
-                    PasswordHash = "password", // 这里为了简单起见, 直接存储明文密码, 生产环境请使用哈希密码
+                    PasswordHash = passwordHash,
                     Email = "test@onlinebookstore",
                     RegistrationDate = DateTime.Now
                 };
