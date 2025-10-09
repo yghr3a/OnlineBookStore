@@ -45,6 +45,10 @@ namespace OnlineBookStore
 
             // 注册图书服务类型
             builder.Services.AddScoped<BookService, BookService>();
+            // 注册账户服务类型
+            builder.Services.AddScoped<AccountService, AccountService>();
+            // 注册用户上下文服务类型
+            builder.Services.AddScoped<UserContext, UserContext>();
 
             var app = builder.Build();
 
@@ -53,6 +57,7 @@ namespace OnlineBookStore
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 await SeedService.SeedBooksAsync(context);
+                await SeedService.SeedUserAsync(context);
             }
 
             // Configure the HTTP request pipeline.
