@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Services;
 using OnlineBookStore.Respository;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using OnlineBookStore.Models.Entities;
 
 namespace OnlineBookStore
 {
@@ -49,15 +51,21 @@ namespace OnlineBookStore
             builder.Services.AddScoped<AccountService, AccountService>();
             // 注册用户上下文服务类型
             builder.Services.AddScoped<UserContext, UserContext>();
+            // 注册用户密码哈希服务
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             var app = builder.Build();
 
             // 在应用启动时填充数据库
             using (var scope = app.Services.CreateScope())
             {
+                // 提供填充数据操作所需要的服务
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var passwordHashHandler = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+
+                // 
                 await SeedService.SeedBooksAsync(context);
-                await SeedService.SeedUserAsync(context);
+                await SeedService.SeedUserAsync(context, passwordHashHandler);
             }
 
             // Configure the HTTP request pipeline.
