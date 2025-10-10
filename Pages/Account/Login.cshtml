@@ -10,6 +10,7 @@
 </head>
 
 <div class="main-content">
+    <!--文本区域-->
     <div class="text-area">
         <h1 class="site-title">OnlineBookStore</h1>
         <p class="site-motto">让阅读成为一种生活方式</p>
@@ -19,15 +20,25 @@
         <div class="content-container-login">
             <div class="login-title">用户登录</div>
 
-            <form method="post" class="inputbox-area">
-                <div class="username-box">
-                    <label>用户名</label>
-                    <input asp-for="UserName" type="text" placeholder="请输入用户名" />
-                </div>
+            <form method="post" class="post-area">
+                <div class="inputbox-area">
+                    <div class="username-box">
+                        <label>用户名</label>
+                        <input asp-for="UserName" type="text" placeholder="请输入用户名" />
+                    </div>
 
-                <div class="password-box">
-                    <label>密码</label>
-                    <input asp-for="Password" type="password" placeholder="请输入密码" />
+                    <div class="password-box">
+                        <label>密码</label>
+                        <input asp-for="Password" type="password" placeholder="请输入密码" />
+				    </div> 
+                </div>
+                
+                <div class="error-message">
+                <!--显示错误信息-->
+                @if (!string.IsNullOrEmpty(Model.BoxDownErrorMessage))
+                {
+                   @Model.BoxDownErrorMessage
+                }
                 </div>
 
                 <div class="button-area">
@@ -35,10 +46,6 @@
                     <a asp-page="/Account/Register" class="btn-register">注册账号</a>
                 </div>
 
-                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                {
-                    <div class="error-message">@Model.ErrorMessage</div>
-                }
             </form>
         </div>
     </div>
