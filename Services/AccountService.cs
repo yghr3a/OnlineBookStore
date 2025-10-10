@@ -22,6 +22,12 @@ namespace OnlineBookStore.Services
             _passwordHasher = passwordHasher;
         }
 
+        /// <summary>
+        /// 验证用户登录信息
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public async Task<UserVerifyResult> VerifyLoggedInUserInformation(string userName, string password)
         {
             var quary = _responsity.AsQueryable();
@@ -30,7 +36,12 @@ namespace OnlineBookStore.Services
             if(user == null)
             {
                 // 后续可以添加错误信息等
-                return new UserVerifyResult { IsValid = false };
+                // [2025/10/10]后续错误信息可以改为自定义业务异常
+                return new UserVerifyResult 
+                {
+                    IsValid = false, 
+                    ErrorMsg = "该用户不存在"
+                };
             }
 
             // 验证密码, 这里使用ASP.NET Core Identity的密码哈希验证
@@ -40,7 +51,12 @@ namespace OnlineBookStore.Services
             if (pwHashVerificationResult == PasswordVerificationResult.Failed)
             {
                 // 后续可以添加错误信息等
-                return new UserVerifyResult { IsValid = false };
+                // [2025/10/10]后续错误信息可以改为自定义业务异常
+                return new UserVerifyResult
+                {
+                    IsValid = false,
+                    ErrorMsg = "密码错误"
+                };
             }
 
             var claims = new List<Claim>

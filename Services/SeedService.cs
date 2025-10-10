@@ -7,6 +7,11 @@ namespace OnlineBookStore.Services
     // 用于初始化和填充数据库的服务, 主要用于测试和开发环境
     public static class SeedService
     {
+        /// <summary>
+        /// 填充测试书籍数据
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static async Task SeedBooksAsync(AppDbContext context)
         {
             // 检查是否已有数据，避免重复插入
@@ -34,6 +39,12 @@ namespace OnlineBookStore.Services
             }
         }
 
+        /// <summary>
+        /// 填充测试用户数据
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="passwordHasher"></param>
+        /// <returns></returns>
         public static async Task SeedUserAsync(AppDbContext context, IPasswordHasher<User> passwordHasher)
         {
             // 检查是否已有数据，避免重复插入

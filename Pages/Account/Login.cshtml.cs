@@ -26,8 +26,33 @@ namespace OnlineBookStore.Pages.Account
         {
         }
 
+        /// <summary>
+        /// 登录页面的Post操作
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync()
         {
+            // [2025/10/10] 添加用户名和密码皆为空的判断
+            if (string.IsNullOrWhiteSpace(UserName) && string.IsNullOrWhiteSpace(Password))
+            {
+                ModelState.AddModelError("", "用户名和密码为空");
+                return Page();
+            }
+
+            // [2025/10/10] 添加用户名为空的判断
+            if (string.IsNullOrWhiteSpace(UserName))
+            {
+                ModelState.AddModelError("", "用户名为空");
+                return Page();
+            }
+
+            // [2025/10/10] 添加密码为空的判断
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                ModelState.AddModelError("", "密码为空");
+                return Page();
+            }
+
             var userVerifyResult = await _accountService.VerifyLoggedInUserInformation(UserName, Password);
 
             if (userVerifyResult.IsValid == true)
@@ -53,8 +78,8 @@ namespace OnlineBookStore.Pages.Account
             }
             else
             {
-                ErrorMessage = "用户名或密码错误";
-                ModelState.AddModelError("", "用户名或密码错误");
+                // [2025/10/10] 读取userVerifyResult异常信息
+                ModelState.AddModelError("", $"{userVerifyResult.ErrorMsg}");
                 return Page();
             }
 
