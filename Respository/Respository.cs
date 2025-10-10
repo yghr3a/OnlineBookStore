@@ -26,13 +26,13 @@ namespace OnlineBookStore.Respository
         // 异步根据Id获取实体
         public async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id); 
         // 异步添加实体
-        public async Task Add(T entity) { await _dbSet.AddAsync(entity); }
+        public async Task AddAsync(T entity) { await _dbSet.AddAsync(entity); }
         // 删除实体
         public void  Delete(T entity) { _dbSet.Remove(entity); }
         // 更改实体
         public void Update(T entity) {_dbSet.Update(entity); }
         // 保存更改
-        public async Task Save() { await _context.SaveChangesAsync(); }
+        public async Task SaveAsync() { await _context.SaveChangesAsync(); }
 
         /// <summary>
         /// 获取可查询的实体集合

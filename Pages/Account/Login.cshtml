@@ -9,7 +9,19 @@
     <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
 </head>
 
-<div class="main-content">
+<!--错误信息弹出式窗口的检测错误信息的代码, 想做成全局通用的
+    [2025/10/10] 先搁置
+@if (!ViewData.ModelState.IsValid)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showAlert('@Html.Raw(ViewData.ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage)');
+        });
+    </script>
+}
+-->
+
+<main class="main-content">
     <!--文本区域-->
     <div class="text-area">
         <h1 class="site-title">OnlineBookStore</h1>
@@ -49,4 +61,4 @@
             </form>
         </div>
     </div>
-</div>
+</main>
