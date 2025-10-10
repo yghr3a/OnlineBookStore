@@ -13,7 +13,8 @@ body {
 }
 
     /*渐变 + 模糊光圈效果*/
-    body::before {
+    /*实际使用是不仅没效果, 还遮挡了输入框*/
+    /*body::before {
         content: "";
         position: absolute;
         width: 400px;
@@ -22,7 +23,7 @@ body {
         left: 20%;
         background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
         filter: blur(80px);
-    }
+    }*/
 
 
 /* 主容器 */

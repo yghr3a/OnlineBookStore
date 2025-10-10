@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using OnlineBookStore.Models.Entities;
+using OnlineBookStore.Models;
 using OnlineBookStore.Respository;
 using System.Security.Claims;
 using OnlineBookStore.Models.Data;
@@ -23,7 +24,7 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
-        /// 验证用户登录信息
+        /// 验证用户登录信息业务操作
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
@@ -72,6 +73,65 @@ namespace OnlineBookStore.Services
                 IsValid = true,
                 ClaimList = claims
             };
+        }
+
+        /// <summary>
+        /// 用户注册业务操作
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<UserRegisterResult> UserRegistraionAsync(string username, string password, string email)
+        {
+            var quary = _responsity.AsQueryable();
+            var passwordHash = _passwordHasher.HashPassword(null, password);
+
+            // 检查用户名和邮箱的唯一性
+            var existingUser = await quary.FirstOrDefaultAsync(u => u.UserName == username);
+            var existingEmail = await quary.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (existingUser != null)
+            {
+                return new UserRegisterResult
+                {
+                    IsSuccess = false,
+                    ErrorMsg = "用户名已存在"
+                };
+            }
+
+            if(existingEmail != null)
+            {
+                return new UserRegisterResult
+                {
+                    IsSuccess = false,
+                    ErrorMsg = "该邮箱已被注册"
+                };
+            }
+
+            // TODO: 增加邮箱或者手机号码的唯一性验证
+
+            // 创建新用户的实体模型类对象
+            var newUser = new User
+            {
+                // Number字段后续需要改为更合理的生成方式, 现在只是简单的用时间戳
+                Number = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % int.MaxValue),
+                UserName = username,
+                PasswordHash = passwordHash,
+                Email = email,
+                UserRole = Role.Customer,
+                RegistrationDate = DateTime.UtcNow
+            };
+
+            // 添加新用户到数据库    
+            await _responsity.AddAsync(newUser);
+            await _responsity.SaveAsync();
+
+            return new UserRegisterResult
+            {
+                IsSuccess = true,
+            };
+
         }
     }
 }
