@@ -9,13 +9,14 @@ namespace OnlineBookStore.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        [BindProperty]
-        public string UserName { get; set; } = "";
-        [BindProperty]
-        public string Password { get; set; } = "";
-        [BindProperty]// 显示在登录页面的内容盒下面的错误信息
-        public string? BoxDownErrorMessage { get; set; }
+        // 登录页面的用户名和密码
+        [BindProperty] public string UserName { get; set; } = "";
+        [BindProperty] public string Password { get; set; } = "";
 
+        // 显示在登录页面的内容盒下面的错误信息
+        [BindProperty] public string? BoxDownErrorMessage { get; set; }
+
+        // 负责用户登录相关业务操作的服务
         private AccountService _accountService;
 
         public LoginModel(AccountService accountService)
@@ -67,7 +68,10 @@ namespace OnlineBookStore.Pages.Account
                 // 认证属性
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true // 是否保持登录
+                    IsPersistent = true, // 是否保持登录
+                    
+                    // 7天后过期
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                 };
 
                 // 具体的登录操作交给页面层处理而非服务层
@@ -82,7 +86,6 @@ namespace OnlineBookStore.Pages.Account
             }
             else
             {
-                // [2025/10/10] 读取userVerifyResult异常信息
                 BoxDownErrorMessage = userVerifyResult.ErrorMsg;
                 ModelState.AddModelError("", $"{userVerifyResult.ErrorMsg}");
                 return Page();

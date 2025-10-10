@@ -1,4 +1,6 @@
-﻿namespace OnlineBookStore.Models.Data
+﻿using System.Security.Claims;
+
+namespace OnlineBookStore.Models.Data
 {
     /// <summary>
     /// 用户注册结果
@@ -14,5 +16,9 @@
 
         // 错误信息
         public string ErrorMsg { get; set; } = string.Empty;
+
+        // 声明列表
+        public List<Claim> ClaimList { get; set; } = new List<Claim>();
+
     }
 }

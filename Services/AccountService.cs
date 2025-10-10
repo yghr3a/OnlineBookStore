@@ -127,9 +127,18 @@ namespace OnlineBookStore.Services
             await _responsity.AddAsync(newUser);
             await _responsity.SaveAsync();
 
+            // 创建用户声明列表, 用于注册完成后自动登录
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, newUser.Number.ToString()),
+                new Claim(ClaimTypes.Name, newUser.UserName),
+                new Claim(ClaimTypes.Email, newUser.Email ?? "")
+            };
+
             return new UserRegisterResult
             {
                 IsSuccess = true,
+                ClaimList = claims
             };
 
         }
