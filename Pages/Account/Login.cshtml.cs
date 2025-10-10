@@ -13,7 +13,8 @@ namespace OnlineBookStore.Pages.Account
         public string UserName { get; set; } = "";
         [BindProperty]
         public string Password { get; set; } = "";
-        public string? ErrorMessage { get; set; }
+        [BindProperty]// 显示在登录页面的内容盒下面的错误信息
+        public string? BoxDownErrorMessage { get; set; }
 
         private AccountService _accountService;
 
@@ -35,6 +36,7 @@ namespace OnlineBookStore.Pages.Account
             // [2025/10/10] 添加用户名和密码皆为空的判断
             if (string.IsNullOrWhiteSpace(UserName) && string.IsNullOrWhiteSpace(Password))
             {
+                BoxDownErrorMessage = "用户名和密码为空!";
                 ModelState.AddModelError("", "用户名和密码为空");
                 return Page();
             }
@@ -42,6 +44,7 @@ namespace OnlineBookStore.Pages.Account
             // [2025/10/10] 添加用户名为空的判断
             if (string.IsNullOrWhiteSpace(UserName))
             {
+                BoxDownErrorMessage = "用户名为空!";
                 ModelState.AddModelError("", "用户名为空");
                 return Page();
             }
@@ -49,6 +52,7 @@ namespace OnlineBookStore.Pages.Account
             // [2025/10/10] 添加密码为空的判断
             if (string.IsNullOrWhiteSpace(Password))
             {
+                BoxDownErrorMessage = "密码为空";
                 ModelState.AddModelError("", "密码为空");
                 return Page();
             }
@@ -79,6 +83,7 @@ namespace OnlineBookStore.Pages.Account
             else
             {
                 // [2025/10/10] 读取userVerifyResult异常信息
+                BoxDownErrorMessage = userVerifyResult.ErrorMsg;
                 ModelState.AddModelError("", $"{userVerifyResult.ErrorMsg}");
                 return Page();
             }
