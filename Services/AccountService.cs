@@ -121,6 +121,8 @@ namespace OnlineBookStore.Services
                 Email = email,
                 UserRole = Role.Customer,
                 RegistrationDate = DateTime.UtcNow
+
+                // Cart对象拥有默认值, 默认值就是直接new一个Cart对象, EFCore会自动将
             };
 
             // 添加新用户到数据库    
