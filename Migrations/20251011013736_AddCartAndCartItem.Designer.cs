@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineBookStore.Respository;
 
@@ -11,9 +12,11 @@ using OnlineBookStore.Respository;
 namespace OnlineBookStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251011013736_AddCartAndCartItem")]
+    partial class AddCartAndCartItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,10 +71,16 @@ namespace OnlineBookStore.Migrations
 
             modelBuilder.Entity("OnlineBookStore.Models.Entities.Cart", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Carts");
                 });
@@ -121,6 +130,7 @@ namespace OnlineBookStore.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -136,17 +146,6 @@ namespace OnlineBookStore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("OnlineBookStore.Models.Entities.Cart", b =>
-                {
-                    b.HasOne("OnlineBookStore.Models.Entities.User", "User")
-                        .WithOne("Cart")
-                        .HasForeignKey("OnlineBookStore.Models.Entities.Cart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnlineBookStore.Models.Entities.CartItem", b =>
@@ -169,11 +168,6 @@ namespace OnlineBookStore.Migrations
             modelBuilder.Entity("OnlineBookStore.Models.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("OnlineBookStore.Models.Entities.User", b =>
-                {
-                    b.Navigation("Cart");
                 });
 #pragma warning restore 612, 618
         }

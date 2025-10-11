@@ -28,6 +28,7 @@ namespace OnlineBookStore.Pages.Account
 
         public void OnGet()
         {
+
         }
 
         public async Task<IActionResult> OnPostAsync()

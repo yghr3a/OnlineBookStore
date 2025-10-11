@@ -50,18 +50,22 @@ namespace OnlineBookStore.Services
             // 检查是否已有数据，避免重复插入
             if (!context.Users.Any())
             {
-                // 生成测试用户的密码哈希, 这里使用简单密码"123456", 同时并没有传递User对象, 因为User对象在哈希计算中未被使用
-                var passwordHash = passwordHasher.HashPassword(null, "123456");
 
                 var user = new User()
                 {
                     Number = 1001,
                     UserName = "testuser",
                     UserRole = Models.Role.Customer,
-                    PasswordHash = passwordHash,
                     Email = "test@onlinebookstore",
-                    RegistrationDate = DateTime.Now
+                    RegistrationDate = DateTime.Now,
+                    Cart = new Cart() // EFCore会自动插入这个Cart对象
                 };
+
+                // 生成测试用户的密码哈希, 这里使用简单密码"123456", 同时并没有传递User对象, 因为User对象在哈希计算中未被使用
+                // [2025/10/11] 虽然user对象仍然未使用, 但是我删除了PasswordHash属性的required
+                var passwordHash = passwordHasher.HashPassword(user, "123456");
+
+                user.PasswordHash = passwordHash;
 
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
