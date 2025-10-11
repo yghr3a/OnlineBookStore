@@ -8,13 +8,14 @@ namespace OnlineBookStore.Models.Entities
         public int Id { get; set; }
         // 关联的购物车Id
         public required int CartId { get; set; }
-        // 购物车项编号
-        public required int Number { get; set; }
-        // 添加到购物车的时间
-        public required DateTime CreatedDate { get; set; }
+
         // 关联的图书Id
         public required int BookId { get; set; }
+        // 导航属性
+        public Book? Book { get; set; }
         // 购买的数量
         public required string Count { get; set; }
+        // 添加到购物车的时间
+        public required DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }
