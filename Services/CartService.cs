@@ -41,9 +41,12 @@ namespace OnlineBookStore.Services
             var bookQuary = _bookRespository.AsQueryable();
 
             // TODO :发现UserContext里的UserId(用户编号)是string类型, 但是User实体类里的Number(用户编号)是int类型
-            
+
             // 这里使用用户名作为索引 
-            var user = await userQuary.FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
+            // [2025/10/11] 要使用Include和ThenInclude来加载相关的Cart和CartItems
+            var user = await userQuary.Include(u => u.Cart)
+                                      .ThenInclude(c => c.CartItems)
+                                      .FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
             var book = await bookQuary.FirstOrDefaultAsync(b => b.Number == bookNumber);
             var cart = user?.Cart;
 
