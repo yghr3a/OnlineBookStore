@@ -17,8 +17,7 @@ namespace OnlineBookStore.Pages.Book
         public BookViewModel Book { get; set; }
 
         // 书籍编号，从 URL 上获取
-        [BindProperty(SupportsGet = true)]
-        public int BookNumber { get; set; }
+        [BindProperty(SupportsGet = true)] public int BookNumber { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, BookService bookService)
         {
