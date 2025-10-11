@@ -121,12 +121,22 @@ namespace OnlineBookStore.Services
                 Email = email,
                 UserRole = Role.Customer,
                 RegistrationDate = DateTime.UtcNow
-
-                // Cart对象拥有默认值, 默认值就是直接new一个Cart对象, EFCore会自动将
             };
 
-            // 添加新用户到数据库    
+            // 添加新用户到数据库
+            // [2025/10/11] 此时确保UserID生成
             await _responsity.AddAsync(newUser);
+            await _responsity.SaveAsync();
+
+            // [2025/10/11]  尝试手动创建一个Cart对象赋值给User, 看看User会不会带有Cast引导属性
+            var cart = new Cart()
+            {
+                User = newUser
+            };
+
+            newUser.Cart = cart;
+
+            // 再次保存
             await _responsity.SaveAsync();
 
             // 创建用户声明列表, 用于注册完成后自动登录
