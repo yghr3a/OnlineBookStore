@@ -1,0 +1,117 @@
+﻿@page
+@model OnlineBookStore.Pages.Shared.NotificationModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>提示信息</title>
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #000;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .navbar .logo {
+                font-size: 22px;
+                font-weight: bold;
+                color: #fff;
+                text-decoration: none;
+            }
+
+        /* 主体内容 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px);
+            text-align: center;
+        }
+
+        .notification-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 40px 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 90%;
+        }
+
+            .notification-box h2 {
+                font-size: 24px;
+                margin-bottom: 16px;
+                color: #111;
+            }
+
+            .notification-box p {
+                font-size: 16px;
+                color: #333;
+                margin-bottom: 20px;
+            }
+
+            .notification-box a {
+                text-decoration: none;
+                background-color: #007bff;
+                padding: 10px 24px;
+                border-radius: 6px;
+                color : white;
+                font-size: 16px;
+                transition: background-color 0.2s;
+            }
+
+                .notification-box a:hover {
+                    background-color: #2f32a8;
+                }
+
+        .progress-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            border-radius: 3px;
+            margin-top: 15px;
+            animation: progress linear forwards;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 简化版导航栏 -->
+    <nav class="navbar">
+        <a class="logo" href="/">OnlineBookStore</a>
+        <div></div> <!-- 保持结构对齐 -->
+    </nav>
+
+    <!-- 内容区 -->
+    <div class="container">
+        <div class="notification-box">
+            <h2>@Model.Message</h2>
+            <p>页面将在 <strong>@Model.Seconds</strong> 秒后自动跳转，或点击下方按钮手动跳转：</p>
+            <a href="@Model.RedirectUrl">立即跳转</a>
+            <div class="progress-bar" style="animation-duration:@Model.Seconds;"></div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(function(){
+            window.location.href = "@Model.RedirectUrl";
+        }, @Model.Seconds * 1000);
+    </script>
+</body>
+</html>
