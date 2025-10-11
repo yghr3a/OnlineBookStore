@@ -1,4 +1,5 @@
 ﻿using OnlineBookStore.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineBookStore.Models.Entities
 {
@@ -23,6 +24,8 @@ namespace OnlineBookStore.Models.Entities
 
         // 用户购物车
         // [2025/10/11] EFCore框架会负责将其插入到Carts表中, 并且将UserId设置为对应的用户Id
+        [ForeignKey("Cart")]
+        public int CartId { get; set; }
         public Cart? Cart { get; set; } = new Cart();
 
         // 用户订单(历史订单)
