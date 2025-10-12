@@ -98,7 +98,7 @@ namespace OnlineBookStore.Pages.Account
                 // 登录成功, 跳转到首页
                 return RedirectToPage("/Shared/Notification", new
                 {
-                    Message = "注册成功！",
+                    Message = "注册成功",
                     RedirectUrl = "/Index",
                     Seconds = 5
                 });
