@@ -14,6 +14,7 @@ namespace OnlineBookStore.Models.Entities
         // 导航属性, 关联的用户
         public User? User { get; set; }
         // 购物车中的购物车项
-        public List<CartItem>? CartItems { get; set; } = new List<CartItem>();
+        // [2025/10/12] 改为非空属性, 避免了空引用的问题
+        public List<CartItem> CartItems { get; set; } = new List<CartItem>();
     }
 }

@@ -18,6 +18,10 @@
         // 总价
         public float Total => Price * Count;
         // 添加日期
-        public required DateTime AddDate {get; set;} 
+        public required DateTime AddedDate {get; set;}
+        // 单价字符串格式化, 保留两位小数
+        public string PriceString { get { return Price.ToString("F2"); } }
+        // 总价字符串格式化, 保留两位小数
+        public string TotalString { get { return Total.ToString("F2"); } }
     }
 }
