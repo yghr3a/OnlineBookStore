@@ -107,29 +107,52 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 获取用户的购物车
         /// </summary>
-        public async Task GetUserCartAsync()
+        public async Task<GetCartResult> GetUserCartAsync()
         {
             var userQuary = _userRespository.AsQueryable();
 
             var user = await userQuary.Include(u => u.Cart)
                           .ThenInclude(c => c.CartItems)
+                          .ThenInclude(ci => ci.Book)
                           .FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
-            if(user == null)
-            {
 
+            // 用户不存在
+            if (user == null)
+            {
+                return new GetCartResult()
+                {
+                    IsSuccess = false,
+                    ErrorMsg = "用户不存在"
+                };
             }
 
-            var cart = user.Cart;
-            if(cart == null)
+            // 若没有购物车，则直接返回空模型（这里不写入数据库）
+            var cart = user.Cart ?? new Cart { CartItems = new List<CartItem>() };
+
+            // 将Cart转换为CartViewModel
+            var cartItemVMs = cart.CartItems?.Select(ci => new CartItemViewModel
             {
+                Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
+                BookNumber = ci.Book?.Number ?? 0,
+                BookTitle = ci.Book?.Name ?? "未知书籍",
+                Count = ci.Count,
+                AddedDate = ci.CreatedDate,
+                Price = (float)(ci.Book?.Price ?? 0 ),
+            }).ToList();
 
-            }
-
-            var cartItems = cart.CartItems;
-            if(cartItems == null)
+            // 构建CartViewModel
+            var cartVM = new CartViewModel()
             {
+                UserNumber = user.Number,
+                CartItemViewModels = cartItemVMs ?? new List<CartItemViewModel>()
+            };
 
-            }
+            // 返回结果
+            return new GetCartResult()
+            {
+                IsSuccess = true,
+                CartViewModel = cartVM
+            };
         }
     }
 }

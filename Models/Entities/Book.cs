@@ -30,7 +30,7 @@
         public string? CoverImageUrl { get; set; }
 
         // 图书价格
-        public decimal Price { get; set; }
+        public required decimal Price { get; set; }
 
         // 图书销量
         public required int Sales { get; set; } = 0;
