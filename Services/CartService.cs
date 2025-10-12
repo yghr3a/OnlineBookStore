@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
+using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Respository;
 
 namespace OnlineBookStore.Services
@@ -101,6 +102,34 @@ namespace OnlineBookStore.Services
             await _cartRespository.SaveAsync();
 
             return new CartAddResult() { IsSuccess = true };
+        }
+
+        /// <summary>
+        /// 获取用户的购物车
+        /// </summary>
+        public async Task GetUserCartAsync()
+        {
+            var userQuary = _userRespository.AsQueryable();
+
+            var user = await userQuary.Include(u => u.Cart)
+                          .ThenInclude(c => c.CartItems)
+                          .FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
+            if(user == null)
+            {
+
+            }
+
+            var cart = user.Cart;
+            if(cart == null)
+            {
+
+            }
+
+            var cartItems = cart.CartItems;
+            if(cartItems == null)
+            {
+
+            }
         }
     }
 }

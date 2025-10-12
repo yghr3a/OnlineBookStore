@@ -8,6 +8,8 @@ namespace OnlineBookStore.Models.Entities
     {
         // 购物车项Id
         public int Id { get; set; }
+        // 购物车项目编号
+        // public int Number { get; set; } = DateTime.Now
 
         // 关联的购物车Id, 属于外键
         [ForeignKey("Cart")]
