@@ -73,6 +73,13 @@ html {
     opacity: 0.8;
 }
 
+.navbar-left a {
+    margin-left: 25px;
+    color: white;   
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
 /* Ö÷ÄÚÈÝ */
 .content {
     padding: 30px;
