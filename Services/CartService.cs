@@ -2,6 +2,7 @@
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
+using OnlineBookStore.Pages.Book;
 using OnlineBookStore.Respository;
 
 namespace OnlineBookStore.Services
@@ -108,7 +109,7 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 获取用户的购物车
         /// </summary>
-        public async Task<GetCartResult> GetUserCartAsync()
+        public async Task<GetCartResult> GetUserCartAsync(int pageIndex = 1, int pageSize = 30)
         {
             var userQuary = _userRespository.AsQueryable();
 
@@ -118,8 +119,10 @@ namespace OnlineBookStore.Services
                           .Where(u => u.UserName == _userContext.UserName);
             // 因为UserContext的用户编号是字符串类型, 但是users里的编号是int类型,所以使用用户名作为索引
 
-            
-            var user = await _userRespository.GetPagedAsync(quary, 1, 30);                                            
+            // [2025/10/13] 这里使用GetPagedAsync方法来获取用户, 避免一次性加载过多数据
+            // 这里获取的类型虽然是List<User>, 但实际上只会有一个用户
+            var users = await _userRespository.GetPagedAsync(quary, pageIndex, pageSize);        
+            var user = users.FirstOrDefault();
 
             // 用户不存在
             if (user == null)
