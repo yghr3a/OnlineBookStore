@@ -1,4 +1,73 @@
 ﻿@page
 @model OnlineBookStore.Pages.Cart.IndexModel
 @{
+    ViewData["Title"] = "用户购物车页面";
 }
+
+<head>
+    <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+</head>
+
+<main class="main-content">
+    <div class="features-area">
+        <div class="content-container">
+            <span class="content-title">
+                搜索购物车商品
+            </span>
+            <div class="content-body">
+                <div class="search-bar">
+                    <input class="search-input" type="text" placeholder="请输入书名或作者..." />
+                    <button class="search-button" asp-page="/Search">搜索</button>
+                </div>
+            </div>
+        </div>
+        <div class="content-container">
+            <span class="content-title">
+                购物车列表
+            </span>
+            <div class="cart-item-grid">
+				@if (Model.CartItemViewModels != null && Model.CartItemViewModels.Count > 0)
+				{
+					foreach (var item in Model.CartItemViewModels)
+					{
+						<div class="cart-item-card">
+							<div class="cart-item-info">
+								<div class="cart-item-cover-wrapper">
+									@if (false)
+									{
+										<!--这里图片链接晚点在搞, 因为视图模型还没定义-->
+										<img src="" alt="@item.BookTitle" class="cart-item-cover-image"
+											 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+										<div class="cart-item-cover-placeholder">
+											<span class="cart-item-title-overlay">@item.BookTitle</span>
+										</div>
+									}
+									else
+									{
+										<div class="cart-item-cover-placeholder-display">
+											<span class="cart-item-title-overlay">@item.BookTitle</span>
+										</div>
+									}
+								</div>
+								<div class="cart-item-details">
+									<h3 class="cart-item-title">@item.BookTitle</h3>
+									<!--<p class="cart-item-author">作者: </p>-->
+									<p class="cart-item-price">价格: ¥@item.PriceString</p>
+									<p class="cart-item-quantity">数量: @item.Count</p>
+								</div>
+							</div>
+							<form method="post" asp-page-handler="Remove" class="remove-item-form">
+								<input type="hidden" name="bookNumber" value="@item.BookNumber" />
+								<button type="submit" class="remove-item-button">移除</button>
+							</form>
+						</div>
+					}
+				}
+				else
+				{
+					<p>您的购物车为空。</p>
+				}
+            </div>
+        </div>
+    </div>
+</main>

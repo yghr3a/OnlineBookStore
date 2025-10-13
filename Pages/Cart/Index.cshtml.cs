@@ -9,7 +9,9 @@ namespace OnlineBookStore.Pages.Cart
     {
         private CartService _cartService;
 
-        public CartViewModel cartViewModel { get; set; }
+        public CartViewModel CartViewModel { get; set; }
+        public List<CartItemViewModel> CartItemViewModels => CartViewModel.CartItemViewModels;
+        public int UserNumber => CartViewModel.UserNumber;
         public string ErrorMsg { get; set; }
 
         public IndexModel(CartService cartService)
@@ -23,7 +25,7 @@ namespace OnlineBookStore.Pages.Cart
 
             if(cartResult.IsSuccess == true)
             {
-                cartViewModel = cartResult.CartViewModel!;
+                CartViewModel = cartResult.CartViewModel!;
             }
             else
             {

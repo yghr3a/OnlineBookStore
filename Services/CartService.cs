@@ -48,6 +48,7 @@ namespace OnlineBookStore.Services
             var user = await userQuary.Include(u => u.Cart)
                                       .ThenInclude(c => c.CartItems)
                                       .FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
+
             var book = await bookQuary.FirstOrDefaultAsync(b => b.Number == bookNumber);
             var cart = user?.Cart;
 
@@ -111,10 +112,14 @@ namespace OnlineBookStore.Services
         {
             var userQuary = _userRespository.AsQueryable();
 
-            var user = await userQuary.Include(u => u.Cart)
+            var quary = userQuary.Include(u => u.Cart)
                           .ThenInclude(c => c.CartItems)
                           .ThenInclude(ci => ci.Book)
-                          .FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
+                          .Where(u => u.UserName == _userContext.UserName);
+            // 因为UserContext的用户编号是字符串类型, 但是users里的编号是int类型,所以使用用户名作为索引
+
+            
+            var user = await _userRespository.GetPagedAsync(quary, 1, 30);                                            
 
             // 用户不存在
             if (user == null)
