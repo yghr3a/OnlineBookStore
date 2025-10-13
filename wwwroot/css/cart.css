@@ -1,70 +1,165 @@
-﻿.cart-item-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
+﻿/* ====== 购物车项目列表 ====== */
+.cart-item-grid {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ====== 购物车卡片 ====== */
+.cart-item-card {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     background-color: #fff;
-}
-
-.cart-item-info {
-    flex: 1;
-    margin-left: 16px;
-}
-
-.cart-item-cover-wrapper {
-    width: 80px;
-    height: 120px;
     overflow: hidden;
-    border-radius: 4px;
-    flex-shrink: 0;
+    transition: box-shadow 0.2s ease;
 }
 
-.cart-item-cover-placeholder-display {
-    width: 100%;
-    height: 100%;
-    background-color: #f0f0f0;
+    .cart-item-card:hover {
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+/* ====== 左侧：封面区域 ====== */
+.cart-item-cover-wrapper {
+    position: relative;
+    width: 180px;
+    flex-shrink: 0;
+    background-color: #f3f3f3;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #999;
-    font-size: 14px;
 }
 
-.cart-item-title-overlay {
-    position: absolute;
-    bottom: 0;
+    .cart-item-cover-wrapper img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+.book-cover-placeholder-display {
     width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    padding: 4px;
-    font-size: 12px;
-    text-align: center;
-}
-
-.cart-item-details {
-    margin-top: 8px;
+    height: 100%;
+    background-color: #eaeaea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 14px;
-    color: #333;
+    color: #888;
+    text-align: center;
+    padding: 10px;
 }
 
-.cart-item-title{
-
+/* ====== 右侧：信息 + 操作区域 ====== */
+.cart-item-info-and-control {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 20px;
 }
 
-.cart-item-price{
-
+/* 信息部分 */
+.cart-item-details {
+    margin-bottom: 12px;
 }
 
-.cart-item-quantity{
-
+.cart-item-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
-.remove-item-form {
+.cart-item-price {
+    font-size: 24px;
+    font-weight: 700;
+    margin : 10px;
+    color: #e53935;
+}
+.cart-item-quantity {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 4px;
+}
+
+.cart-item-down-part {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
     margin-top: 8px;
+    gap: 10px;
 }
 
-.remove-item-button{
+/* 操作部分 */
+.remove-item-form {
+    align-self: flex-end;
+}
 
+.remove-item-button {
+    width: 80px;
+    font-size: 16px; 
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+    .remove-item-button:hover {
+        background-color: #c9302c;
+    }
+
+/* ====== 分页部分 ====== */
+.page-change-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.next-last-page-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    background-color: #0078d7;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+    .next-last-page-btn:hover {
+        background-color: #005ea2;
+    }
+
+    .next-last-page-btn[disabled] {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+/* ====== 响应式适配 ====== */
+@media (max-width: 768px) {
+    .cart-item-card {
+        flex-direction: column;
+    }
+
+    .cart-item-cover-wrapper {
+        width: 100%;
+        height: 220px;
+    }
+
+    .cart-item-info-and-control {
+        padding: 12px 16px;
+    }
+
+    .cart-item-title {
+        font-size: 16px;
+    }
 }

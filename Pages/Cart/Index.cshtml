@@ -6,6 +6,8 @@
 
 <head>
     <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
 <main class="main-content">
@@ -16,7 +18,7 @@
             </span>
             <div class="content-body">
                 <div class="search-bar">
-                    <input class="search-input" type="text" placeholder="请输入书名或作者..." />
+                    <input class="search-input" type="text" placeholder="请输入商品名字..." />
                     <button class="search-button" asp-page="/Search">搜索</button>
                 </div>
             </div>
@@ -31,35 +33,39 @@
 					foreach (var item in Model.CartItemViewModels)
 					{
 						<div class="cart-item-card">
-							<div class="cart-item-info">
-								<div class="cart-item-cover-wrapper">
-									@if (false)
-									{
-										<!--这里图片链接晚点在搞, 因为视图模型还没定义-->
-										<img src="" alt="@item.BookTitle" class="cart-item-cover-image"
-											 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-										<div class="cart-item-cover-placeholder">
-											<span class="cart-item-title-overlay">@item.BookTitle</span>
-										</div>
-									}
-									else
-									{
-										<div class="cart-item-cover-placeholder-display">
-											<span class="cart-item-title-overlay">@item.BookTitle</span>
-										</div>
-									}
-								</div>
+							<a class="cart-item-cover-wrapper" asp-page="/Book/Index" asp-route-BookNumber="@item.BookNumber">
+								@if (false)
+								{
+									<!--这里图片链接晚点在搞, 因为视图模型还没定义-->
+									<img src="" alt="@item.BookTitle" class="cart-item-cover-image"
+											onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+									<div class="book-cover-placeholder">
+										<span class="book-title-overlay">@item.BookTitle</span>
+									</div>
+								}
+								else
+								{
+									<div class="book-cover-placeholder-display">
+										<span class="book-title-overlay">@item.BookTitle</span>
+									</div>
+								}
+							</a>
+							<div class="cart-item-info-and-control">
 								<div class="cart-item-details">
 									<h3 class="cart-item-title">@item.BookTitle</h3>
 									<!--<p class="cart-item-author">作者: </p>-->
-									<p class="cart-item-price">价格: ¥@item.PriceString</p>
+									<p class="cart-item-quantity">单价: ¥@item.PriceString</p>
 									<p class="cart-item-quantity">数量: @item.Count</p>
 								</div>
+
+								<div class="cart-item-down-part">
+									<p class="cart-item-price">总价: ¥@item.TotalString</p>
+									<form method="post" asp-page-handler="Remove" class="remove-item-form">
+										<input type="hidden" name="bookNumber" value="@item.BookNumber" />
+										<button type="submit" class="remove-item-button">移除</button>
+									</form>
+								</div>
 							</div>
-							<form method="post" asp-page-handler="Remove" class="remove-item-form">
-								<input type="hidden" name="bookNumber" value="@item.BookNumber" />
-								<button type="submit" class="remove-item-button">移除</button>
-							</form>
 						</div>
 					}
 				}
@@ -68,6 +74,21 @@
 					<p>您的购物车为空。</p>
 				}
             </div>
+
+			<div class="page-change-body">
+				<!-- 上一页按钮 -->
+				<a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)"
+				   class="next-last-page-btn"
+				   disabled="@(Model.PageIndex <= 1)">
+					上一页
+				</a>
+
+				<!-- 下一页按钮 -->
+				<a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)"
+				   class="next-last-page-btn">
+					下一页
+				</a>
+			</div>
         </div>
     </div>
 </main>
