@@ -27,10 +27,10 @@ namespace OnlineBookStore.Models.ViewModels
         public string? Category { get; set; }
 
         // 图书介绍
-        public string? Introduction { get; set; }
+        public string Introduction { get; set; } = "暂无介绍";
 
         // 图书封面图片链接
-        public string? CoverImageUrl { get; set; }
+        public string CoverImageUrl { get; set; } = string.Empty;
 
         // 图书价格
         public required float Price { get; set; }

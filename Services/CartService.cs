@@ -142,6 +142,8 @@ namespace OnlineBookStore.Services
                 Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
                 BookNumber = ci.Book?.Number ?? 0,
                 BookTitle = ci.Book?.Name ?? "未知书籍",
+                BookCoverImageUrl = ci.Book?.CoverImageUrl ?? string.Empty,
+                BookAuthor = ci.Book?.Authors?.FirstOrDefault() ?? "未知作者",
                 Count = ci.Count,
                 AddedDate = ci.CreatedDate,
                 Price = (float)(ci.Book?.Price ?? 0 ),

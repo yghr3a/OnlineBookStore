@@ -9,8 +9,15 @@
         public required int Number { get; set; }
         // 书籍编号
         public required int BookNumber { get; set; }
+
+        // [2025/10/13] 要不干脆直接搞一个BookViewModel对象在这里算了
+
         // 书籍标题
         public required string BookTitle { get; set; }
+        // 书籍封面图片链接
+        public string BookCoverImageUrl { get; set; } = string.Empty;
+        // 书籍作者
+        public string BookAuthor { get; set; } = string.Empty;
         // 书籍单价
         public required float Price { get; set; }
         // 数量
