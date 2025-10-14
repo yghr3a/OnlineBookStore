@@ -119,7 +119,7 @@ namespace OnlineBookStore.Services
                 UserName = username,
                 PasswordHash = passwordHash,
                 Email = email,
-                UserRole = Role.Customer,
+                UserRole = UserRole.Customer,
                 RegistrationDate = DateTime.UtcNow
             };
 

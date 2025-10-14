@@ -21,6 +21,8 @@ namespace OnlineBookStore.Models.Entities
     {
         // 订单Id
         public int Id { get; set; }
+        // 订单编号
+        public int Number { get; set; }
 
         // 所隶属的用户Id, 外键
         [ForeignKey("User")]

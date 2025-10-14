@@ -55,7 +55,7 @@ namespace OnlineBookStore.Services
                 {
                     Number = 1001,
                     UserName = "testuser",
-                    UserRole = Models.Role.Customer,
+                    UserRole = UserRole.Customer,
                     Email = "test@onlinebookstore",
                     RegistrationDate = DateTime.Now,
                     Cart = new Cart() // EFCore会自动插入这个Cart对象
