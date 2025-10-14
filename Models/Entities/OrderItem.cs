@@ -9,6 +9,8 @@ namespace OnlineBookStore.Models.Entities
     {
         // 订单项Id
         public int Id { get; set; }
+        // 订单编号
+        public int Number { get; set; }
 
         // 所隶属的Order的Id
         [ForeignKey("Order")]

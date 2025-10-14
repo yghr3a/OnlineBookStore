@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineBookStore.Models.Entities
 {
+    public enum UserRole
+    {
+        Manager,
+        Customer
+    }
     public class User : IEntityModel
     {
         // 用户Id
@@ -13,7 +18,7 @@ namespace OnlineBookStore.Models.Entities
         public required string UserName { get; set; }
 
         // 用户角色
-        public required Role UserRole { get; set; }
+        public required UserRole UserRole { get; set; }
         // 密码哈希值
         // [2025/10/11] 改为可能为空, required太不灵活了
         public string? PasswordHash { get; set; } = string.Empty; 
