@@ -15,24 +15,30 @@ namespace OnlineBookStore.Services
         private UserContext _userContext;
         private UnitOfWork _unitOfWork;
 
-        private Respository<Book> _bookRepository;
+        private Respository<Book> _bookRespository;
         private Respository<Order> _orderRepository;
         private Respository<Cart> _cartRespository;
-        private Respository<User> _userRespository;
+
+        private AccountService _accountService;
+        private BookService _bookService;
 
         public OrderService(UserContext userContext,
                             UnitOfWork unitOfWork,
-                            Respository<Book> bookRepository,
+                            Respository<Book> bookRespository,
                             Respository<Order> orderRepository,
                             Respository<Cart> cartRespository,
-                            Respository<User> userRepository) 
+                            BookService bookService,
+                            AccountService accountService) 
         {
             _userContext = userContext;
             _unitOfWork = unitOfWork;
-            _bookRepository = bookRepository;
+
+            _bookRespository = bookRespository;
             _orderRepository = orderRepository;
             _cartRespository = cartRespository;
-            _userRespository = userRepository;
+
+            _accountService = accountService;
+            _bookService = bookService;
         }
 
         /// <summary>
@@ -49,21 +55,18 @@ namespace OnlineBookStore.Services
             // 目前只简单实现几点: 创建订单项, 创建订单, 添加进用户的历史订单里, 更新书籍的销量
 
             // 首先先验证用户, 书籍等信息是否存在
-            var userQuery = _userRespository.AsQueryable()
-                            .Where(u => u.UserName == _userContext.UserName);
-
-            var user = await _userRespository.GetSingleByQueryAsync(userQuery);
-
-            if (user == null)
-                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = "用户不存在" };
+            // [2025/10/15] 将获取用户信息的工作交给AccountService负责了
+            var userRes = await _accountService.GetCurrentUserEntityModelAsync();
+            var user = userRes.Data;
+            if (userRes.IsSuccess == false)
+                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = userRes.ErrorMsg };
 
             var Numbers = createOrderResponse.Items.Select(i => i.BookNumber).ToList();
-            var booksQurey = _bookRepository.AsQueryable().Where(b => Numbers.Contains(b.Number));
-            var books = await _bookRepository.GetListByQueryAsync(booksQurey);
 
-            // 数量对不上, 说明部分书籍不存在
-            if (books.Count != createOrderResponse.Items.Count)
-                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = "部分书籍不存在" };
+            var booksRes = await _bookService.GetBookByNumberAsync(Numbers);
+            var books = booksRes.Data;
+            if (booksRes.IsSuccess == false)
+                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = booksRes.ErrorMsg };
 
             // 建立字典, 将购买数量与bookNumber绑定
             var BookNumber2Count = createOrderResponse.Items.ToDictionary(i => i.BookNumber, i => i.Count);
@@ -98,7 +101,7 @@ namespace OnlineBookStore.Services
                 foreach (var b in books)
                 {
                     b.Sales += BookNumber2Count[b.Number];
-                    _bookRepository.Update(b);
+                    _bookRespository.Update(b);
                 }
 
                 // 更新用户的历史订单
