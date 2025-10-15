@@ -8,6 +8,6 @@
         // 书籍编号
         public int BookNumber { get; set; }
         // 购买数量
-        public int Count { get; set; }
+        public int Count { get; set; } = 1;
     }
 }
