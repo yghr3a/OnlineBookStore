@@ -32,7 +32,8 @@ namespace OnlineBookStore.Models.Entities
         // [2025/10/12] 改为非空属性, 这样在创建User对象时就必须提供一个Cart对象, 避免了空引用的问题
         public Cart Cart { get; set; } = new Cart();
 
-        // 用户订单(历史订单)
-        // public List<Order> Orders { get; set; }
+        // 用户订单(历史订单), 
+        // [2025/10/15] 与Cart一样, 直接new一个默认值就好了
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

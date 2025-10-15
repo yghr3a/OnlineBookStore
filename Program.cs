@@ -49,12 +49,16 @@ namespace OnlineBookStore
             builder.Services.AddScoped<BookService, BookService>();
             // 注册购物车服务类型
             builder.Services.AddScoped<CartService, CartService>();
+            // 注册订单服务类型
+            builder.Services.AddScoped<OrderService, OrderService>();
             // 注册账户服务类型
             builder.Services.AddScoped<AccountService, AccountService>();
             // 注册用户上下文服务类型
             builder.Services.AddScoped<UserContext, UserContext>();
             // 注册用户密码哈希服务
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            // 注册工作单元
+            builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 
