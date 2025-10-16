@@ -9,7 +9,7 @@ namespace OnlineBookStore.Pages.Cart
     {
         private CartService _cartService;
 
-        public CartViewModel CartViewModel { get; set; }
+        public CartViewModel CartViewModel { get; set; } = new();
         public List<CartItemViewModel> CartItemViewModels => CartViewModel.CartItemViewModels;
         public int UserNumber => CartViewModel.UserNumber;
         public int PageIndex { get; set; } = 1;

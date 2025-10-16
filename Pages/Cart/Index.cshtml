@@ -103,7 +103,13 @@
 					<h3>预计总额</h3>
 					<p class="total-amount">¥@Model.CartViewModel.CartItemViewModels.Sum(i => i.Price * i.Count)</p>
 
-					<form method="post" asp-page-handler="CreateOrder">
+					<form method="CreateOrder" asp-page="/Order/Create">
+						@for (int i = 0; i < Model.CartItemViewModels!.Count; i++)
+						{
+							<input type="checkbox" name="OrderItems[@i].Selected" value="true" checked style="display:none" />
+							<input type="hidden" name="OrderItems[@i].BookNumber" value="@Model.CartItemViewModels![i].BookNumber" />
+							<input type="hidden" name="OrderItems[@i].Count" value="@Model.CartItemViewModels![i].Count" min="1" />
+						}
 						<button type="submit" class="checkout-button">创建订单</button>
 					</form>
 
