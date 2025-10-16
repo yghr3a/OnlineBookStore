@@ -10,7 +10,8 @@ namespace OnlineBookStore.Services
     /// <summary>
     /// 负责订单相关的业务操作
     /// </summary>
-    public class OrderService
+    public class OrderApplication
+
     {
         private UserContext _userContext;
         private UnitOfWork _unitOfWork;
@@ -21,14 +22,16 @@ namespace OnlineBookStore.Services
 
         private AccountService _accountService;
         private BookService _bookService;
+        private OrderFactory _orderFactory;
 
-        public OrderService(UserContext userContext,
+        public OrderApplication(UserContext userContext,
                             UnitOfWork unitOfWork,
                             Respository<Book> bookRespository,
                             Respository<Order> orderRepository,
                             Respository<Cart> cartRespository,
                             BookService bookService,
-                            AccountService accountService) 
+                            AccountService accountService,
+                            OrderFactory orderFactor) 
         {
             _userContext = userContext;
             _unitOfWork = unitOfWork;
@@ -39,6 +42,7 @@ namespace OnlineBookStore.Services
 
             _accountService = accountService;
             _bookService = bookService;
+            _orderFactory = orderFactor;
         }
 
         /// <summary>
@@ -68,37 +72,18 @@ namespace OnlineBookStore.Services
             if (booksRes.IsSuccess == false)
                 return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = booksRes.ErrorMsg };
 
-            // 建立字典, 将购买数量与bookNumber绑定
-            var BookNumber2Count = createOrderResponse.Items.ToDictionary(i => i.BookNumber, i => i.Count);
-
-            // 开始创建订单项, 创建订单, 添加进用户的历史订单里, 更新书籍的销量
-            var orderItems = books.Select(b => new OrderItem
-            {
-                BookId = b.Id,
-                Price = b.Price,
-                Count = BookNumber2Count[b.Number]      // 使用字典高效
-            }).ToList();
-
-            var order = new Order
-            {
-                // Number字段后续需要改为更合理的生成方式, 现在只是简单的用时间戳
-                Number = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % int.MaxValue),
-
-                UserId = user.Id,
-                User = user,
-                PaymentMethod = createOrderResponse.PaymentMethod,
-                OrderState = createOrderResponse.OrderState,
-                CreatedDate = DateTime.UtcNow,
-                OrderItems = orderItems
-            };
+            var orderReuslt = _orderFactory.Create(books!, user!, createOrderResponse);
+            if(orderReuslt.IsSuccess == false)
+                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = userRes.ErrorMsg };
+            var order = orderReuslt.Data;
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
                 // 添加订单
-                await _orderRepository.AddAsync(order);
+                await _orderRepository.AddAsync(order!);
 
                 // 更新书籍销量
-                foreach (var b in books)
+                foreach (var b in books!)
                 {
                     b.Sales += BookNumber2Count[b.Number];
                     _bookRespository.Update(b);

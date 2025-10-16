@@ -49,8 +49,10 @@ namespace OnlineBookStore
             builder.Services.AddScoped<BookService, BookService>();
             // 注册购物车服务类型
             builder.Services.AddScoped<CartService, CartService>();
-            // 注册订单服务类型
-            builder.Services.AddScoped<OrderService, OrderService>();
+            // 注册订单应用服务类型
+            builder.Services.AddScoped<OrderApplication, OrderApplication>();
+            // 注册订单工厂服务类型
+            builder.Services.AddScoped<OrderFactory, OrderFactory>();
             // 注册账户服务类型
             builder.Services.AddScoped<AccountService, AccountService>();
             // 注册用户上下文服务类型

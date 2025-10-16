@@ -159,18 +159,18 @@ namespace OnlineBookStore.Services
         /// 获取当前登录用户实体模型
         /// </summary>
         /// <returns></returns>
-        public async Task<Result<User>> GetCurrentUserEntityModelAsync()
+        public async Task<ServiceResult<User>> GetCurrentUserEntityModelAsync()
         {
             if (!_userContext.IsAuthenticated || string.IsNullOrWhiteSpace(_userContext.UserName))
-                return Result<User>.Fail("用户不存在");
+                return ServiceResult<User>.Fail("用户不存在");
 
             var query = _responsity.AsQueryable().Where(u => u.UserName == _userContext.UserName);
             var user = await _responsity.GetSingleByQueryAsync(query);
 
             if (user is null) 
-                return Result<User>.Fail("用户不存在");
+                return ServiceResult<User>.Fail("用户不存在");
 
-            return Result<User>.Success(user);
+            return ServiceResult<User>.Success(user);
         }
     }
 }
