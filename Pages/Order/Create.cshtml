@@ -1,0 +1,25 @@
+﻿@page
+@model OnlineBookStore.Pages.Order.CreateModel
+@{
+    ViewData["Title"] = "创建订单";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+</head>
+
+<div class="content-container">
+    <h2>确认订单</h2>
+
+    <form method="post">
+
+        <div style="margin-top: 2rem;">
+            <label><input type="radio" name="PaymentMethodString" value="WeChat" checked /> 微信支付</label>
+            <label><input type="radio" name="PaymentMethodString" value="Alipay" /> 支付宝</label>
+        </div>
+
+        <div style="margin-top: 2rem; text-align:right;">
+            <button type="submit" class="btn-buy">确认支付</button>
+        </div>
+    </form>
+</div>

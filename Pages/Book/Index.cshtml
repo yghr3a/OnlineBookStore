@@ -52,10 +52,16 @@
                         <div class="book-price">￥@Model.Book.PriceString</div>
 
                         <!-- 右：按钮 -->
-                        <form method="post" class="book-buttons">
-                            <button class="btn-buy">立刻下单</button>
-                            <button type="submit" class="btn-cart">加入购物车</button>
-                        </form>
+                        <div class="book-buttons">
+                            <form method="CreateOrder" asp-page="/Order/Create">
+                                <input type="hidden" name="OrderItems[0].BookNumber" value="@Model.Book.Number" />
+                                <input type="hidden" name="OrderItems[0].Count" value="1" />
+                                <button type="submit" class="btn-buy">立即下单</button>
+                            </form>
+                            <form method="post">
+                                <button type="submit" class="btn-cart">加入购物车</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
