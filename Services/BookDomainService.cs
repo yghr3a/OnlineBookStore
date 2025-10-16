@@ -22,7 +22,7 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="BookNumbers"></param>
         /// <returns></returns>
-        public async Task<ServiceResult<List<Book>>> GetBookByNumberAsync(List<int> BookNumbers)
+        public async Task<DataResult<List<Book>>> GetBookByNumberAsync(List<int> BookNumbers)
         {
             var booksQurey = _bookRespository.AsQueryable().Where(b => BookNumbers.Contains(b.Number));
             var books = await _bookRespository.GetListByQueryAsync(booksQurey);
@@ -33,9 +33,9 @@ namespace OnlineBookStore.Services
                     ErrorMsg += $"编号{n}:书籍不存在\n";
 
             if (ErrorMsg != string.Empty)
-                return ServiceResult<List<Book>>.Fail(ErrorMsg.Trim());
+                return DataResult<List<Book>>.Fail(ErrorMsg.Trim());
 
-            return ServiceResult<List<Book>>.Success(books);
+            return DataResult<List<Book>>.Success(books);
         }
 
         /// <summary>
@@ -44,15 +44,15 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="BookNumbers"></param>
         /// <returns></returns>
-        public async Task<ServiceResult<Book>> GetBookByNumberAsync(int BookNumber)
+        public async Task<DataResult<Book>> GetBookByNumberAsync(int BookNumber)
         {
             var booksQurey = _bookRespository.AsQueryable().Where(b => b.Number == BookNumber);
             var book = await _bookRespository.GetSingleByQueryAsync(booksQurey);
 
             if (book is null)
-                return ServiceResult<Book>.Fail($"编号{BookNumber}:书籍不存在");
+                return DataResult<Book>.Fail($"编号{BookNumber}:书籍不存在");
 
-            return ServiceResult<Book>.Success(book);
+            return DataResult<Book>.Success(book);
         }
 
     }

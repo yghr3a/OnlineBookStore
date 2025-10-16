@@ -30,7 +30,7 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
-        /// 创建订单业务方法
+        /// 下单操作业务方法
         /// </summary>
         /// <param name="createOrderResponse"></param>
         /// <returns></returns>
@@ -67,7 +67,7 @@ namespace OnlineBookStore.Services
             // [2025/10/16] 使用OrderDomainService完成添加订单的业务
             var result = await _orderDomainService.AddOrder(user!, order!, books!, createOrderResponse);
             if(result.IsSuccess == false)
-                return new CreateOrderResult() { IsSuccessed = true };
+                return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = result.ErrorMsg };
 
             return new CreateOrderResult() { IsSuccessed = true };
         }
