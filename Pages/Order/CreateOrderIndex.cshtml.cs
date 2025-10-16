@@ -8,8 +8,8 @@ namespace OnlineBookStore.Pages.Order
 {
     public class CreateOrderIndexModel : PageModel
     {
-        private OrderService _orderService;
-        public CreateOrderIndexModel(OrderService orderService)
+        private OrderApplication _orderService;
+        public CreateOrderIndexModel(OrderApplication orderService)
         {
             _orderService = orderService;
         }
