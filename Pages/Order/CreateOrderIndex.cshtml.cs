@@ -21,7 +21,7 @@ namespace OnlineBookStore.Pages.Order
 
         public async Task<IActionResult> OnPost() 
         {
-            var result = await _orderService.CreateOrderAsync(new CreateOrderResponse
+            var result = await _orderService.PlayerOrderAsync(new CreateOrderResponse
             {
                 PaymentMethod = PaymentMethod.WeChat,
                 OrderState = OrderState.Finished,

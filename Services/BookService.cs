@@ -99,42 +99,5 @@ namespace OnlineBookStore.Services
 
             return bookVM;
         }
-
-        /// <summary>
-        /// 根据书籍编号列表获取图书实体模型列表
-        /// </summary>
-        /// <param name="BookNumbers"></param>
-        /// <returns></returns>
-        public async Task<ServiceResult<List<Book>>> GetBookByNumberAsync(List<int> BookNumbers)
-        {
-            var booksQurey = _bookRepository.AsQueryable().Where(b => BookNumbers.Contains(b.Number));
-            var books = await _bookRepository.GetListByQueryAsync(booksQurey);
-            var ErrorMsg = string.Empty;
-
-            foreach (var n in BookNumbers)
-                if (books.Find(b => b.Number == n) is null)
-                    ErrorMsg += $"编号{n}:书籍不存在\n";
-
-            if (ErrorMsg != string.Empty)
-                return ServiceResult<List<Book>>.Fail(ErrorMsg.Trim());
-
-            return ServiceResult<List<Book>>.Success(books);
-        }
-
-        /// <summary>
-        /// 根据图书编号获取单个图书实体模型
-        /// </summary>
-        /// <param name="BookNumbers"></param>
-        /// <returns></returns>
-        public async Task<ServiceResult<Book>> GetBookByNumberAsync(int BookNumber)
-        {
-            var booksQurey = _bookRepository.AsQueryable().Where(b => b.Number == BookNumber);
-            var book = await _bookRepository.GetSingleByQueryAsync(booksQurey);
-
-            if (book is null)
-                return ServiceResult<Book>.Fail($"编号{BookNumber}:书籍不存在");
-
-            return ServiceResult<Book>.Success(book);
-        }
     }
 }
