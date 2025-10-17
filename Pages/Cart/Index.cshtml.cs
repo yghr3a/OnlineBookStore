@@ -33,5 +33,27 @@ namespace OnlineBookStore.Pages.Cart
                 ErrorMsg = cartResult.ErrorMsg;
             }
         }
+
+        /// <summary>
+        /// 移除购物车单线项方法
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostRemoveItemAsync(int orderItemNumber)
+        {
+            var res = await _cartService.RemoveUserCartSingleItem(orderItemNumber);
+            if (res.IsSuccess == true)
+            {
+                return RedirectToPage("/Cart/Index");
+            }
+            else
+            {
+                return RedirectToPage("/Shared/Notification", new
+                {
+                    Message = "移除购物车单项失败, 请联系网站管理员",
+                    RedirectUrl = "/Cart/Index",
+                    Seconds = 5
+                });
+            }
+        }
     }
 }

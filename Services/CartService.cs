@@ -2,6 +2,7 @@
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
+using OnlineBookStore.Pages;
 using OnlineBookStore.Pages.Book;
 using OnlineBookStore.Respository;
 
@@ -162,6 +163,43 @@ namespace OnlineBookStore.Services
                 IsSuccess = true,
                 CartViewModel = cartVM
             };
+        }
+
+
+        /// <summary>
+        /// 移除用户购物车中的单个项
+        /// </summary>
+        /// <param name="bookNumber"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> RemoveUserCartSingleItem(int orderItemNumber)
+        {
+            var userQuary = _userRespository.AsQueryable();
+
+            var quary = userQuary.Include(u => u.Cart)
+                          .ThenInclude(c => c.CartItems)
+                          .ThenInclude(ci => ci.Book)
+                          .Where(u => u.UserName == _userContext.UserName);
+
+            var user = await _userRespository.GetSingleByQueryAsync(quary);
+
+            // 用户不存在
+            if (user == null)
+                return InfoResult.Fail("用户不存在");
+
+            var cart = user.Cart;
+            if (cart == null || cart.CartItems == null)
+                return InfoResult.Fail("购物车为空");
+
+            var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == orderItemNumber);
+            if (cartItem == null)
+                return InfoResult.Fail("购物车项不存在");
+
+            user.Cart.CartItems.Remove(cartItem);
+
+             _userRespository.Update(user);
+            await _cartRespository.SaveAsync();
+
+            return InfoResult.Success();
         }
     }
 }
