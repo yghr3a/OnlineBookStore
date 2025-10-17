@@ -98,7 +98,13 @@ namespace OnlineBookStore.Services
             {
                 cart.CartItems = new List<CartItem>();
             }
-            cart.CartItems?.Add(cartItem);
+
+            // [2025/10/17] 出现了一个bug, 重复添加同一本书籍时会出现多条"同种书籍, 购买数为一"的记录, 需要先检查是否已经存在该书籍的CartItem
+            var exitItem = cart.CartItems.Find(i => i.BookId == book.Id);
+            if (exitItem is null)
+                cart.CartItems?.Add(cartItem);  // 若不存在则添加新的CartItem
+            else
+                exitItem.Count += 1; // 已存在则数量加一
 
             // 保存数据, EFCore会自动处理关联关系
             await _cartRespository.SaveAsync();

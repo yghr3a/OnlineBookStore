@@ -71,7 +71,7 @@ namespace OnlineBookStore.Pages.Cart
             {
                 return RedirectToPage("/Shared/Notification", new
                 {
-                    Message = "移除购物车单项失败, 请联系网站管理员",
+                    Message = "清理购物车失败, 请联系网站管理员",
                     RedirectUrl = "/Cart/Index",
                     Seconds = 5
                 });
