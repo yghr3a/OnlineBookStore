@@ -104,7 +104,7 @@
 					<h3>预计总额</h3>
 					<p class="total-amount">¥@Model.CartViewModel.CartItemViewModels.Sum(i => i.Price * i.Count)</p>
 
-					<form method="CreateOrder" asp-page="/Order/Create">
+					<form asp-page="/Order/Create">
 						@for (int i = 0; i < Model.CartItemViewModels!.Count; i++)
 						{
 							<input type="checkbox" name="OrderItems[@i].Selected" value="true" checked style="display:none" />
@@ -114,6 +114,7 @@
 						<button type="submit" class="checkout-button">创建订单</button>
 					</form>
 
+					<!--清空购物车表单, 按下后, 执行OnPostClearCartAsync方法-->
 					<form method="post" asp-page-handler="ClearCart">
 						<button type="submit" class="clear-cart-button">清空购物车</button>
 					</form>

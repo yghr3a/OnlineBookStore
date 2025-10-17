@@ -40,7 +40,29 @@ namespace OnlineBookStore.Pages.Cart
         /// <returns></returns>
         public async Task<IActionResult> OnPostRemoveItemAsync(int orderItemNumber)
         {
-            var res = await _cartService.RemoveUserCartSingleItem(orderItemNumber);
+            var res = await _cartService.RemoveUserCartSingleItemAsync(orderItemNumber);
+            if (res.IsSuccess == true)
+            {
+                return RedirectToPage("/Cart/Index");
+            }
+            else
+            {
+                return RedirectToPage("/Shared/Notification", new
+                {
+                    Message = "移除购物车单项失败, 请联系网站管理员",
+                    RedirectUrl = "/Cart/Index",
+                    Seconds = 5
+                });
+            }
+        }
+
+        /// <summary>
+        /// 晴空购物车方法
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostClearCartAsync()
+        {
+            var res = await _cartService.ClearUserCartAsync();
             if (res.IsSuccess == true)
             {
                 return RedirectToPage("/Cart/Index");
