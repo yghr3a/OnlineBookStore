@@ -65,8 +65,9 @@
 
 										<div class="cart-item-down-part">
 											<p class="cart-item-price">总价: ¥@item.TotalString</p>
-											<form method="post" asp-page-handler="Remove" class="remove-item-form">
-												<input type="hidden" name="bookNumber" value="@item.BookNumber" />
+											<!--移除购物车单项表单, 按下后, 将购物车单项的编号作为参数传递, 执行OnPostRemoveAsync方法-->
+											<form method="post" asp-page-handler="RemoveItem" class="remove-item-form">
+												<input type="hidden" name="orderItemNumber" value="@item.Number" />
 												<button type="submit" class="remove-item-button">移除</button>
 											</form>
 										</div>

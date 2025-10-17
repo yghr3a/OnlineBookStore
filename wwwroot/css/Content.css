@@ -206,20 +206,4 @@ html {
     background-color: #0056b3;
 }
 
-/*通用按钮相关*/
-.btn-buy {
-    border:solid;
-    border-radius : 12px;
-    height : 50px;
-    width : 90px;
-    font-size: 16px;
-    background-color: #ff6b00;
-    color: #fff;
-    font-weight: 600;
-}
-
-    .btn-buy:hover {
-        background-color: #e65a00;
-    }
-
 
