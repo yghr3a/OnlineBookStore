@@ -63,7 +63,7 @@ namespace OnlineBookStore.Services
                 };
             }
 
-            if(book == null)
+            if (book == null)
             {
                 // 书籍不存在, 可以抛出异常或返回错误信息
                 return new CartAddResult()
@@ -121,7 +121,7 @@ namespace OnlineBookStore.Services
 
             // [2025/10/13] 这里使用GetPagedAsync方法来获取用户, 避免一次性加载过多数据
             // 这里获取的类型虽然是List<User>, 但实际上只会有一个用户
-            var users = await _userRespository.GetPagedAsync(quary, pageIndex, pageSize);        
+            var users = await _userRespository.GetPagedAsync(quary, pageIndex, pageSize);
             var user = users.FirstOrDefault();
 
             // 用户不存在
@@ -147,7 +147,7 @@ namespace OnlineBookStore.Services
                 BookAuthor = ci.Book?.Authors?.FirstOrDefault() ?? "未知作者",
                 Count = ci.Count,
                 AddedDate = ci.CreatedDate,
-                Price = (float)(ci.Book?.Price ?? 0 ),
+                Price = (float)(ci.Book?.Price ?? 0),
             }).ToList();
 
             // 构建CartViewModel
@@ -171,7 +171,7 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="bookNumber"></param>
         /// <returns></returns>
-        public async Task<InfoResult> RemoveUserCartSingleItem(int orderItemNumber)
+        public async Task<InfoResult> RemoveUserCartSingleItemAsync(int orderItemNumber)
         {
             var userQuary = _userRespository.AsQueryable();
 
@@ -196,7 +196,36 @@ namespace OnlineBookStore.Services
 
             user.Cart.CartItems.Remove(cartItem);
 
-             _userRespository.Update(user);
+            _userRespository.Update(user);
+            await _cartRespository.SaveAsync();
+
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 清空用户购物车
+        /// </summary>
+        /// <returns></returns>
+        public async Task<InfoResult> ClearUserCartAsync()
+        {
+            var userQuary = _userRespository.AsQueryable();
+            var quary = userQuary.Include(u => u.Cart)
+                          .ThenInclude(c => c.CartItems)
+                          .ThenInclude(ci => ci.Book)
+                          .Where(u => u.UserName == _userContext.UserName);
+
+            var user = await _userRespository.GetSingleByQueryAsync(quary);
+            // 用户不存在
+            if (user == null)
+                return InfoResult.Fail("用户不存在");
+
+            var cart = user.Cart;
+            if (cart == null || cart.CartItems == null)
+                return InfoResult.Fail("购物车为空");
+
+            cart.CartItems.Clear();
+
+            _userRespository.Update(user);
             await _cartRespository.SaveAsync();
 
             return InfoResult.Success();
