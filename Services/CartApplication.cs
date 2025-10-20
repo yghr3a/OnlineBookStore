@@ -11,6 +11,7 @@ namespace OnlineBookStore.Services
         // 用户上下文信息
         private UserContext _userContext;
         private CartDomainService _cartDomainService;
+        private AccountService _accountService;
         private Respository<User> _userRespository;
         private Respository<Book> _bookRespository;
         private Respository<Cart> _cartRespository;
@@ -18,12 +19,15 @@ namespace OnlineBookStore.Services
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
         public CartApplication(UserContext userContext,
                            CartDomainService cartDomainService,
+                           AccountService accountService,
                            Respository<User> userRespository,
                            Respository<Book> bookRespository,
                            Respository<Cart> cartRespository)
         {
             _userContext = userContext;
             _cartDomainService = cartDomainService;
+            _accountService = accountService;
+
             _userRespository = userRespository;
             _bookRespository = bookRespository;
             _cartRespository = cartRespository;
@@ -112,7 +116,7 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 获取用户的购物车
         /// </summary>
-        public async Task<GetCartResult> GetUserCartAsync(int pageIndex = 1, int pageSize = 30)
+        public async Task<DataResult<CartViewModel>> GetUserCartAsync(int pageIndex = 1, int pageSize = 30)
         {
             var userQuary = _userRespository.AsQueryable();
 
@@ -128,14 +132,8 @@ namespace OnlineBookStore.Services
             var user = users.FirstOrDefault();
 
             // 用户不存在
-            if (user == null)
-            {
-                return new GetCartResult()
-                {
-                    IsSuccess = false,
-                    ErrorMsg = "用户不存在"
-                };
-            }
+            if (user is null)
+                return DataResult<CartViewModel>.Fail("用户不存在");
 
             // 若没有购物车，则直接返回空模型（这里不写入数据库）
             var cart = user.Cart ?? new Cart { CartItems = new List<CartItem>() };
@@ -161,24 +159,28 @@ namespace OnlineBookStore.Services
             };
 
             // 返回结果
-            return new GetCartResult()
-            {
-                IsSuccess = true,
-                CartViewModel = cartVM
-            };
+            return DataResult<CartViewModel>.Success(cartVM);
         }
 
 
         /// <summary>
         /// 移除用户购物车中的单个项
         /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
+        /// [2025/10/20] 再次重构, 为了避免领域模型之间边界混乱, 所以我们发挥Application层的协调作用, 让Application层来处理跨领域模型的业务逻辑
+        /// 说白了就是让Application调用UserDomainService获取user, 然后调用CartDomainService获取cart
         /// </summary>
         /// <param name="bookNumber"></param>
         /// <returns></returns>
         public async Task<InfoResult> RemoveUserCartSingleItemAsync(int orderItemNumber)
         {
+            // 获取当前用户实体模型
+            var userRes = await _accountService.GetCurrentUserEntityModelAsync();
+            if (userRes.IsSuccess == false)
+                return InfoResult.Fail(userRes.ErrorMsg);
+            var user = userRes.Data;
+
             // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GetTheCartOfCurrentUserAsync();
+            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return InfoResult.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data;
@@ -199,12 +201,20 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 清空用户购物车
         /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
+        /// [2025/10/20] 再次重构, 为了避免领域模型之间边界混乱, 所以我们发挥Application层的协调作用, 让Application层来处理跨领域模型的业务逻辑
+        /// 说白了就是让Application调用UserDomainService获取user, 然后调用CartDomainService获取cart
         /// </summary>
         /// <returns></returns>
         public async Task<InfoResult> ClearUserCartAsync()
         {
+            // 获取当前用户实体模型
+            var userRes = await _accountService.GetCurrentUserEntityModelAsync();
+            if (userRes.IsSuccess == false)
+                return InfoResult.Fail(userRes.ErrorMsg);
+            var user = userRes.Data;
+
             // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GetTheCartOfCurrentUserAsync();
+            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return InfoResult.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data;
