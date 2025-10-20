@@ -51,22 +51,33 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="cart"></param>
         /// <returns></returns>
-        public DataResult<List<CartItemViewModel>> CreateCartItemViewModel(Cart cart)
+        public DataResult<List<CartItemViewModel>> CreateCartItemViewModel(Cart cart, List<Book> books)
         {
-            // 将Cart转换为CartViewModel
-            var cartItemVMs = cart.CartItems?.Select(ci => new CartItemViewModel
-            {
-                Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
-                BookNumber = ci.Book?.Number ?? 0,
-                BookTitle = ci.Book?.Name ?? "未知书籍",
-                BookCoverImageUrl = ci.Book?.CoverImageUrl ?? string.Empty,
-                BookAuthor = ci.Book?.Authors?.FirstOrDefault() ?? "未知作者",
-                Count = ci.Count,
-                AddedDate = ci.CreatedDate,
-                Price = (float)(ci.Book?.Price ?? 0),
-            }).ToList();
+            // 构建书籍字典, 提高查找效率, 同时避免污染原有的Book导航属性
+            var bookDict = books.ToDictionary(b => b.Id, b => b);
 
-            return DataResult<List<CartItemViewModel>>.Success(cartItemVMs ?? new List<CartItemViewModel>());
+            try
+            {
+                // 将Cart转换为CartViewModel
+                var cartItemVMs = cart.CartItems?.Select(ci => new CartItemViewModel
+                {
+                    Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
+                    BookNumber = bookDict[ci.BookId].Number,
+                    BookTitle = bookDict[ci.BookId].Name ?? "未知书籍",
+                    BookCoverImageUrl = bookDict[ci.BookId].CoverImageUrl ?? string.Empty,
+                    BookAuthor = bookDict[ci.BookId].Authors?.FirstOrDefault() ?? "未知作者",
+                    Count = ci.Count,
+                    AddedDate = ci.CreatedDate,
+                    Price = (float)bookDict[ci.BookId].Price,
+                }).ToList();
+
+                return DataResult<List<CartItemViewModel>>.Success(cartItemVMs ?? new List<CartItemViewModel>());
+            }
+            catch (KeyNotFoundException ex)
+            {
+                // 加个异常捕获, 以防万一bookDict中没有对应的书籍
+                return DataResult<List<CartItemViewModel>>.Fail("购物车中存在无效的书籍项: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -75,9 +86,9 @@ namespace OnlineBookStore.Services
         /// <param name="cart"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public DataResult<CartViewModel> CreateCartViewModel(Cart cart, User user)
+        public DataResult<CartViewModel> CreateCartViewModel(Cart cart, List<Book> books, User user)
         {
-            var cartItemVMResult = CreateCartItemViewModel(cart);
+            var cartItemVMResult = CreateCartItemViewModel(cart, books);
             if (cartItemVMResult.IsSuccess == false)
                 return DataResult<CartViewModel>.Fail(cartItemVMResult.ErrorMsg);
             var cartItemVMs = cartItemVMResult.Data;

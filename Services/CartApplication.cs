@@ -13,7 +13,7 @@ namespace OnlineBookStore.Services
         private CartDomainService _cartDomainService;
         private UserDomainService _userDomainService;
         private BookDomainService _bookDomainService;
-        private Respository<User> _userRespository;
+        private CartFactory _cartFactory;
         private Respository<Cart> _cartRespository;
 
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
@@ -21,15 +21,14 @@ namespace OnlineBookStore.Services
                            CartDomainService cartDomainService,
                            UserDomainService userDomainService,
                            BookDomainService bookDomainService,
-                           Respository<User> userRespository,
+                           CartFactory cartFactory,
                            Respository<Cart> cartRespository)
         {
             _userContext = userContext;
             _cartDomainService = cartDomainService;
             _userDomainService = userDomainService;
             _bookDomainService = bookDomainService;
-
-            _userRespository = userRespository;
+            _cartFactory = cartFactory;
             _cartRespository = cartRespository;
         }
 
@@ -64,48 +63,35 @@ namespace OnlineBookStore.Services
 
         /// <summary>
         /// 获取用户的购物车
+        /// [2025/10/20] 业务减重重构
         /// </summary>
         public async Task<DataResult<CartViewModel>> GetUserCartAsync(int pageIndex = 1, int pageSize = 30)
         {
-            var userQuary = _userRespository.AsQueryable();
+            // 依赖_userDomainService获取当前用户实体模型
+            var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
+            if (userRes.IsSuccess == false)
+                return DataResult<CartViewModel>.Fail(userRes.ErrorMsg);
+            var user = userRes.Data!;
 
-            var quary = userQuary.Include(u => u.Cart)
-                          .ThenInclude(c => c.CartItems)
-                          .ThenInclude(ci => ci.Book)
-                          .Where(u => u.UserName == _userContext.UserName);
-            // 因为UserContext的用户编号是字符串类型, 但是users里的编号是int类型,所以使用用户名作为索引
+            // 依赖_cartDomainService获取当前用户的cart对象
+            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
+            if (cartRes.IsSuccess == false)
+                return DataResult<CartViewModel>.Fail(cartRes.ErrorMsg);
+            var cart = cartRes.Data!;
 
-            // [2025/10/13] 这里使用GetPagedAsync方法来获取用户, 避免一次性加载过多数据
-            // 这里获取的类型虽然是List<User>, 但实际上只会有一个用户
-            var users = await _userRespository.GetPagedAsync(quary, pageIndex, pageSize);
-            var user = users.FirstOrDefault();
+            // 注意!该处的cart对象的CartItems属性已经包含了所有的购物车项, 但CartItem中的Book属性并没有包含
+            // 所以需要依赖_bookDomainService来批量获取这些书籍对象
+            var bookIds = cart.CartItems.Select(ci => ci.BookId).ToList();
+            var booksRes = await _bookDomainService.GetBookByIdAsync(bookIds);
+            if (booksRes.IsSuccess == false)
+                return DataResult<CartViewModel>.Fail(booksRes.ErrorMsg);
+            var books = booksRes.Data!;
 
-            // 用户不存在
-            if (user is null)
-                return DataResult<CartViewModel>.Fail("用户不存在");
-
-            // 若没有购物车，则直接返回空模型（这里不写入数据库）
-            var cart = user.Cart ?? new Cart { CartItems = new List<CartItem>() };
-
-            // 将Cart转换为CartViewModel
-            var cartItemVMs = cart.CartItems?.Select(ci => new CartItemViewModel
-            {
-                Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
-                BookNumber = ci.Book?.Number ?? 0,
-                BookTitle = ci.Book?.Name ?? "未知书籍",
-                BookCoverImageUrl = ci.Book?.CoverImageUrl ?? string.Empty,
-                BookAuthor = ci.Book?.Authors?.FirstOrDefault() ?? "未知作者",
-                Count = ci.Count,
-                AddedDate = ci.CreatedDate,
-                Price = (float)(ci.Book?.Price ?? 0),
-            }).ToList();
-
-            // 构建CartViewModel
-            var cartVM = new CartViewModel()
-            {
-                UserNumber = user.Number,
-                CartItemViewModels = cartItemVMs ?? new List<CartItemViewModel>()
-            };
+            // 构建cart视图模型
+            var cartVMRes = _cartFactory.CreateCartViewModel(cart, books, user);
+            if (cartVMRes.IsSuccess == false)
+                return DataResult<CartViewModel>.Fail(cartVMRes.ErrorMsg);
+            var cartVM = cartVMRes.Data!;
 
             // 返回结果
             return DataResult<CartViewModel>.Success(cartVM);

@@ -55,5 +55,39 @@ namespace OnlineBookStore.Services
             return DataResult<Book>.Success(book);
         }
 
+        /// <summary>
+        /// 根据图书Id列表获取图书实体模型列表
+        /// </summary>
+        /// <param name="bookIds"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<Book>>> GetBookByIdAsync(List<int> bookIds)
+        {
+            var booksQurey = _bookRespository.AsQueryable().Where(b => bookIds.Contains(b.Id));
+            var books = await _bookRespository.GetListByQueryAsync(booksQurey);
+            var ErrorMsg = string.Empty;
+            foreach (var n in bookIds)
+                if (books.Find(b => b.Id == n) is null)
+                    ErrorMsg += $"Id为{n}的书籍不存在\n";
+
+            if (ErrorMsg != string.Empty)
+                return DataResult<List<Book>>.Fail(ErrorMsg.Trim());
+
+            return DataResult<List<Book>>.Success(books);
+        }
+
+        /// <summary>
+        /// 根据图书Id获取单个图书实体模型
+        /// </summary>
+        /// <param name="bookId"></param>
+        /// <returns></returns>
+        public async Task<DataResult<Book>> GetBookByIdAsync(int bookId)
+        {
+            var book = await _bookRespository.GetByIdAsync(bookId);
+            if (book is null)
+                return DataResult<Book>.Fail($"Id为{bookId}的书籍不存在");
+            return DataResult<Book>.Success(book);
+        }
+
+
     }
 }
