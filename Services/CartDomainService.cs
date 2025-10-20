@@ -14,22 +14,14 @@ namespace OnlineBookStore.Services
     /// </summary>
     public class CartDomainService
     {
-        // 用户上下文信息
-        private UserContext _userContext;
-
-        private Respository<User> _userRespository;
-        private Respository<Book> _bookRespository;
+        private CartFactory _cartFactory;
         private Respository<Cart> _cartRespository;
 
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
-        public CartDomainService(UserContext userContext,
-                           Respository<User> userRespository,
-                           Respository<Book> bookRespository,
+        public CartDomainService(CartFactory cartFactory,
                            Respository<Cart> cartRespository)
         {
-            _userContext = userContext;
-            _userRespository = userRespository;
-            _bookRespository = bookRespository;
+            _cartFactory = cartFactory;
             _cartRespository = cartRespository;
 
         }
@@ -74,14 +66,12 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<InfoResult> AddBookToCartAsync(Book book, Cart cart)
         {
-            // [2025/10/20] 这部分的创建应该交给一个工厂类来做, 这里先简单处理
-            var cartItem = new CartItem()
-            {
-                CartId = cart!.UserId,      // CardId就是UserId
-                BookId = book!.Id,
-                Count = 1,                 // 数量先设为一, 后续可以扩展为传入参数
-                CreatedDate = DateTime.Now // 设置添加时间, 这里先简单处理
-            };
+            // 创建CartItem对象
+            var cartItemResult = _cartFactory.CreatCartItem(book, cart);
+            if (cartItemResult.IsSuccess == false)
+                return InfoResult.Fail(cartItemResult.ErrorMsg);
+
+            var cartItem = cartItemResult.Data!;
 
             // [2025/10/17] 出现了一个bug, 重复添加同一本书籍时会出现多条"同种书籍, 购买数为一"的记录, 需要先检查是否已经存在该书籍的CartItem
             var exitItem = cart.CartItems.Find(i => i.BookId == book.Id);
