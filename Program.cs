@@ -49,16 +49,21 @@ namespace OnlineBookStore
             builder.Services.AddScoped<BookService, BookService>();
             // 注册图书领域服务类型
             builder.Services.AddScoped<BookDomainService, BookDomainService>();
+
             // 注册购物车应用类型
             builder.Services.AddScoped<CartApplication, CartApplication>();
             // 注册购物车领域服务类型
             builder.Services.AddScoped<CartDomainService, CartDomainService>();
+            // 注册购物车工厂服务类型
+            builder.Services.AddScoped<CartFactory, CartFactory>();
+
             // 注册订单应用服务类型
             builder.Services.AddScoped<OrderApplication, OrderApplication>();
             // 注册订单领域服务类型
             builder.Services.AddScoped<OrderDomainService, OrderDomainService>();
             // 注册订单工厂服务类型
             builder.Services.AddScoped<OrderFactory, OrderFactory>();
+
             // 注册账户应用服务类型
             builder.Services.AddScoped<AccountAppliaction, AccountAppliaction>();
             // 注册用户领域服务类型
@@ -67,6 +72,7 @@ namespace OnlineBookStore
             builder.Services.AddScoped<UserContext, UserContext>();
             // 注册用户密码哈希服务
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
 
