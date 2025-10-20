@@ -10,18 +10,20 @@ namespace OnlineBookStore.Services
     {
         // 用户上下文信息
         private UserContext _userContext;
-
+        private CartDomainService _cartDomainService;
         private Respository<User> _userRespository;
         private Respository<Book> _bookRespository;
         private Respository<Cart> _cartRespository;
 
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
         public CartApplication(UserContext userContext,
+                           CartDomainService cartDomainService,
                            Respository<User> userRespository,
                            Respository<Book> bookRespository,
                            Respository<Cart> cartRespository)
         {
             _userContext = userContext;
+            _cartDomainService = cartDomainService;
             _userRespository = userRespository;
             _bookRespository = bookRespository;
             _cartRespository = cartRespository;
@@ -169,35 +171,26 @@ namespace OnlineBookStore.Services
 
         /// <summary>
         /// 移除用户购物车中的单个项
+        /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
         /// </summary>
         /// <param name="bookNumber"></param>
         /// <returns></returns>
         public async Task<InfoResult> RemoveUserCartSingleItemAsync(int orderItemNumber)
         {
-            var userQuary = _userRespository.AsQueryable();
+            // 依赖_cartDomainService获取当前用户的cart对象
+            var cartRes = await _cartDomainService.GetTheCartOfCurrentUserAsync();
+            if (cartRes.IsSuccess == false)
+                return InfoResult.Fail(cartRes.ErrorMsg);
+            var cart = cartRes.Data;
 
-            var quary = userQuary.Include(u => u.Cart)
-                          .ThenInclude(c => c.CartItems)
-                          .ThenInclude(ci => ci.Book)
-                          .Where(u => u.UserName == _userContext.UserName);
+            // 购物车项的Id目前是暴露出来作为Number使用的
+            var cartItem = cart!.CartItems.FirstOrDefault(ci => ci.Id == orderItemNumber);
+            if (cartItem is null)
+                return InfoResult.Fail("目标购物车项不存在");
 
-            var user = await _userRespository.GetSingleByQueryAsync(quary);
+            cart.CartItems.Remove(cartItem);
 
-            // 用户不存在
-            if (user == null)
-                return InfoResult.Fail("用户不存在");
-
-            var cart = user.Cart;
-            if (cart == null || cart.CartItems == null)
-                return InfoResult.Fail("购物车为空");
-
-            var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == orderItemNumber);
-            if (cartItem == null)
-                return InfoResult.Fail("购物车项不存在");
-
-            user.Cart.CartItems.Remove(cartItem);
-
-            _userRespository.Update(user);
+            _cartRespository.Update(cart);
             await _cartRespository.SaveAsync();
 
             return InfoResult.Success();
@@ -205,28 +198,20 @@ namespace OnlineBookStore.Services
 
         /// <summary>
         /// 清空用户购物车
+        /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
         /// </summary>
         /// <returns></returns>
         public async Task<InfoResult> ClearUserCartAsync()
         {
-            var userQuary = _userRespository.AsQueryable();
-            var quary = userQuary.Include(u => u.Cart)
-                          .ThenInclude(c => c.CartItems)
-                          .ThenInclude(ci => ci.Book)
-                          .Where(u => u.UserName == _userContext.UserName);
+            // 依赖_cartDomainService获取当前用户的cart对象
+            var cartRes = await _cartDomainService.GetTheCartOfCurrentUserAsync();
+            if (cartRes.IsSuccess == false)
+                return InfoResult.Fail(cartRes.ErrorMsg);
+            var cart = cartRes.Data;
 
-            var user = await _userRespository.GetSingleByQueryAsync(quary);
-            // 用户不存在
-            if (user == null)
-                return InfoResult.Fail("用户不存在");
+            cart!.CartItems.Clear();
 
-            var cart = user.Cart;
-            if (cart == null || cart.CartItems == null)
-                return InfoResult.Fail("购物车为空");
-
-            cart.CartItems.Clear();
-
-            _userRespository.Update(user);
+            _cartRespository.Update(cart);
             await _cartRespository.SaveAsync();
 
             return InfoResult.Success();
