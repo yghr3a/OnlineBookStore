@@ -7,7 +7,7 @@ namespace OnlineBookStore.Pages.Cart
 {
     public class IndexModel : PageModel
     {
-        private CartService _cartService;
+        private CartApplication _cartApplication;
 
         public CartViewModel CartViewModel { get; set; } = new();
         public List<CartItemViewModel> CartItemViewModels => CartViewModel.CartItemViewModels;
@@ -15,14 +15,14 @@ namespace OnlineBookStore.Pages.Cart
         public int PageIndex { get; set; } = 1;
         public string ErrorMsg { get; set; }
 
-        public IndexModel(CartService cartService)
+        public IndexModel(CartApplication cartApplication)
         {
-            _cartService = cartService;
+            _cartApplication = cartApplication;
         }
 
         public async Task OnGet()
         {
-            var cartResult = await _cartService.GetUserCartAsync(PageIndex);
+            var cartResult = await _cartApplication.GetUserCartAsync(PageIndex);
 
             if(cartResult.IsSuccess == true)
             {
@@ -40,7 +40,7 @@ namespace OnlineBookStore.Pages.Cart
         /// <returns></returns>
         public async Task<IActionResult> OnPostRemoveItemAsync(int orderItemNumber)
         {
-            var res = await _cartService.RemoveUserCartSingleItemAsync(orderItemNumber);
+            var res = await _cartApplication.RemoveUserCartSingleItemAsync(orderItemNumber);
             if (res.IsSuccess == true)
             {
                 return RedirectToPage("/Cart/Index");
@@ -62,7 +62,7 @@ namespace OnlineBookStore.Pages.Cart
         /// <returns></returns>
         public async Task<IActionResult> OnPostClearCartAsync()
         {
-            var res = await _cartService.ClearUserCartAsync();
+            var res = await _cartApplication.ClearUserCartAsync();
             if (res.IsSuccess == true)
             {
                 return RedirectToPage("/Cart/Index");

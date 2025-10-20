@@ -104,7 +104,9 @@
 					<h3>预计总额</h3>
 					<p class="total-amount">¥@Model.CartViewModel.CartItemViewModels.Sum(i => i.Price * i.Count)</p>
 
-					<form asp-page="/Order/Create">
+					<!--这里使用表单提交, 但其实使用a元素跳转会更合理-->
+					<!--[2025/10/20] 这里没有设定method的值默认是"post", 如果不设定的话, 会跳转到对应页面后执行对应页面的post方法, 这里先随便给个值先-->
+					<form method="Create" asp-page="/Order/Create">
 						@for (int i = 0; i < Model.CartItemViewModels!.Count; i++)
 						{
 							<input type="checkbox" name="OrderItems[@i].Selected" value="true" checked style="display:none" />
