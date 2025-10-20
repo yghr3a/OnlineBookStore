@@ -52,7 +52,7 @@ namespace OnlineBookStore
             // 注册购物车应用类型
             builder.Services.AddScoped<CartApplication, CartApplication>();
             // 注册购物车服务类型
-            builder.Services.AddScoped<CartService, CartService>();
+            builder.Services.AddScoped<CartDomainService, CartDomainService>();
             // 注册订单应用服务类型
             builder.Services.AddScoped<OrderApplication, OrderApplication>();
             // 注册订单领域服务类型
