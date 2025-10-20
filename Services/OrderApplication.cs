@@ -14,13 +14,13 @@ namespace OnlineBookStore.Services
 
     {
         private OrderDomainService _orderDomainService;
-        private AccountService _accountService;
+        private UserDomainService _accountService;
         private BookDomainService _bookDomainService;
         private OrderFactory _orderFactory;
 
         public OrderApplication(OrderDomainService orderDomainService,
                             BookDomainService bookDomainService,
-                            AccountService accountService,
+                            UserDomainService accountService,
                             OrderFactory orderFactor) 
         {
             _orderDomainService = orderDomainService;
