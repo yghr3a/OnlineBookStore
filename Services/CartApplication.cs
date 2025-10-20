@@ -11,7 +11,7 @@ namespace OnlineBookStore.Services
         // 用户上下文信息
         private UserContext _userContext;
         private CartDomainService _cartDomainService;
-        private AccountService _accountService;
+        private UserDomainService _accountService;
         private Respository<User> _userRespository;
         private Respository<Book> _bookRespository;
         private Respository<Cart> _cartRespository;
@@ -19,7 +19,7 @@ namespace OnlineBookStore.Services
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
         public CartApplication(UserContext userContext,
                            CartDomainService cartDomainService,
-                           AccountService accountService,
+                           UserDomainService accountService,
                            Respository<User> userRespository,
                            Respository<Book> bookRespository,
                            Respository<Cart> cartRespository)

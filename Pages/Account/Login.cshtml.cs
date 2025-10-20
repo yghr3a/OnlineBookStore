@@ -17,11 +17,11 @@ namespace OnlineBookStore.Pages.Account
         [BindProperty] public string? BoxDownErrorMessage { get; set; }
 
         // 负责用户登录相关业务操作的服务
-        private AccountService _accountService;
+        private AccountAppliaction _accountAppliaction;
 
-        public LoginModel(AccountService accountService)
+        public LoginModel(AccountAppliaction accountAppliaction)
         {
-            _accountService = accountService;
+            _accountAppliaction = accountAppliaction;
         }
 
         public void OnGet()
@@ -58,7 +58,7 @@ namespace OnlineBookStore.Pages.Account
                 return Page();
             }
 
-            var userVerifyResult = await _accountService.VerifyLoggedInUserInformation(UserName, Password);
+            var userVerifyResult = await _accountAppliaction.VerifyLoggedInUserInformation(UserName, Password);
 
             if (userVerifyResult.IsValid == true)
             {

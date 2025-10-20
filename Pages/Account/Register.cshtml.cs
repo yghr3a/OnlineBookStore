@@ -19,11 +19,11 @@ namespace OnlineBookStore.Pages.Account
         [BindProperty] public string? BoxDownErrorMessage { get; set; }
 
         // 负责用户注册相关业务操作的服务
-        private AccountService _accountService;
+        private AccountAppliaction _accountAppliaction;
 
-        public RegisterModel(AccountService accountService)
+        public RegisterModel(AccountAppliaction accountAppliaction)
         {
-            _accountService = accountService;
+            _accountAppliaction = accountAppliaction;
         }
 
         public void OnGet()
@@ -73,7 +73,7 @@ namespace OnlineBookStore.Pages.Account
                 return Page();
             }
 
-            var userRegisterResult = await _accountService.UserRegistraionAsync(UserName, Password, Email);
+            var userRegisterResult = await _accountAppliaction.UserRegistraionAsync(UserName, Password, Email);
 
             if (userRegisterResult.IsSuccess == true)
             {

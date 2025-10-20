@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace OnlineBookStore.Services
 {
-    public class AccountService
+    public class UserDomainService
     {
         private Respository<User> _responsity;
         private UserContext _userContext;
         private IPasswordHasher<User> _passwordHasher;
 
-        public AccountService(Respository<User> repository, UserContext userContext, IPasswordHasher<User> passwordHasher)
+        public UserDomainService(Respository<User> repository, UserContext userContext, IPasswordHasher<User> passwordHasher)
         {
             _responsity = repository;
             _userContext = userContext;

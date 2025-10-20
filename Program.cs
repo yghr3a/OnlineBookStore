@@ -59,8 +59,10 @@ namespace OnlineBookStore
             builder.Services.AddScoped<OrderDomainService, OrderDomainService>();
             // 注册订单工厂服务类型
             builder.Services.AddScoped<OrderFactory, OrderFactory>();
-            // 注册账户服务类型
-            builder.Services.AddScoped<AccountService, AccountService>();
+            // 注册账户应用服务类型
+            builder.Services.AddScoped<AccountAppliaction, AccountAppliaction>();
+            // 注册用户领域服务类型
+            builder.Services.AddScoped<UserDomainService, UserDomainService>();
             // 注册用户上下文服务类型
             builder.Services.AddScoped<UserContext, UserContext>();
             // 注册用户密码哈希服务
