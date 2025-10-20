@@ -26,7 +26,7 @@ namespace OnlineBookStore.Pages.Cart
 
             if(cartResult.IsSuccess == true)
             {
-                CartViewModel = cartResult.CartViewModel!;
+                CartViewModel = cartResult.Data!;
             }
             else
             {

@@ -251,16 +251,12 @@ namespace OnlineBookStore.Services
         /// 3. 依赖UserContext和Repository<Cart>直接根据用户信息找到目标Cart
         /// 4. 依赖UserDomainService和Repository<Cart>获取当前用户user, 通过user.id间接获取Repository
         /// 采用方案4
+        /// [2025/10/20] 重构, 该方法直接依赖AccountService其实是UserDomainService的过渡类, 所以这里其实犯了DDD架构一个常见错误:"依赖了另一个领域服务"的问题
+        /// 所以重构为带一个int参数userId的方法, 由调用方负责获取当前用户Id
         /// </summary>
         /// <returns></returns>
-        public async Task<DataResult<Cart>> GetTheCartOfCurrentUserAsync()
+        public async Task<DataResult<Cart>> GeCartByUserIdAsync(int userId)
         {
-            // 获取当前用户Id
-            var userRes = await _accountService.GetCurrentUserEntityModelAsync();
-            if (userRes.IsSuccess == false)
-                return DataResult<Cart>.Fail(userRes.ErrorMsg);
-            var userId = userRes.Data!.Id;
-
             // 根据userid获取user的cart, 记得引导属性CartItems得包含上
             var cartQuery = _cartRespository.AsQueryable()
                             .Include(c => c.CartItems)
