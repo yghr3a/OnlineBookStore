@@ -74,7 +74,7 @@ namespace OnlineBookStore.Services
             var bookEM = await _bookRepository.GetSingleByQueryAsync(query);
 
             // TODO: 若果bookEM为null, 则抛出异常, 以后可以定义更具体的异常类型
-            // 目前先用通用的Exception类型
+            // 目前先用通用的Exception类型   
             if (bookEM == null)
             {
                 throw new Exception("Book Not Found");
