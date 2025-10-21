@@ -60,7 +60,7 @@ namespace OnlineBookStore.Services
                 return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = booksRes.ErrorMsg };
 
             // [2025/10/16]使用OrderFactory创建订单
-            var orderReuslt = _orderFactory.Create(books!, user!, createOrderResponse);
+            var orderReuslt = _orderFactory.CreateOrderEntity(books!, user!, createOrderResponse);
             var order = orderReuslt.Data;
             if(orderReuslt.IsSuccess == false)
                 return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = userRes.ErrorMsg };
@@ -75,7 +75,14 @@ namespace OnlineBookStore.Services
 
         public async Task<DataResult<OrderViewModelcs>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
         {
+            var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
+            var user = userRes.Data;
+            if (userRes.IsSuccess == false)
+                return DataResult<OrderViewModelcs>.Fail(userRes.ErrorMsg);
 
+            var ordersRes = await _orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize);
+            if (ordersRes.IsSuccess == false)
+                return DataResult<OrderViewModelcs>.Fail(ordersRes.ErrorMsg);
         }
     }
 }
