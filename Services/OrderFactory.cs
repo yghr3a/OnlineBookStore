@@ -17,7 +17,7 @@ namespace OnlineBookStore.Services
         /// <param name="user"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public DataResult<Order> Create(List<Book> books, User user, CreateOrderResponse response)
+        public DataResult<Order> CreateOrderEntity(List<Book> books, User user, CreateOrderResponse response)
         {
             // 建立字典, 将购买数量与bookNumber绑定
             var BookNumber2Count = response.Items.ToDictionary(i => i.BookNumber, i => i.Count);
@@ -44,6 +44,11 @@ namespace OnlineBookStore.Services
             };
 
             return DataResult<Order>.Success(order);
+        }
+
+        public DataResult<Order> CreateOrderEntity()
+        {
+
         }
     }
 }
