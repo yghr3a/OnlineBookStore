@@ -50,7 +50,7 @@ namespace OnlineBookStore.Services
                 return InfoResult.Fail(bookRes!.ErrorMsg);
             var book = bookRes.Data;
 
-            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
+            var cartRes = await _cartDomainService.GetCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return InfoResult.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data;
@@ -74,7 +74,7 @@ namespace OnlineBookStore.Services
             var user = userRes.Data!;
 
             // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
+            var cartRes = await _cartDomainService.GetCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return DataResult<CartViewModel>.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data!;
@@ -115,7 +115,7 @@ namespace OnlineBookStore.Services
             var user = userRes.Data;
 
             // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
+            var cartRes = await _cartDomainService.GetCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return InfoResult.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data;
@@ -149,7 +149,7 @@ namespace OnlineBookStore.Services
             var user = userRes.Data;
 
             // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GeCartByUserIdAsync(user!.Id);
+            var cartRes = await _cartDomainService.GetCartByUserIdAsync(user!.Id);
             if (cartRes.IsSuccess == false)
                 return InfoResult.Fail(cartRes.ErrorMsg);
             var cart = cartRes.Data;

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
+using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Respository;
 using System.ComponentModel;
 
@@ -14,17 +15,17 @@ namespace OnlineBookStore.Services
 
     {
         private OrderDomainService _orderDomainService;
-        private UserDomainService _accountService;
+        private UserDomainService _userDomainService;
         private BookDomainService _bookDomainService;
         private OrderFactory _orderFactory;
 
         public OrderApplication(OrderDomainService orderDomainService,
                             BookDomainService bookDomainService,
-                            UserDomainService accountService,
+                            UserDomainService userDomainService,
                             OrderFactory orderFactor) 
         {
             _orderDomainService = orderDomainService;
-            _accountService = accountService;
+            _userDomainService = userDomainService;
             _bookDomainService = bookDomainService;
             _orderFactory = orderFactor;
         }
@@ -44,7 +45,7 @@ namespace OnlineBookStore.Services
 
             // 首先先验证用户, 书籍等信息是否存在
             // [2025/10/15] 将获取用户信息的工作交给AccountService负责了
-            var userRes = await _accountService.GetCurrentUserEntityModelAsync();
+            var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
             var user = userRes.Data;
             if (userRes.IsSuccess == false)
                 return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = userRes.ErrorMsg };
@@ -70,6 +71,11 @@ namespace OnlineBookStore.Services
                 return new CreateOrderResult() { IsSuccessed = false, ErrorMsg = result.ErrorMsg };
 
             return new CreateOrderResult() { IsSuccessed = true };
+        }
+
+        public async Task<DataResult<OrderViewModelcs>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
+        {
+
         }
     }
 }
