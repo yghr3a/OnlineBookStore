@@ -56,5 +56,37 @@ namespace OnlineBookStore.Services
 
             return InfoResult.Success();
         }
+
+        /// <summary>
+        /// 根据用户Id获取该用户的所有订单
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<Order>>> GetAllOrdersByUserId(int userId)
+        {
+            var orderQuery = _orderRespository.AsQueryable().Where(o => o.UserId == userId);
+            var orders = await _orderRespository.GetListByQueryAsync(orderQuery);
+
+            // 不知道会不会由orders为null的情况
+
+            return DataResult<List<Order>>.Success(orders);
+        }
+
+        /// <summary>
+        /// 根据用户Id获取该用户的分页订单
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<Order>>> GetPagedOrdersByUserId(int userId, int pageIndex = 1, int pageSize = 30)
+        {
+            var orderQuery = _orderRespository.AsQueryable().Where(o => o.UserId == userId);
+            var pageOrders = await _orderRespository.GetPagedAsync(pageIndex, pageSize);
+
+            // 不知道会不会由orders为null的情况
+
+            return DataResult<List<Order>>.Success(pageOrders);
+        }
     }
 }

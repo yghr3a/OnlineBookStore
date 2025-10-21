@@ -37,7 +37,7 @@ namespace OnlineBookStore.Services
         /// 所以重构为带一个int参数userId的方法, 由调用方负责获取当前用户Id
         /// </summary>
         /// <returns></returns>
-        public async Task<DataResult<Cart>> GeCartByUserIdAsync(int userId)
+        public async Task<DataResult<Cart>> GetCartByUserIdAsync(int userId)
         {
             // 根据userid获取user的cart, 记得引导属性CartItems得包含上
             var cartQuery = _cartRespository.AsQueryable()
