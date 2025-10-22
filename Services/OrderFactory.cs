@@ -46,9 +46,9 @@ namespace OnlineBookStore.Services
             return DataResult<Order>.Success(order);
         }
 
-        public DataResult<Order> CreateOrderEntity()
-        {
+        //public DataResult<Order> CreateOrderEntity()
+        //{
 
-        }
+        //}
     }
 }
