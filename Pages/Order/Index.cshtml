@@ -1,36 +1,125 @@
 ﻿@page
+@using OnlineBookStore.Models.Entities
 @model OnlineBookStore.Pages.Order.IndexModel
 @{
 	ViewData["Title"] = "用户页面历史订单";
 }
 
-<main>
-	@{
-		foreach(var order in Model.OrderViewModels)
-		{
-			<div>
-				@order.Number
-			</div>
-			<div>
-				@{
-					foreach(var orderItem in order.OrderItemViewModels)
-					{
-						<div>
-							@orderItem.Number
-						</div>
-						<div>
-							@orderItem.TotalString
-						</div>
+<head>
+	<link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/order.css" asp-append-version="true" />
+</head>
 
-						<div>
-							@orderItem.BookNumber
-						</div>
-						<div>
-							@orderItem.BookTitle
+<main class="main-content">
+	<div class="features-area">
+
+		<!--订单搜索栏-->
+		<div class="content-container">
+			<span class="content-title">
+				搜索订单
+			</span>
+			<div class="content-body">
+				<div class="search-bar">
+					<input class="search-input" type="text" placeholder="请输入关键字..." />
+					<button class="search-button" asp-page="/Search">搜索</button>
+				</div>
+			</div>
+		</div>
+
+		<!--订单列表-->
+		<div class="content-container">
+			<span class="content-title">
+				订单列表
+			</span>
+			<div class="order-grid">
+		        @if (Model.OrderViewModels != null && Model.OrderViewModels.Count > 0)
+				{
+				    foreach (var order in Model.OrderViewModels)
+					{
+						<div class="order-card">
+							<div class="order-card-header">
+								<div class="order-number">
+									@order.OrderNumberString
+								</div>
+
+								<div class="order-status">
+									@order.OrderStatusString
+								</div>
+							</div>
+
+							<div class="order-item-grid">
+								@if(order.OrderItemViewModels != null && Model.OrderViewModels.Count > 0)
+							    {
+									foreach(var item in order.OrderItemViewModels)
+									{
+										<div class="order-item-card">
+											<a class="order-item-cover-wrapper" asp-page="/Book/Index" asp-route-BookNumber="@item.BookNumber">
+												@if (string.IsNullOrEmpty(item.BookCoverImageUrl))
+												{
+													<img src="item.BookCoverImageUrl" alt="@item.BookTitle" class="cart-item-cover-image"
+														 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+													<div class="book-cover-placeholder">
+														<!--这里的book-title-overlay使用的是content.css, 就连cart.css也没有-->
+														<span class="book-title-overlay">@item.BookTitle</span>
+													</div>
+												}
+												else
+												{
+													<div class="book-cover-placeholder-display">
+														<!--这里的book-title-overlay使用的是content.css, 就连cart.css也没有-->
+														<span class="book-title-overlay">@item.BookTitle</span>
+													</div>
+												}
+											</a>
+											<div class="order-item-details">
+												<h3 class="order-item-title">@item.BookTitle</h3>
+												<div class="order-item-price-quantity">
+													<p class="order-item-quantity">单价: ¥@item.PriceString</p>
+													<p class="order-item-quantity">数量: @item.Count</p>
+												</div>
+											</div>
+										</div>
+									}
+								}
+								else
+								{
+									<p>该订单没有包含任何商品。</p>
+								}
+							</div>
+
+							<div class="order-card-ender">
+
+								<div class="order-total-control">
+									<div class="order-total-price">
+										订单总价: ￥@order.TotalString
+									</div>
+									<div class="order-created-data">
+										下单时间: @order.CreatedDate
+									</div>
+								</div>
+									<div class="order-buttons">
+										@if(order.OrderStatus == OrderStatus.Finished)
+										{
+											<button class="order-button-finished">
+												已完成
+											</button>
+									    }
+										else if (order.OrderStatus == OrderStatus.Unfinished)
+										{
+											<button class="order-button-unfinished">
+												未完成
+											</button>
+										}
+									</div>
+							</div>
 						</div>
 					}
 				}
+				else
+				{
+					<p>您还没有历史订单。</p>
+				}
 			</div>
-		}
-	}
+		</div>
+	</div>
 </main>

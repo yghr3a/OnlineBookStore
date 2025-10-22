@@ -122,7 +122,7 @@ namespace OnlineBookStore.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderState")
+                    b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("PaymentMethod")
