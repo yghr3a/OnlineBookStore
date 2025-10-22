@@ -146,8 +146,9 @@ namespace OnlineBookStore.Services
         {
             try 
             {
-                var user = await CheckAsync<User>(_userDomainService.GetCurrentUserEntityModelAsync());
-                var cart = await CheckAsync<Cart>(_cartDomainService.GetCartByUserIdAsync(user!.Id));
+                // 极大的简化了写法
+                var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
+                var cart = await CheckAsync(_cartDomainService.GetCartByUserIdAsync(user!.Id));
 
                 cart!.CartItems.Clear();
 

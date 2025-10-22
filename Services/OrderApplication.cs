@@ -5,6 +5,7 @@ using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Respository;
 using System.ComponentModel;
+using static OnlineBookStore.Infrastructure.ExceptionChecker;
 
 namespace OnlineBookStore.Services
 {
@@ -73,16 +74,5 @@ namespace OnlineBookStore.Services
             return new CreateOrderResult() { IsSuccessed = true };
         }
 
-        //public async Task<DataResult<OrderViewModelcs>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
-        //{
-        //    var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
-        //    var user = userRes.Data;
-        //    if (userRes.IsSuccess == false)
-        //        return DataResult<OrderViewModelcs>.Fail(userRes.ErrorMsg);
-
-        //    var ordersRes = await _orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize);
-        //    if (ordersRes.IsSuccess == false)
-        //        return DataResult<OrderViewModelcs>.Fail(ordersRes.ErrorMsg);
-        //}
     }
 }

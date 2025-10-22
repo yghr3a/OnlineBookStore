@@ -17,16 +17,17 @@
         public required string BookTitle { get; set; }
         // 书籍封面图片链接
         public string BookCoverImageUrl { get; set; } = string.Empty;
-        // 书籍单价
-        public required float Price { get; set; }
+        // [2025/10/22] 书籍当时的购买价格, 更改为原始的decimal类型
+        public required decimal Price { get; set; }
         // 数量
         public required int Count { get; set; }
+
+        // [2025/10/22] 添加浮点价格属性
+        public float PriceFloat => (float)Price;
         // 总价
-        public float Total => Price * Count;
-
-
+        public float Total => PriceFloat * Count;
         // 单价字符串格式化, 保留两位小数
-        public string PriceString { get { return Price.ToString("F2"); } }
+        public string PriceString { get { return PriceFloat.ToString("F2"); } }
         // 总价字符串格式化, 保留两位小数
         public string TotalString { get { return Total.ToString("F2"); } }
     }

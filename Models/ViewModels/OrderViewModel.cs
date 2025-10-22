@@ -5,7 +5,7 @@ namespace OnlineBookStore.Models.ViewModels
     /// <summary>
     /// 订单视图模型
     /// </summary>
-    public class OrderViewModelcs
+    public class OrderViewModel
     {
         // 订单编号
         public int Number { get; set; }
