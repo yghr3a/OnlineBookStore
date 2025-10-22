@@ -3,6 +3,7 @@ using OnlineBookStore.Models;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using Microsoft.AspNetCore.Routing.Matching;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBookStore.Services
 {
@@ -64,7 +65,9 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Order>>> GetAllOrdersByUserId(int userId)
         {
-            var orderQuery = _orderRespository.AsQueryable().Where(o => o.UserId == userId);
+            var orderQuery = _orderRespository.AsQueryable()
+                                              .Include(o => o.OrderItems)
+                                              .Where(o => o.UserId == userId);
             var orders = await _orderRespository.GetListByQueryAsync(orderQuery);
 
             // 不知道会不会由orders为null的情况
@@ -81,8 +84,10 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Order>>> GetPagedOrdersByUserId(int userId, int pageIndex = 1, int pageSize = 30)
         {
-            var orderQuery = _orderRespository.AsQueryable().Where(o => o.UserId == userId);
-            var pageOrders = await _orderRespository.GetPagedAsync(pageIndex, pageSize);
+            var orderQuery = _orderRespository.AsQueryable()
+                                               .Include(o => o.OrderItems)
+                                               .Where(o => o.UserId == userId);
+            var pageOrders = await _orderRespository.GetPagedAsync(orderQuery,pageIndex, pageSize);
 
             // 不知道会不会由orders为null的情况
 

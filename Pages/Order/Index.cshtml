@@ -1,0 +1,36 @@
+﻿@page
+@model OnlineBookStore.Pages.Order.IndexModel
+@{
+	ViewData["Title"] = "用户页面历史订单";
+}
+
+<main>
+	@{
+		foreach(var order in Model.OrderViewModels)
+		{
+			<div>
+				@order.Number
+			</div>
+			<div>
+				@{
+					foreach(var orderItem in order.OrderItemViewModels)
+					{
+						<div>
+							@orderItem.Number
+						</div>
+						<div>
+							@orderItem.TotalString
+						</div>
+
+						<div>
+							@orderItem.BookNumber
+						</div>
+						<div>
+							@orderItem.BookTitle
+						</div>
+					}
+				}
+			</div>
+		}
+	}
+</main>
