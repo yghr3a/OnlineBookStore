@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OnlineBookStore.Infrastructure;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Respository;
+using static OnlineBookStore.Infrastructure.ExceptionChecker;
 
 namespace OnlineBookStore.Services
 {
@@ -138,28 +140,26 @@ namespace OnlineBookStore.Services
         /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
         /// [2025/10/20] 再次重构, 为了避免领域模型之间边界混乱, 所以我们发挥Application层的协调作用, 让Application层来处理跨领域模型的业务逻辑
         /// 说白了就是让Application调用UserDomainService获取user, 然后调用CartDomainService获取cart
-        /// </summary>
+        /// [2025/10/22] 开始引用ExceptionCheck
         /// <returns></returns>
         public async Task<InfoResult> ClearUserCartAsync()
         {
-            // 获取当前用户实体模型
-            var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
-            if (userRes.IsSuccess == false)
-                return InfoResult.Fail(userRes.ErrorMsg);
-            var user = userRes.Data;
+            try 
+            {
+                var user = await CheckAsync<User>(_userDomainService.GetCurrentUserEntityModelAsync());
+                var cart = await CheckAsync<Cart>(_cartDomainService.GetCartByUserIdAsync(user!.Id));
 
-            // 依赖_cartDomainService获取当前用户的cart对象
-            var cartRes = await _cartDomainService.GetCartByUserIdAsync(user!.Id);
-            if (cartRes.IsSuccess == false)
-                return InfoResult.Fail(cartRes.ErrorMsg);
-            var cart = cartRes.Data;
+                cart!.CartItems.Clear();
 
-            cart!.CartItems.Clear();
+                _cartRespository.Update(cart);
+                await _cartRespository.SaveAsync();
 
-            _cartRespository.Update(cart);
-            await _cartRespository.SaveAsync();
-
-            return InfoResult.Success();
+                return InfoResult.Success();
+            }
+            catch(Exception ex) // 后续记得加上业务异常
+            {
+                return InfoResult.Fail(ex.Message);
+            }
         }
     }
 }

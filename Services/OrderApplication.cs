@@ -73,16 +73,16 @@ namespace OnlineBookStore.Services
             return new CreateOrderResult() { IsSuccessed = true };
         }
 
-        public async Task<DataResult<OrderViewModelcs>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
-        {
-            var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
-            var user = userRes.Data;
-            if (userRes.IsSuccess == false)
-                return DataResult<OrderViewModelcs>.Fail(userRes.ErrorMsg);
+        //public async Task<DataResult<OrderViewModelcs>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
+        //{
+        //    var userRes = await _userDomainService.GetCurrentUserEntityModelAsync();
+        //    var user = userRes.Data;
+        //    if (userRes.IsSuccess == false)
+        //        return DataResult<OrderViewModelcs>.Fail(userRes.ErrorMsg);
 
-            var ordersRes = await _orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize);
-            if (ordersRes.IsSuccess == false)
-                return DataResult<OrderViewModelcs>.Fail(ordersRes.ErrorMsg);
-        }
+        //    var ordersRes = await _orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize);
+        //    if (ordersRes.IsSuccess == false)
+        //        return DataResult<OrderViewModelcs>.Fail(ordersRes.ErrorMsg);
+        //}
     }
 }
