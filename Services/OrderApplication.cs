@@ -74,5 +74,35 @@ namespace OnlineBookStore.Services
             return new CreateOrderResult() { IsSuccessed = true };
         }
 
+        /// <summary>
+        /// 获取用户历史订单业务方法
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<OrderViewModel>>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
+        {
+            try
+            {
+                var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
+                var orders = await CheckAsync(_orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize));
+
+                var bookIds = orders.SelectMany(o => o.OrderItems)  // 多重select, 确保结果类型是List<int>, 而不是List<IEnumberable<int>>
+                                    .Select(oi => oi.BookId)
+                                    .Distinct()     // 去重
+                                    .ToList();
+                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+
+                var arge = new CreateOrderViewModelArge() { User = user, Books = books, Orders = orders };
+                var orderVMs = Check(_orderFactory.CreateOrderViewModels(arge));
+
+                return DataResult<List<OrderViewModel>>.Success(orderVMs);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<List<OrderViewModel>>.Fail(ex.Message);
+            }
+        }
+
     }
 }
