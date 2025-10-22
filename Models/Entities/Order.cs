@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OnlineBookStore.Models.Entities
 {
     // 订单状态
-    public enum OrderState
+    public enum OrderStatus
     {
         Unfinished, //未完成
         Finished    //已完成
@@ -30,7 +30,7 @@ namespace OnlineBookStore.Models.Entities
         public User? User { get; set; }
 
         // 订单状态
-        public OrderState OrderState { get; set; } = OrderState.Unfinished;
+        public OrderStatus OrderState { get; set; } = OrderStatus.Unfinished;
         // 支付方式
         public PaymentMethod PaymentMethod { get; set; }
         // 订单创建时间

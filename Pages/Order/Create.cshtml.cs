@@ -47,7 +47,7 @@ namespace OnlineBookStore.Pages.Order
             var result = await _orderService.PlayerOrderAsync(new CreateOrderResponse
             {
                 PaymentMethod = _paymentMethod,
-                OrderState = OrderState.Finished,
+                OrderState = OrderStatus.Finished,
                 Items = OrderItems
             });
 

@@ -14,16 +14,26 @@ namespace OnlineBookStore.Models.ViewModels
 
 
         // 订单状态
-        public OrderState OrderState { get; set; } = OrderState.Unfinished;
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.Unfinished;
         // 总计金额
         public float Total => OrderItemViewModels.Sum(x => x.Total);
         // 支付方式
         public PaymentMethod PaymentMethod { get; set; }
         // 订单创建时间
         public DateTime CreatedDate { get; set; }
-        
+
 
         // 订单项视图模型列表
         public List<OrderItemViewModel> OrderItemViewModels { get; set; } = new();
+
+        // 总计金额字符串格式化, 保留两位小数
+        public string TotalString => Total.ToString("F2");
+        // 订单状态字符串
+        public string OrderStatusString => OrderStatus == OrderStatus.Finished ? "已完成" : "未完成";
+        // 支付方式字符串
+        public string PaymentMethodString => PaymentMethod == PaymentMethod.WeChat ? "微信支付" : "支付宝支付";
+        // 订单编号字符串
+        public string OrderNumberString => "No." + Number.ToString("D8");
+
     }
 }
