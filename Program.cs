@@ -78,6 +78,8 @@ namespace OnlineBookStore
             builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
             // 注册邮箱发送服务类型
             builder.Services.AddScoped<EmailSendService, EmailSendService>();
+            // 注册邮箱验证服务类型
+            builder.Services.AddScoped<EmailVerificationTokenService, EmailVerificationTokenService>();
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
