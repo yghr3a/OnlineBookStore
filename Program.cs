@@ -4,6 +4,7 @@ using OnlineBookStore.Respository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using OnlineBookStore.Models.Entities;
+using OnlineBookStore.Infrastructure;
 
 namespace OnlineBookStore
 {
@@ -72,6 +73,9 @@ namespace OnlineBookStore
             builder.Services.AddScoped<UserContext, UserContext>();
             // 注册用户密码哈希服务
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            // 注册邮箱相关设计服务, 会从appsetting.json中读取EmailOptions里的设置信息
+            builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
