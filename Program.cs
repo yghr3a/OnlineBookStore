@@ -76,6 +76,8 @@ namespace OnlineBookStore
 
             // 注册邮箱相关设计服务, 会从appsetting.json中读取EmailOptions里的设置信息
             builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
+            // 注册邮箱发送服务类型
+            builder.Services.AddScoped<EmailSendService, EmailSendService>();
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
