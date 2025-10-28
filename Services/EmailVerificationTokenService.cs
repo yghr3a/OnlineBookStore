@@ -13,11 +13,16 @@ public class EmailVerificationTokenService
         _jwtSecret = config["Jwt:Secret"]!;
     }
 
+    /// <summary>
+    /// 生成Token方法
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
     public string GenerateToken(string email)
     {
         var claims = new[]
         {
-            new Claim("email", email),
+            new Claim("email", email),      // 用户邮箱, Type为"email"
             new Claim("purpose", "email_verification"),
         };
 
@@ -35,6 +40,11 @@ public class EmailVerificationTokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    /// <summary>
+    /// 验证Token方法
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public string? ValidateToken(string token)
     {
         var handler = new JwtSecurityTokenHandler();
@@ -52,9 +62,9 @@ public class EmailVerificationTokenService
 
             return claims.FindFirst("email")?.Value;
         }
-        catch
+        catch(Exception ex)
         {
-            return null;
+            throw ex;
         }
     }
 }

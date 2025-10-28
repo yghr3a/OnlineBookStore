@@ -67,5 +67,19 @@ namespace OnlineBookStore.Services
                 return DataResult<int>.Fail("用户不存在");
             return DataResult<int>.Success(user.Id);
         }
+
+        /// <summary>
+        /// 通过邮箱查找用户
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<DataResult<User>> GetUserByEmailAsync(string email)
+        {
+            var query = _responsity.AsQueryable().Where(u => u.Email == email);
+            var user = await _responsity.GetSingleByQueryAsync(query);
+            if (user is null)
+                return DataResult<User>.Fail("用户不存在");
+            return DataResult<User>.Success(user);
+        }
     }
 }

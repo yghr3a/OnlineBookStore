@@ -1,95 +1,129 @@
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Services;
 using OnlineBookStore.Respository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace OnlineBookStore
 {
     public class Program
     {
-        // ×¢Òâ: ÕâÀïµÄ Main ·½·¨ÊÇÒì²½µÄ, ÒÔ±ãÔÚÓ¦ÓÃÆô¶¯Ê±Ö´ĞĞÒì²½µÄÊı¾İ¿âÌî³ä²Ù×÷
+        // æ³¨æ„: è¿™é‡Œçš„ Main æ–¹æ³•æ˜¯å¼‚æ­¥çš„, ä»¥ä¾¿åœ¨åº”ç”¨å¯åŠ¨æ—¶æ‰§è¡Œå¼‚æ­¥çš„æ•°æ®åº“å¡«å……æ“ä½œ
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            // æ·»åŠ æ§åˆ¶å™¨æœåŠ¡, ä»¥æ”¯æŒAPIæ§åˆ¶å™¨å¯é€šè¿‡DIè·å–æœåŠ¡å®ä¾‹
+            builder.Services.AddControllers();
 
-            // ×¢²á Cookie ÈÏÖ¤·şÎñ
+            // æ³¨å†Œ Cookie è®¤è¯æœåŠ¡
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.Cookie.Name = "BookStore.Auth";
-                    options.Cookie.HttpOnly = true;           // JS ²»ÄÜ¶ÁÈ¡£¬¼õÉÙ XSS ·çÏÕ
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // ½ö HTTPS ´«Êä
-                    options.Cookie.SameSite = SameSiteMode.Lax; // »ò Strict/None (×¢ÒâÓë¿çÕ¾Çé¿ö)
+                    options.Cookie.HttpOnly = true;           // JS ä¸èƒ½è¯»å–ï¼Œå‡å°‘ XSS é£é™©
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // ä»… HTTPS ä¼ è¾“
+                    options.Cookie.SameSite = SameSiteMode.Lax; // æˆ– Strict/None (æ³¨æ„ä¸è·¨ç«™æƒ…å†µ)
                     options.LoginPath = "/Account/Login";
                     options.LogoutPath = "/Account/Logout";
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                    options.SlidingExpiration = true; // ÔÚÓĞĞ§ÆÚÄÚÃ¿´ÎÑéÖ¤¶¼»áË¢ĞÂ¹ıÆÚÊ±¼ä
+                    options.SlidingExpiration = true; // åœ¨æœ‰æ•ˆæœŸå†…æ¯æ¬¡éªŒè¯éƒ½ä¼šåˆ·æ–°è¿‡æœŸæ—¶é—´
 
                 });
 
-            // Ìí¼Ó HttpContext ·ÃÎÊÆ÷·şÎñ, ÒÔ±ãÔÚÆäËû·şÎñÖĞ·ÃÎÊµ±Ç°ÇëÇóµÄHttpContext
+            // æ³¨å†Œ JWT è®¤è¯æœåŠ¡
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
+
+            // å…³é—­é»˜è®¤çš„Claimç±»å‹æ˜ å°„, ä»¥é˜²æ­¢JWTä¸­çš„Claimç±»å‹è¢«è‡ªåŠ¨è½¬æ¢
+            // ç”„å§¬å§å‘å•Š
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+
+            // æ·»åŠ  HttpContext è®¿é—®å™¨æœåŠ¡, ä»¥ä¾¿åœ¨å…¶ä»–æœåŠ¡ä¸­è®¿é—®å½“å‰è¯·æ±‚çš„HttpContext
             builder.Services.AddHttpContextAccessor();
 
-            // MySQL ÅäÖÃ, Èô¿ª·¢ÊÂ¼ş³ä·Ö, ¿É½«ÅäÖÃĞÅÏ¢·Å½øappsetting.json, ±ãÓÚĞŞ¸Ä
+            // MySQL é…ç½®, è‹¥å¼€å‘æ—¶é—´å……åˆ†, å¯å°†é…ç½®ä¿¡æ¯æ”¾è¿›appsetting.json, ä¾¿äºä¿®æ”¹
             var connectionString = "server=localhost;port=3306;database=online_book_store;User=root;password=Abcd753!;";
 
-            // ½«AppDbContext×¢²á³É·şÎñ
+            // å°†AppDbContextæ³¨å†ŒæˆæœåŠ¡
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-            // ×¢²á·ºĞÍ²Ö´¢·şÎñ, ×¢ÒâÕâÀï×¢²áµÄÊ¼¿ª·Å·ºĞÍÀàĞÍ, Ïàµ±ÓÚ×¢²áÁËRepositoryËùÓĞµÄ¾ßÌåÀàĞÍ
+            // æ³¨å†Œæ³›å‹ä»“å‚¨æœåŠ¡, æ³¨æ„è¿™é‡Œæ³¨å†Œçš„å§‹å¼€æ”¾æ³›å‹ç±»å‹, ç›¸å½“äºæ³¨å†Œäº†Repositoryæ‰€æœ‰çš„å…·ä½“ç±»å‹
             builder.Services.AddScoped(typeof(Respository<>), typeof(Respository<>));
 
-            // ×¢²áÍ¼Êé·şÎñÀàĞÍ
+            // æ³¨å†Œå›¾ä¹¦æœåŠ¡ç±»å‹
             builder.Services.AddScoped<BookService, BookService>();
-            // ×¢²áÍ¼ÊéÁìÓò·şÎñÀàĞÍ
+            // æ³¨å†Œå›¾ä¹¦é¢†åŸŸæœåŠ¡ç±»å‹
             builder.Services.AddScoped<BookDomainService, BookDomainService>();
 
-            // ×¢²á¹ºÎï³µÓ¦ÓÃÀàĞÍ
+            // æ³¨å†Œè´­ç‰©è½¦åº”ç”¨ç±»å‹
             builder.Services.AddScoped<CartApplication, CartApplication>();
-            // ×¢²á¹ºÎï³µÁìÓò·şÎñÀàĞÍ
+            // æ³¨å†Œè´­ç‰©è½¦é¢†åŸŸæœåŠ¡ç±»å‹
             builder.Services.AddScoped<CartDomainService, CartDomainService>();
-            // ×¢²á¹ºÎï³µ¹¤³§·şÎñÀàĞÍ
+            // æ³¨å†Œè´­ç‰©è½¦å·¥å‚æœåŠ¡ç±»å‹
             builder.Services.AddScoped<CartFactory, CartFactory>();
 
-            // ×¢²á¶©µ¥Ó¦ÓÃ·şÎñÀàĞÍ
+            // æ³¨å†Œè®¢å•åº”ç”¨æœåŠ¡ç±»å‹
             builder.Services.AddScoped<OrderApplication, OrderApplication>();
-            // ×¢²á¶©µ¥ÁìÓò·şÎñÀàĞÍ
+            // æ³¨å†Œè®¢å•é¢†åŸŸæœåŠ¡ç±»å‹
             builder.Services.AddScoped<OrderDomainService, OrderDomainService>();
-            // ×¢²á¶©µ¥¹¤³§·şÎñÀàĞÍ
+            // æ³¨å†Œè®¢å•å·¥å‚æœåŠ¡ç±»å‹
             builder.Services.AddScoped<OrderFactory, OrderFactory>();
 
-            // ×¢²áÕË»§Ó¦ÓÃ·şÎñÀàĞÍ
+            // æ³¨å†Œè´¦æˆ·åº”ç”¨æœåŠ¡ç±»å‹
             builder.Services.AddScoped<AccountAppliaction, AccountAppliaction>();
-            // ×¢²áÓÃ»§ÁìÓò·şÎñÀàĞÍ
+            // æ³¨å†Œç”¨æˆ·é¢†åŸŸæœåŠ¡ç±»å‹
             builder.Services.AddScoped<UserDomainService, UserDomainService>();
-            // ×¢²áÓÃ»§ÉÏÏÂÎÄ·şÎñÀàĞÍ
+            // æ³¨å†Œç”¨æˆ·ä¸Šä¸‹æ–‡æœåŠ¡ç±»å‹
             builder.Services.AddScoped<UserContext, UserContext>();
-            // ×¢²áÓÃ»§ÃÜÂë¹şÏ£·şÎñ
+            // æ³¨å†Œç”¨æˆ·å¯†ç å“ˆå¸ŒæœåŠ¡
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-            // ×¢²áÓÊÏäÏà¹ØÉè¼Æ·şÎñ, »á´Óappsetting.jsonÖĞ¶ÁÈ¡EmailOptionsÀïµÄÉèÖÃĞÅÏ¢
+            // æ³¨å†Œé‚®ç®±ç›¸å…³è®¾è®¡æœåŠ¡, ä¼šä»appsetting.jsonä¸­è¯»å–EmailOptionsé‡Œçš„è®¾ç½®ä¿¡æ¯
             builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
-            // ×¢²áÓÊÏä·¢ËÍ·şÎñÀàĞÍ
+            // æ³¨å†Œé‚®ç®±å‘é€æœåŠ¡ç±»å‹
             builder.Services.AddScoped<EmailSendService, EmailSendService>();
-            // ×¢²áÓÊÏäÑéÖ¤·şÎñÀàĞÍ
+            // æ³¨å†Œé‚®ç®±éªŒè¯æœåŠ¡ç±»å‹
             builder.Services.AddScoped<EmailVerificationTokenService, EmailVerificationTokenService>();
 
-            // ×¢²á¹¤×÷µ¥Ôª
+            // æ³¨å†Œå·¥ä½œå•å…ƒ
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 
-            // ÔÚÓ¦ÓÃÆô¶¯Ê±Ìî³äÊı¾İ¿â
+
+
+            // åœ¨åº”ç”¨å¯åŠ¨æ—¶å¡«å……æ•°æ®åº“
             using (var scope = app.Services.CreateScope())
             {
-                // Ìá¹©Ìî³äÊı¾İ²Ù×÷ËùĞèÒªµÄ·şÎñ
+                // æä¾›å¡«å……æ•°æ®æ“ä½œæ‰€éœ€è¦çš„æœåŠ¡
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var passwordHashHandler = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
 
@@ -114,7 +148,8 @@ namespace OnlineBookStore
 
             app.UseAuthorization();
 
-            app.MapRazorPages();
+            app.MapRazorPages();  // Razoré¡µé¢è·¯ç”±æ˜ å°„
+            app.MapControllers(); // API æ§åˆ¶å™¨è·¯ç”±æ˜ å°„
 
             app.Run();
         }
