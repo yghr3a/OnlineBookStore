@@ -71,7 +71,7 @@ public class EmailVerificationTokenService
         var email = claims.FindFirst("email")?.Value;
 
         if (string.IsNullOrEmpty(email) == true)
-            return DataResult<string>.Fail("Token提取邮箱信息结果为空");
+            return DataResult<string>.Fail("验证链接无效或已过期");
         else
             return DataResult<string>.Success(email);
     }

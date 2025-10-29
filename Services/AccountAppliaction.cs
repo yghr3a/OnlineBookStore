@@ -4,6 +4,8 @@ using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Respository;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using OnlineBookStore.Infrastructure;
+using static OnlineBookStore.Infrastructure.ExceptionChecker;
 
 namespace OnlineBookStore.Services
 {
@@ -14,13 +16,21 @@ namespace OnlineBookStore.Services
     {
         private Respository<User> _responsity;
         private UserContext _userContext;
+        private EmailVerificationTokenService _emailVerificationTokenService;
+        private UserDomainService _userDomainService;
         private IPasswordHasher<User> _passwordHasher;
 
-        public AccountAppliaction(Respository<User> repository, UserContext userContext, IPasswordHasher<User> passwordHasher)
+        public AccountAppliaction(Respository<User> repository,
+                                       UserContext userContext, 
+                                       IPasswordHasher<User> passwordHasher,
+                                       EmailVerificationTokenService emailVerificationTokenService,
+                                       UserDomainService userDomainService)
         {
             _responsity = repository;
             _userContext = userContext;
             _passwordHasher = passwordHasher;
+            _emailVerificationTokenService = emailVerificationTokenService;
+            _userDomainService = userDomainService;
         }
 
         /// <summary>
@@ -155,22 +165,33 @@ namespace OnlineBookStore.Services
 
         }
 
-        //public async Task<InfoResult> VerifyUserRegisterTokenAsync(string token)
-        //{
-        //    var email = _tokenService.ValidateToken(token);
-        //    if (email == null)
-        //        return BadRequest("验证链接无效或已过期。");
+        /// <summary>
+        /// 验证注册Token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> VerifyUserRegisterTokenAsync(string token)
+        {
+            try
+            {
+                // 验证token并返回邮箱信息
+                var email = Check(_emailVerificationTokenService.ValidateTokenAndReturnEmail(token));
 
-        //    // 找到用户并更新状态
-        //    var userRes = await _userDomainService.GetUserByEmailAsync(email);
-        //    if (userRes.IsSuccess == false)
-        //        return BadRequest("用户不存在。");
+                // 找到用户并更新状态
+                var user = await CheckAsync(_userDomainService.GetUserByEmailAsync(email));
 
-        //    var user = userRes.Data!;
-        //    //user.IsEmailVerified = true;
-        //    //await _userDomainService.UpdateAsync(user);
+                // TODO: 后续添加用于验证状态修改操作, 现在别说领域里的方法了, 就连user和数据库都还没有这个属性
+                // var user = userRes.Data!;
+                //user.IsEmailVerified = true;
+                //await _userDomainService.UpdateAsync(user);
 
-        //    return Ok("邮箱验证成功！");
-        //}
+                return InfoResult.Success();
+            }
+            catch (Exception ex)
+            {
+                // TODO: 后续添加业务异常处理
+                return InfoResult.Fail($"验证Token失败 " + ex.Message);
+            }
+        }
     }
 }
