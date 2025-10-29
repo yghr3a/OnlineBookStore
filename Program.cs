@@ -49,14 +49,14 @@ namespace OnlineBookStore
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    ValidateIssuer = true,          // Token是否包含签发人信息?
+                    ValidateAudience = true,        // Token是否包含接收人信息?
+                    ValidateLifetime = true,        // Token验证是否有时效性
+                    ValidateIssuerSigningKey = true,    
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],      // 从appsettings.json获取签发人信息
+                    ValidAudience = builder.Configuration["Jwt:Audience"],  // 从appsettings.json 获取接收人信息
+                    IssuerSigningKey = new SymmetricSecurityKey(            //  从appsetting.json 获取原始密钥作为参数生成签发人密钥
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
                 };
             });
 
@@ -106,8 +106,10 @@ namespace OnlineBookStore
             // 注册用户密码哈希服务
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-            // 注册邮箱相关设计服务, 会从appsetting.json中读取EmailOptions里的设置信息
+            // 注册邮箱相关设置服务, 会从appsetting.json中读取EmailOptions里的设置信息
             builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
+            // JWT相关设置服务, 会从appsetting.json中读取Jwt里的设置信息
+            builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("Jwt"));
             // 注册邮箱发送服务类型
             builder.Services.AddScoped<EmailSendService, EmailSendService>();
             // 注册邮箱验证服务类型

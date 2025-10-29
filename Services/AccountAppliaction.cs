@@ -78,17 +78,17 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 用户注册业务操作
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<UserRegisterResult> UserRegistraionAsync(string username, string password, string email)
+        public async Task<UserRegisterResult> UserRegistraionAsync(string userName, string password, string email)
         {
             var quary = _responsity.AsQueryable();
             var passwordHash = _passwordHasher.HashPassword(null, password);
 
             // 检查用户名和邮箱的唯一性
-            var existingUser = await quary.FirstOrDefaultAsync(u => u.UserName == username);
+            var existingUser = await quary.FirstOrDefaultAsync(u => u.UserName == userName);
             var existingEmail = await quary.FirstOrDefaultAsync(u => u.Email == email);
 
             if (existingUser != null)
@@ -116,7 +116,7 @@ namespace OnlineBookStore.Services
             {
                 // Number字段后续需要改为更合理的生成方式, 现在只是简单的用时间戳
                 Number = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % int.MaxValue),
-                UserName = username,
+                UserName = userName,
                 PasswordHash = passwordHash,
                 Email = email,
                 UserRole = UserRole.Customer,
@@ -154,5 +154,23 @@ namespace OnlineBookStore.Services
             };
 
         }
+
+        //public async Task<InfoResult> VerifyUserRegisterTokenAsync(string token)
+        //{
+        //    var email = _tokenService.ValidateToken(token);
+        //    if (email == null)
+        //        return BadRequest("验证链接无效或已过期。");
+
+        //    // 找到用户并更新状态
+        //    var userRes = await _userDomainService.GetUserByEmailAsync(email);
+        //    if (userRes.IsSuccess == false)
+        //        return BadRequest("用户不存在。");
+
+        //    var user = userRes.Data!;
+        //    //user.IsEmailVerified = true;
+        //    //await _userDomainService.UpdateAsync(user);
+
+        //    return Ok("邮箱验证成功！");
+        //}
     }
 }

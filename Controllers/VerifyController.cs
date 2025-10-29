@@ -2,13 +2,13 @@
 using OnlineBookStore.Services;
 
 [ApiController]
-[Route("api/account")]
-public class AccountController : ControllerBase
+[Route("api/account/verify")]
+public class VerifyController : ControllerBase
 {
     private readonly EmailVerificationTokenService _tokenService;
     private readonly UserDomainService _userDomainService;
 
-    public AccountController(EmailVerificationTokenService tokenService, UserDomainService userDomainService)
+    public VerifyController(EmailVerificationTokenService tokenService, UserDomainService userDomainService)
     {
         _tokenService = tokenService;
         _userDomainService = userDomainService;

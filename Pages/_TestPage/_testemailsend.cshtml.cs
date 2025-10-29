@@ -21,7 +21,7 @@ namespace OnlineBookStore.Pages._TestPage
 
         public async Task OnPostAsync()
         {
-            var token = _emailVerificationTokenService.GenerateToken("1764016008@qq.com");
+            var token = _emailVerificationTokenService.GenerateToken("邮箱");
             var verificationUrl = $"https://localhost:7109/api/account/verify-email?token={token}";
 
             var subject = "验证您的邮箱";
@@ -31,7 +31,7 @@ namespace OnlineBookStore.Pages._TestPage
         <a href='{verificationUrl}'>立即验证</a>
         <p>该链接2小时内有效。</p>";
 
-            await _emailSendService.SendAsync("1764016008@qq.com", subject, body);
+            await _emailSendService.SendAsync("邮箱", subject, body);
         }
     }
 }

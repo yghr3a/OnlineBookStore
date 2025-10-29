@@ -1,5 +1,8 @@
 ﻿namespace OnlineBookStore.Infrastructure
 {
+    /// <summary>
+    /// 邮箱相关的信息设置, 作为从appsettings.json中的Email相关信息的信息载体对象
+    /// </summary>
     public class EmailOptions
     {
         public string SmtpServer { get; set; } = string.Empty;   // 邮件服务器地址，如 smtp.gmail.com
