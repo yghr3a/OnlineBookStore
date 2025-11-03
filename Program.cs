@@ -24,28 +24,26 @@ namespace OnlineBookStore
             // 添加控制器服务, 以支持API控制器可通过DI获取服务实例
             builder.Services.AddControllers();
 
-            // 注册 Cookie 认证服务
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.Cookie.Name = "BookStore.Auth";
-                    options.Cookie.HttpOnly = true;           // JS 不能读取，减少 XSS 风险
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // 仅 HTTPS 传输
-                    options.Cookie.SameSite = SameSiteMode.Lax; // 或 Strict/None (注意与跨站情况)
-                    options.LoginPath = "/Account/Login";
-                    options.LogoutPath = "/Account/Logout";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                    options.SlidingExpiration = true; // 在有效期内每次验证都会刷新过期时间
-
-                });
-
-            // 注册 JWT 认证服务
+            // 添加身份验证方案
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                // 默认认证方案，这里使用Cookie作为默认验证方案
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(options =>
+            .AddCookie(options =>   // 添加Cookie验证设置
+            {
+                options.Cookie.Name = "BookStore.Auth";
+                options.Cookie.HttpOnly = true;           // JS 不能读取，减少 XSS 风险
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // 仅 HTTPS 传输
+                options.Cookie.SameSite = SameSiteMode.Lax; // 或 Strict/None (注意与跨站情况)
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                options.SlidingExpiration = true; // 在有效期内每次验证都会刷新过期时间
+
+            })
+            .AddJwtBearer(options =>    // 添加JWT验证设置
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -148,6 +146,7 @@ namespace OnlineBookStore
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();  // Razor页面路由映射

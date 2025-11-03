@@ -51,7 +51,7 @@ namespace OnlineBookStore.Pages.Order
                 Items = OrderItems
             });
 
-            if(result.IsSuccessed == true)
+            if(result.IsSuccess == true)
             {
                 return RedirectToPage("/Shared/Notification", new
                 {
