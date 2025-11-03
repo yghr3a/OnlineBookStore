@@ -68,6 +68,38 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
+        /// 验证已登录用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public InfoResult VerifyUserPassword(User user, string password)
+        {
+            // 验证密码, 这里使用ASP.NET Core Identity的密码哈希验证
+            var pwHashVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, password);
+
+            // 如果验证失败
+            if (pwHashVerificationResult == PasswordVerificationResult.Failed)
+                return InfoResult.Fail("密码错误");
+
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 通过用户名查找用户
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public async Task<DataResult<User>> GetUserByUserNameAsync(string userName)
+        {
+            var query = _repository.AsQueryable().Where(u => u.UserName == userName);
+            var user = await _repository.GetSingleByQueryAsync(query);
+            if (user is null)
+                return DataResult<User>.Fail("用户不存在");
+            return DataResult<User>.Success(user);
+        }
+
+        /// <summary>
         /// 通过邮箱查找用户
         /// </summary>
         /// <param name="email"></param>

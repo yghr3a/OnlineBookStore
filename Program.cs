@@ -115,10 +115,18 @@ namespace OnlineBookStore
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
+            // 注册编号工厂服务类型
+            builder.Services.AddSingleton<NumberFactory, NumberFactory>();
 
             var app = builder.Build();
 
 
+            // 在应用启动时初始化一次编号工厂
+            using (var scope = app.Services.CreateScope())
+            {
+                var factory = scope.ServiceProvider.GetRequiredService<NumberFactory>();
+                await factory.InitializeAsync();
+            }
 
             // 在应用启动时填充数据库
             using (var scope = app.Services.CreateScope())
@@ -126,11 +134,12 @@ namespace OnlineBookStore
                 // 提供填充数据操作所需要的服务
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var passwordHashHandler = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
-
+                var factory = scope.ServiceProvider.GetRequiredService<NumberFactory>();
                 // 
-                await SeedService.SeedBooksAsync(context);
+                await SeedService.SeedBooksAsync(context, factory);
                 await SeedService.SeedUserAsync(context, passwordHashHandler);
             }
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

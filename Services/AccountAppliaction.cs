@@ -36,53 +36,39 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 验证用户登录信息业务操作
         /// </summary>
+        /// [2025/11/03] 使用ExceptionChecker简化代码
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
         public async Task<UserVerifyResult> VerifyLoggedInUserInformation(string userName, string password)
         {
-            var quary = _responsity.AsQueryable();
-            var user = await quary.FirstOrDefaultAsync(u => u.UserName == userName);
-
-            if (user == null)
+            try
             {
-                // 后续可以添加错误信息等
-                // [2025/10/10]后续错误信息可以改为自定义业务异常
+                var user = await CheckAsync(_userDomainService.GetUserByUserNameAsync(userName));
+                Check(_userDomainService.VerifyUserPassword(user!, password));
+
+                var claims = new List<Claim>
+                {
+                    // 这里传递的是用户编号,而非数据库内容使用的主键id
+                    new Claim(ClaimTypes.NameIdentifier, user.Number.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email ?? "")
+                };
+
+                return new UserVerifyResult
+                {
+                    IsValid = true,
+                    ClaimList = claims
+                };
+            }
+            catch (Exception ex)
+            {
                 return new UserVerifyResult
                 {
                     IsValid = false,
-                    ErrorMsg = "该用户不存在"
+                    ErrorMsg = $"{ex.Message}"
                 };
             }
-
-            // 验证密码, 这里使用ASP.NET Core Identity的密码哈希验证
-            var pwHashVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-
-            // 如果验证失败
-            if (pwHashVerificationResult == PasswordVerificationResult.Failed)
-            {
-                // 后续可以添加错误信息等
-                // [2025/10/10]后续错误信息可以改为自定义业务异常
-                return new UserVerifyResult
-                {
-                    IsValid = false,
-                    ErrorMsg = "密码错误"
-                };
-            }
-
-            var claims = new List<Claim>
-            {
-                // 这里传递的是用户编号,而非数据库内容使用的主键id
-                new Claim(ClaimTypes.NameIdentifier, user.Number.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email ?? "")
-            };
-
-            return new UserVerifyResult
-            {
-                IsValid = true,
-                ClaimList = claims
-            };
         }
 
         /// <summary>

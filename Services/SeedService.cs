@@ -12,7 +12,7 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task SeedBooksAsync(AppDbContext context)
+        public static async Task SeedBooksAsync(AppDbContext context, NumberFactory numberFactory)
         {
             // 检查是否已有数据，避免重复插入
             if (!context.Books.Any())
@@ -23,7 +23,7 @@ namespace OnlineBookStore.Services
                 {
                     books.Add(new Book
                     {
-                        Number = 1000 + i,
+                        Number = numberFactory.CreateNumber<Book>(),
                         Name = $"测试书籍{i}",
                         Authors = new List<string?>() { $"作者{i}" } ,
                         Publisher = $"出版社{random.Next(1, 10)}",
@@ -57,6 +57,7 @@ namespace OnlineBookStore.Services
                     UserName = "testuser",
                     UserRole = UserRole.Customer,
                     Email = "test@onlinebookstore",
+                    IsEmailVerified = true,
                     RegistrationDate = DateTime.Now,
                     Cart = new Cart() // EFCore会自动插入这个Cart对象
                 };
