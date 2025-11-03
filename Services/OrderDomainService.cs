@@ -1,4 +1,4 @@
-﻿using OnlineBookStore.Respository;
+﻿using OnlineBookStore.Repository;
 using OnlineBookStore.Models;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
@@ -10,19 +10,18 @@ namespace OnlineBookStore.Services
     /// <summary>
     /// 订单邻域服务, 只负责纯粹的单独业务
     /// </summary>
-    public class OrderDomainService
+    public class OrderDomainService : DomainService<Order>
     {
         private UnitOfWork _unitOfWork;
-        private Respository<Book> _bookRespository;
-        private Respository<Order> _orderRespository;
+        private Repository<Book> _bookRespository;
 
         public OrderDomainService(UnitOfWork unitOfWork, 
-                                  Respository<Book> bookRespository, 
-                                  Respository<Order> orderRespository)
+                                  Repository<Book> bookRespository, 
+                                  Repository<Order> orderRespository)
+            :base(orderRespository)
         {
             _unitOfWork = unitOfWork;
             _bookRespository = bookRespository;
-            _orderRespository= orderRespository;
         }
         
         /// <summary>
@@ -42,7 +41,7 @@ namespace OnlineBookStore.Services
             await _unitOfWork.ExecuteInTransactionAsync( async () =>
             {
                 // 添加订单到数据库里
-                await _orderRespository.AddAsync(order);
+                await _repository.AddAsync(order);
 
                 // 更新各个书籍的销量
                 foreach (var book in books)
@@ -65,10 +64,10 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Order>>> GetAllOrdersByUserId(int userId)
         {
-            var orderQuery = _orderRespository.AsQueryable()
+            var orderQuery = _repository.AsQueryable()
                                               .Include(o => o.OrderItems)
                                               .Where(o => o.UserId == userId);
-            var orders = await _orderRespository.GetListByQueryAsync(orderQuery);
+            var orders = await _repository.GetListByQueryAsync(orderQuery);
 
             // 不知道会不会由orders为null的情况
 
@@ -84,10 +83,10 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Order>>> GetPagedOrdersByUserId(int userId, int pageIndex = 1, int pageSize = 30)
         {
-            var orderQuery = _orderRespository.AsQueryable()
+            var orderQuery = _repository.AsQueryable()
                                                .Include(o => o.OrderItems)
                                                .Where(o => o.UserId == userId);
-            var pageOrders = await _orderRespository.GetPagedAsync(orderQuery,pageIndex, pageSize);
+            var pageOrders = await _repository.GetPagedAsync(orderQuery,pageIndex, pageSize);
 
             // 不知道会不会由orders为null的情况
 

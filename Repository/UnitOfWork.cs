@@ -1,4 +1,4 @@
-﻿namespace OnlineBookStore.Respository
+﻿namespace OnlineBookStore.Repository
 {
     /// <summary>
     /// 工作单元模式的实现, 用于统一管理事务

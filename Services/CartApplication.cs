@@ -3,7 +3,7 @@ using OnlineBookStore.Infrastructure;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 using static OnlineBookStore.Infrastructure.ExceptionChecker;
 
 namespace OnlineBookStore.Services
@@ -16,7 +16,7 @@ namespace OnlineBookStore.Services
         private UserDomainService _userDomainService;
         private BookDomainService _bookDomainService;
         private CartFactory _cartFactory;
-        private Respository<Cart> _cartRespository;
+        private Repository<Cart> _cartRespository;
 
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
         public CartApplication(UserContext userContext,
@@ -24,7 +24,7 @@ namespace OnlineBookStore.Services
                            UserDomainService userDomainService,
                            BookDomainService bookDomainService,
                            CartFactory cartFactory,
-                           Respository<Cart> cartRespository)
+                           Repository<Cart> cartRespository)
         {
             _userContext = userContext;
             _cartDomainService = cartDomainService;
@@ -137,6 +137,7 @@ namespace OnlineBookStore.Services
 
         /// <summary>
         /// 清空用户购物车
+        /// </summary>
         /// [2025/10/20] 业务优化, 获取购物车的工作交给CartDomainService
         /// [2025/10/20] 再次重构, 为了避免领域模型之间边界混乱, 所以我们发挥Application层的协调作用, 让Application层来处理跨领域模型的业务逻辑
         /// 说白了就是让Application调用UserDomainService获取user, 然后调用CartDomainService获取cart

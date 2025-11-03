@@ -1,19 +1,17 @@
 ﻿using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 
 namespace OnlineBookStore.Services
 {
     /// <summary>
     /// 书籍领域模型
     /// </summary>
-    public class BookDomainService
+    public class BookDomainService : DomainService<Book>
     {
-        private Respository<Book> _bookRespository;
-
-        public BookDomainService(Respository<Book> bookRespository) 
+        public BookDomainService(Repository<Book> bookRespository) 
+            : base(bookRespository)
         {
-            _bookRespository = bookRespository;
         }
 
         /// <summary>
@@ -24,8 +22,8 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Book>>> GetBookByNumberAsync(List<int> BookNumbers)
         {
-            var booksQurey = _bookRespository.AsQueryable().Where(b => BookNumbers.Contains(b.Number));
-            var books = await _bookRespository.GetListByQueryAsync(booksQurey);
+            var booksQurey = _repository.AsQueryable().Where(b => BookNumbers.Contains(b.Number));
+            var books = await _repository.GetListByQueryAsync(booksQurey);
             var ErrorMsg = string.Empty;
 
             foreach (var n in BookNumbers)
@@ -46,8 +44,8 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<Book>> GetBookByNumberAsync(int BookNumber)
         {
-            var booksQurey = _bookRespository.AsQueryable().Where(b => b.Number == BookNumber);
-            var book = await _bookRespository.GetSingleByQueryAsync(booksQurey);
+            var booksQurey = _repository.AsQueryable().Where(b => b.Number == BookNumber);
+            var book = await _repository.GetSingleByQueryAsync(booksQurey);
 
             if (book is null)
                 return DataResult<Book>.Fail($"编号{BookNumber}:书籍不存在");
@@ -62,8 +60,8 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<List<Book>>> GetBookByIdAsync(List<int> bookIds)
         {
-            var booksQurey = _bookRespository.AsQueryable().Where(b => bookIds.Contains(b.Id));
-            var books = await _bookRespository.GetListByQueryAsync(booksQurey);
+            var booksQurey = _repository.AsQueryable().Where(b => bookIds.Contains(b.Id));
+            var books = await _repository.GetListByQueryAsync(booksQurey);
             var ErrorMsg = string.Empty;
             foreach (var n in bookIds)
                 if (books.Find(b => b.Id == n) is null)
@@ -82,7 +80,7 @@ namespace OnlineBookStore.Services
         /// <returns></returns>
         public async Task<DataResult<Book>> GetBookByIdAsync(int bookId)
         {
-            var book = await _bookRespository.GetByIdAsync(bookId);
+            var book = await _repository.GetByIdAsync(bookId);
             if (book is null)
                 return DataResult<Book>.Fail($"Id为{bookId}的书籍不存在");
             return DataResult<Book>.Success(book);

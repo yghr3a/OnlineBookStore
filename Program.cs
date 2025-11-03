@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Services;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using OnlineBookStore.Models.Entities;
@@ -76,7 +76,7 @@ namespace OnlineBookStore
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // 注册泛型仓储服务, 注意这里注册的始开放泛型类型, 相当于注册了Repository所有的具体类型
-            builder.Services.AddScoped(typeof(Respository<>), typeof(Respository<>));
+            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
 
             // 注册图书服务类型
             builder.Services.AddScoped<BookService, BookService>();

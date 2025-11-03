@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 using System.ComponentModel;
 using static OnlineBookStore.Infrastructure.ExceptionChecker;
 

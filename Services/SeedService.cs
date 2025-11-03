@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using OnlineBookStore.Models.Entities;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 
 namespace OnlineBookStore.Services
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Models.Entities;
 
-namespace OnlineBookStore.Respository
+namespace OnlineBookStore.Repository
 {
     /// <summary>
     /// 本应用的数据库上下文, 负责本项目所有的与数据库的操作

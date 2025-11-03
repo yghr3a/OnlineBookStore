@@ -5,25 +5,23 @@ using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Pages;
 using OnlineBookStore.Pages.Book;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 
 namespace OnlineBookStore.Services
 {
     /// <summary>
     /// 购物车服务, 负责处理与购物车相关的业务逻辑
     /// </summary>
-    public class CartDomainService
+    public class CartDomainService : DomainService<Cart>
     {
         private CartFactory _cartFactory;
-        private Respository<Cart> _cartRespository;
 
         // 在犹豫是否有必要定义一个User属性和Cart属性,直接通过UserContext获取用户Id, 然后通过AppDbContext获取用户和购物车对象似乎也挺方便的
         public CartDomainService(CartFactory cartFactory,
-                           Respository<Cart> cartRespository)
+                           Repository<Cart> cartRespository)
+            :base(cartRespository)
         {
             _cartFactory = cartFactory;
-            _cartRespository = cartRespository;
-
         }
 
         /// <summary>
@@ -40,10 +38,10 @@ namespace OnlineBookStore.Services
         public async Task<DataResult<Cart>> GetCartByUserIdAsync(int userId)
         {
             // 根据userid获取user的cart, 记得引导属性CartItems得包含上
-            var cartQuery = _cartRespository.AsQueryable()
+            var cartQuery = _repository.AsQueryable()
                             .Include(c => c.CartItems)
                             .Where(c => c.UserId == userId);
-            var cart = await _cartRespository.GetSingleByQueryAsync(cartQuery);
+            var cart = await _repository.GetSingleByQueryAsync(cartQuery);
 
             if (cart is null)
                 return DataResult<Cart>.Fail("找不到该用户的购物车数据");
@@ -81,7 +79,7 @@ namespace OnlineBookStore.Services
                 exitItem.Count += 1; // 已存在则数量加一
 
             // 保存数据, EFCore会自动处理关联关系
-            await _cartRespository.SaveAsync();
+            await _repository.SaveAsync();
 
             return InfoResult.Success();
         }

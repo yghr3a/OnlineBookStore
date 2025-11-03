@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
-using OnlineBookStore.Respository;
+using OnlineBookStore.Repository;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using OnlineBookStore.Infrastructure;
@@ -14,13 +14,13 @@ namespace OnlineBookStore.Services
     /// </summary>
     public class AccountAppliaction
     {
-        private Respository<User> _responsity;
+        private Repository<User> _responsity;
         private UserContext _userContext;
         private EmailVerificationTokenService _emailVerificationTokenService;
         private UserDomainService _userDomainService;
         private IPasswordHasher<User> _passwordHasher;
 
-        public AccountAppliaction(Respository<User> repository,
+        public AccountAppliaction(Repository<User> repository,
                                        UserContext userContext, 
                                        IPasswordHasher<User> passwordHasher,
                                        EmailVerificationTokenService emailVerificationTokenService,
