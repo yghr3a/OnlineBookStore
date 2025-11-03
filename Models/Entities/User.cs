@@ -22,10 +22,17 @@ namespace OnlineBookStore.Models.Entities
         // 密码哈希值
         // [2025/10/11] 改为可能为空, required太不灵活了
         public string? PasswordHash { get; set; } = string.Empty; 
-        // 电子邮箱(如果需要电话号码的话, 可以做多种注册方法, 而这种用于验证用户账户唯一性的信息也需要确保拥有至少有一条)
-        public string? Email { get; set; }
         // 用户注册时间
         public required DateTime RegistrationDate { get; set; }
+
+        // 电子邮箱
+        public string? Email { get; set; }
+        // 邮箱信息是否验证了
+        public bool IsEmailVerified { get; set; } = false;
+        // 电话号码
+        public string? PhoneNumber {  get; set; }
+        // 电话号码是否验证了
+        public bool IsPhoneNumberVerified { get; set; } = false;
 
         // 用户购物车
         // [2025/10/11] EFCore框架会负责将其插入到Carts表中, 并且将UserId设置为对应的用户Id

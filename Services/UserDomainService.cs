@@ -23,6 +23,20 @@ namespace OnlineBookStore.Services
             _passwordHasher = passwordHasher;
         }
 
+        /// <summary>
+        /// 更新用户实体模型信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> UpdateAsync(User user)
+        {
+            // 如果设计到应用层需要更新数据项的属性的话, 领域服务类需要提供方法供应用类实现数据更新, 不能让应用类直接依赖仓储类
+            _responsity.Update(user);
+            await _responsity.SaveAsync();
+
+            return InfoResult.Success();
+        }
+
         /// 获取当前登录用户实体模型
         /// </summary>
         /// <returns></returns>

@@ -178,10 +178,19 @@ namespace OnlineBookStore.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsPhoneNumberVerified")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -232,7 +241,7 @@ namespace OnlineBookStore.Migrations
             modelBuilder.Entity("OnlineBookStore.Models.Entities.Order", b =>
                 {
                     b.HasOne("OnlineBookStore.Models.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -273,6 +282,8 @@ namespace OnlineBookStore.Migrations
                 {
                     b.Navigation("Cart")
                         .IsRequired();
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

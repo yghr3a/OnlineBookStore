@@ -40,7 +40,7 @@ namespace OnlineBookStore.Services
                 UserId = user!.Id,
                 User = user,
                 PaymentMethod = response.PaymentMethod,
-                OrderState = response.OrderState,
+                OrderStatus = response.OrderState,
                 CreatedDate = DateTime.UtcNow,
                 OrderItems = orderItems
             };
@@ -106,7 +106,7 @@ namespace OnlineBookStore.Services
                         Number = order.Number,
                         UserNumber = user.Number,
 
-                        OrderStatus = order.OrderState,
+                        OrderStatus = order.OrderStatus,
                         PaymentMethod = order.PaymentMethod,
                         CreatedDate = order.CreatedDate,
 

@@ -1,35 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using OnlineBookStore.Services;
 
 [ApiController]
 [Route("api/account/verify")]
 public class VerifyController : ControllerBase
 {
-    private readonly EmailVerificationTokenService _tokenService;
-    private readonly UserDomainService _userDomainService;
+    private AccountAppliaction _accountAppliaction;
 
-    public VerifyController(EmailVerificationTokenService tokenService, UserDomainService userDomainService)
+    public VerifyController(AccountAppliaction accountAppliaction)
     {
-        _tokenService = tokenService;
-        _userDomainService = userDomainService;
+       _accountAppliaction = accountAppliaction;
     }
 
     [HttpGet("verify-email")]
     public async Task<IActionResult> VerifyEmail(string token)
     {
-        var email = _tokenService.ValidateToken(token);
-        if (email == null)
-            return BadRequest("验证链接无效或已过期。");
+        var result = await _accountAppliaction.VerifyUserRegisterTokenAsync(token);
 
-        // 找到用户并更新状态
-        var userRes = await _userDomainService.GetUserByEmailAsync(email);
-        if (userRes.IsSuccess == false)
-            return BadRequest("用户不存在。");
-
-        var user = userRes.Data!;
-        //user.IsEmailVerified = true;
-        //await _userDomainService.UpdateAsync(user);
-
-        return Ok("邮箱验证成功！");
+        if(result.IsSuccess == true)
+        {
+            return Ok("邮箱验证成功");
+        }
+        else
+        {
+            return BadRequest(result.ErrorMsg);
+        }
     }
 }

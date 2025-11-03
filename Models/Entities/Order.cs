@@ -30,7 +30,7 @@ namespace OnlineBookStore.Models.Entities
         public User? User { get; set; }
 
         // 订单状态
-        public OrderStatus OrderState { get; set; } = OrderStatus.Unfinished;
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.Unfinished;
         // 支付方式
         public PaymentMethod PaymentMethod { get; set; }
         // 订单创建时间

@@ -12,8 +12,8 @@ using OnlineBookStore.Respository;
 namespace OnlineBookStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251014072849_AddOrderAndOrderItem")]
-    partial class AddOrderAndOrderItem
+    [Migration("20251029112816_UserAddPhoneNumberAndTowVerifyAndChangeOrderStateToOrderStatus")]
+    partial class UserAddPhoneNumberAndTowVerifyAndChangeOrderStateToOrderStatus
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,10 +181,19 @@ namespace OnlineBookStore.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsPhoneNumberVerified")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -235,7 +244,7 @@ namespace OnlineBookStore.Migrations
             modelBuilder.Entity("OnlineBookStore.Models.Entities.Order", b =>
                 {
                     b.HasOne("OnlineBookStore.Models.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -276,6 +285,8 @@ namespace OnlineBookStore.Migrations
                 {
                     b.Navigation("Cart")
                         .IsRequired();
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

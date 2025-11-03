@@ -180,10 +180,9 @@ namespace OnlineBookStore.Services
                 // 找到用户并更新状态
                 var user = await CheckAsync(_userDomainService.GetUserByEmailAsync(email));
 
-                // TODO: 后续添加用于验证状态修改操作, 现在别说领域里的方法了, 就连user和数据库都还没有这个属性
-                // var user = userRes.Data!;
-                //user.IsEmailVerified = true;
-                //await _userDomainService.UpdateAsync(user);
+                // 更新用户验证状态
+                user.IsEmailVerified = true;
+                await CheckAsync(_userDomainService.UpdateAsync(user));
 
                 return InfoResult.Success();
             }
