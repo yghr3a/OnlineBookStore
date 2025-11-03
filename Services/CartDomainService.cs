@@ -26,6 +26,7 @@ namespace OnlineBookStore.Services
 
         /// <summary>
         /// 获取当前登录用户的购物车
+        /// </summary>
         /// [2025/10/20]思路有两种:1. 是依赖UserDomainService获取当前用户实例在获取其Cart属性, 但是默认ser的引导属性为空
         /// 2. 依赖UserContext和Repository<User>获取user,再通过引导属性获取Cart
         /// 3. 依赖UserContext和Repository<Cart>直接根据用户信息找到目标Cart
@@ -33,7 +34,6 @@ namespace OnlineBookStore.Services
         /// 采用方案4
         /// [2025/10/20] 重构, 该方法直接依赖AccountService其实是UserDomainService的过渡类, 所以这里其实犯了DDD架构一个常见错误:"依赖了另一个领域服务"的问题
         /// 所以重构为带一个int参数userId的方法, 由调用方负责获取当前用户Id
-        /// </summary>
         /// <returns></returns>
         public async Task<DataResult<Cart>> GetCartByUserIdAsync(int userId)
         {
@@ -81,6 +81,25 @@ namespace OnlineBookStore.Services
             // 保存数据, EFCore会自动处理关联关系
             await _repository.SaveAsync();
 
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 根据购物车项编号移除购物车项方法
+        /// </summary>
+        /// <param name="cart"></param>
+        /// <param name="cartItemNumber"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> RemoveCartItemByCartItemNumberAsync(Cart cart, int cartItemNumber)
+        {
+            var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == cartItemNumber);
+            if (cartItem == null)
+                return InfoResult.Fail("无法在购物车里根据购物车项编号找到目标购物车项");
+
+            cart.CartItems?.Remove(cartItem);
+
+            // 保存数据
+            await this.UpdateAsync(cart);
             return InfoResult.Success();
         }
     }

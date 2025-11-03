@@ -38,9 +38,9 @@ namespace OnlineBookStore.Pages.Cart
         /// 移除购物车单线项方法
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostRemoveItemAsync(int orderItemNumber)
+        public async Task<IActionResult> OnPostRemoveItemAsync(int cartItemNumber)
         {
-            var res = await _cartApplication.RemoveUserCartSingleItemAsync(orderItemNumber);
+            var res = await _cartApplication.RemoveUserCartSingleItemAsync(cartItemNumber);
             if (res.IsSuccess == true)
             {
                 return RedirectToPage("/Cart/Index");
