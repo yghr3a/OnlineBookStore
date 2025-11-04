@@ -14,29 +14,23 @@ namespace OnlineBookStore.Services
     /// </summary>
     public class AccountAppliaction
     {
-        private Repository<User> _responsity;
-        private UserContext _userContext;
         private EmailVerificationTokenService _emailVerificationTokenService;
         private EmailSendService _emailSendService;
         private UserDomainService _userDomainService;
         private UserFactory _userFactory;
-        private IPasswordHasher<User> _passwordHasher;
+        private UrlFactory _urlFactory;
 
-        public AccountAppliaction(Repository<User> repository,
-                                       UserContext userContext, 
-                                       IPasswordHasher<User> passwordHasher,
-                                       EmailVerificationTokenService emailVerificationTokenService,
-                                       EmailSendService emailSendService,
-                                       UserDomainService userDomainService,
-                                       UserFactory userFactory)
+        public AccountAppliaction(EmailVerificationTokenService emailVerificationTokenService,
+                                  EmailSendService emailSendService,
+                                  UserDomainService userDomainService,
+                                  UserFactory userFactory,
+                                  UrlFactory urlFactory)
         {
-            _responsity = repository;
-            _userContext = userContext;
-            _passwordHasher = passwordHasher;
             _emailVerificationTokenService = emailVerificationTokenService;
             _emailSendService = emailSendService;
             _userDomainService = userDomainService;
             _userFactory = userFactory;
+            _urlFactory = urlFactory;
         }
 
         /// <summary>
@@ -97,8 +91,9 @@ namespace OnlineBookStore.Services
                 // 生成验证用的Token
                 string token = Check(_emailVerificationTokenService.GenerateToken(info.Email));
 
-                // 在这里构建具体的验证url, 以后再重构
-                var verificationUrl = $"https://localhost:7109/api/account/verify-email?token={token}";
+                // 在这里构建具体的验证url, 以后再重构 
+                var verificationUrl = _urlFactory.CreateTokenUrl("api/account/verify/email", token);
+
                 // 这里先在这里定义邮件的格式, 后面再重构
                 var subject = "验证您的邮箱";
                 var body = $@"
@@ -120,8 +115,7 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
-        /// 验证注册Token
-        /// </summary>
+        /// 验证注册Token        /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
         public async Task<InfoResult> VerifyUserRegisterTokenAsync(string token)

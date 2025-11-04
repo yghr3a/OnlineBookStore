@@ -118,9 +118,12 @@ namespace OnlineBookStore
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
             // 注册编号工厂服务类型, 这里得是单例注册
             builder.Services.AddSingleton<NumberFactory, NumberFactory>();
+            // 注册Url相关配置服务类型
+            builder.Services.Configure<UrlOptions>(builder.Configuration.GetSection("UrlOptions"));
+            // 注册Url工厂服务类型
+            builder.Services.AddScoped<UrlFactory, UrlFactory>();
 
             var app = builder.Build();
-
 
             // 在应用启动时初始化一次编号工厂
             using (var scope = app.Services.CreateScope())
@@ -140,7 +143,6 @@ namespace OnlineBookStore
                 await SeedService.SeedBooksAsync(context, factory);
                 await SeedService.SeedUserAsync(context, passwordHashHandler);
             }
-
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

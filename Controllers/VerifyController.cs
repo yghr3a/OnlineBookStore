@@ -13,7 +13,7 @@ public class VerifyController : ControllerBase
        _accountAppliaction = accountAppliaction;
     }
 
-    [HttpGet("verify-email")]
+    [HttpGet("email")]
     public async Task<IActionResult> VerifyEmail(string token)
     {
         var result = await _accountAppliaction.VerifyUserRegisterTokenAsync(token);
