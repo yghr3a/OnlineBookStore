@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Services;
 using System.Security.Claims;
+using OnlineBookStore.Models.Data;
 
 namespace OnlineBookStore.Pages.Account
 {
@@ -73,34 +74,20 @@ namespace OnlineBookStore.Pages.Account
                 return Page();
             }
 
-            var userRegisterResult = await _accountAppliaction.UserRegistraionAsync(UserName, Password, Email);
+            var info = new UserRegisterInfo() { UserName = UserName, Password = Password, Email = Email };
+            var userRegisterResult = await _accountAppliaction.UserRegistraionAsync(info);
 
             if (userRegisterResult.IsSuccess == true)
             {
                 // 注册成功, 自动登录
-
-                var claimsIdentity = new ClaimsIdentity(userRegisterResult.ClaimList, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    // 登录后立即生效
-                    IsPersistent = true,
-                    // 7天后过期
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-                };
-
-                // 具体的登录操作交给页面层处理而非服务层
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties
-                );
+                // [2025/11/4] 现在改为注册成功后转到提示页面, 提示页面自动跳转到登录页面
 
                 // 登录成功, 跳转到首页
                 return RedirectToPage("/Shared/Notification", new
                 {
-                    Message = "注册成功",
-                    RedirectUrl = "/Index",
-                    Seconds = 5
+                    Message = "注册信息提交成功, 请查收您的邮箱, 点击我们发送给您的验证链接, 即可完成注册验证",
+                    RedirectUrl = "/Account/Login",
+                    Seconds = 10
                 });
             }
             else

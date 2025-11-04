@@ -58,10 +58,9 @@ namespace OnlineBookStore
                 };
             });
 
-            // 关闭默认的Claim类型映射, 以防止JWT中的Claim类型被自动转换
+            // 关闭默认的Claim类型映射, 以防止JWT中的Claim类型被自动转换成标准类型
             // 甄姬吧坑啊
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
 
             // 添加 HttpContext 访问器服务, 以便在其他服务中访问当前请求的HttpContext
             builder.Services.AddHttpContextAccessor();
@@ -101,6 +100,8 @@ namespace OnlineBookStore
             builder.Services.AddScoped<UserDomainService, UserDomainService>();
             // 注册用户上下文服务类型
             builder.Services.AddScoped<UserContext, UserContext>();
+            // 注册用户工厂服务类型
+            builder.Services.AddScoped<UserFactory, UserFactory>();
             // 注册用户密码哈希服务
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
@@ -115,7 +116,7 @@ namespace OnlineBookStore
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
-            // 注册编号工厂服务类型
+            // 注册编号工厂服务类型, 这里得是单例注册
             builder.Services.AddSingleton<NumberFactory, NumberFactory>();
 
             var app = builder.Build();

@@ -7,6 +7,7 @@ using System.Security.Claims;
 using OnlineBookStore.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OnlineBookStore.Services
 {
@@ -68,7 +69,7 @@ namespace OnlineBookStore.Services
         }
 
         /// <summary>
-        /// 验证已登录用户信息
+        /// 验证已登录用户的密码
         /// </summary>
         /// <param name="user"></param>
         /// <param name="password"></param>
@@ -82,6 +83,41 @@ namespace OnlineBookStore.Services
             if (pwHashVerificationResult == PasswordVerificationResult.Failed)
                 return InfoResult.Fail("密码错误");
 
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 验证用户注册信息
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> VerifyUserResiterInfo(UserRegisterInfo info)
+        {
+            // 检查用户名和邮箱的唯一性
+            var existingUserQuary = _repository.AsQueryable().Where(u => u.UserName == info.UserName);
+            var existingEmailQuary = _repository.AsQueryable().Where(u => u.Email == info.Email);
+
+            var existingUser = await _repository.GetSingleByQueryAsync(existingUserQuary);
+            var existingEmail = await _repository.GetSingleByQueryAsync(existingEmailQuary);
+
+            if (existingUser is not null)
+                return InfoResult.Fail("该用户名已被注册");
+
+            if (existingEmail is not null)
+                return InfoResult.Fail("该邮箱已被注册");
+
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> AddUser(User user)
+        {
+            await _repository.AddAsync(user);
+            await _repository.SaveAsync();
             return InfoResult.Success();
         }
 

@@ -21,6 +21,7 @@ public class EmailSendService
     /// <returns></returns>
     public async Task SendAsync(string to, string subject, string body)
     {
+        // TODO: 后面研究研究这部分的异常处理
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_options.SenderName, _options.SenderEmail));
         message.To.Add(new MailboxAddress("", to));

@@ -17,20 +17,26 @@ namespace OnlineBookStore.Services
         private Repository<User> _responsity;
         private UserContext _userContext;
         private EmailVerificationTokenService _emailVerificationTokenService;
+        private EmailSendService _emailSendService;
         private UserDomainService _userDomainService;
+        private UserFactory _userFactory;
         private IPasswordHasher<User> _passwordHasher;
 
         public AccountAppliaction(Repository<User> repository,
                                        UserContext userContext, 
                                        IPasswordHasher<User> passwordHasher,
                                        EmailVerificationTokenService emailVerificationTokenService,
-                                       UserDomainService userDomainService)
+                                       EmailSendService emailSendService,
+                                       UserDomainService userDomainService,
+                                       UserFactory userFactory)
         {
             _responsity = repository;
             _userContext = userContext;
             _passwordHasher = passwordHasher;
             _emailVerificationTokenService = emailVerificationTokenService;
+            _emailSendService = emailSendService;
             _userDomainService = userDomainService;
+            _userFactory = userFactory;
         }
 
         /// <summary>
@@ -78,77 +84,39 @@ namespace OnlineBookStore.Services
         /// <param name="password"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<UserRegisterResult> UserRegistraionAsync(string userName, string password, string email)
+        public async Task<InfoResult> UserRegistraionAsync(UserRegisterInfo info)
         {
-            var quary = _responsity.AsQueryable();
-            var passwordHash = _passwordHasher.HashPassword(null, password);
-
-            // 检查用户名和邮箱的唯一性
-            var existingUser = await quary.FirstOrDefaultAsync(u => u.UserName == userName);
-            var existingEmail = await quary.FirstOrDefaultAsync(u => u.Email == email);
-
-            if (existingUser != null)
+            try
             {
-                return new UserRegisterResult
-                {
-                    IsSuccess = false,
-                    ErrorMsg = "用户名已存在"
-                };
+                // 验证用户登录信息唯一性
+                await CheckAsync(_userDomainService.VerifyUserResiterInfo(info));
+                // 创建新用户
+                var newUser = Check(_userFactory.CreateUserEntity(info));
+                // 将还没做信息验证的用户先添加到数据库里
+                await CheckAsync(_userDomainService.AddUser(newUser));
+                // 生成验证用的Token
+                string token = Check(_emailVerificationTokenService.GenerateToken(info.Email));
+
+                // 在这里构建具体的验证url, 以后再重构
+                var verificationUrl = $"https://localhost:7109/api/account/verify-email?token={token}";
+                // 这里先在这里定义邮件的格式, 后面再重构
+                var subject = "验证您的邮箱";
+                var body = $@"
+                <h2>欢迎使用本站！</h2>
+                <p>请点击以下链接以验证您的邮箱：</p>
+                <a href='{verificationUrl}'>立即验证</a>
+                <p>该链接2小时内有效。</p>";
+
+                // 发送Token
+                await _emailSendService.SendAsync(info.Email, subject, body);
+
+                return InfoResult.Success();
+
             }
-
-            if (existingEmail != null)
+            catch (Exception ex)
             {
-                return new UserRegisterResult
-                {
-                    IsSuccess = false,
-                    ErrorMsg = "该邮箱已被注册"
-                };
+                return InfoResult.Fail("注册失败" + ex.Message  );
             }
-
-            // TODO: 增加邮箱或者手机号码的唯一性验证
-
-            // 创建新用户的实体模型类对象
-            var newUser = new User
-            {
-                // Number字段后续需要改为更合理的生成方式, 现在只是简单的用时间戳
-                Number = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % int.MaxValue),
-                UserName = userName,
-                PasswordHash = passwordHash,
-                Email = email,
-                UserRole = UserRole.Customer,
-                RegistrationDate = DateTime.UtcNow
-            };
-
-            // 添加新用户到数据库
-            // [2025/10/11] 此时确保UserID生成
-            await _responsity.AddAsync(newUser);
-            await _responsity.SaveAsync();
-
-            // [2025/10/11]  尝试手动创建一个Cart对象赋值给User, 看看User会不会带有Cast引导属性
-            var cart = new Cart()
-            {
-                User = newUser
-            };
-
-            newUser.Cart = cart;
-
-            // 再次保存
-            await _responsity.SaveAsync();
-
-            // 创建用户声明列表, 用于注册完成后自动登录
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, newUser.Number.ToString()),
-                new Claim(ClaimTypes.Name, newUser.UserName),
-                new Claim(ClaimTypes.Email, newUser.Email ?? "")
-            };
-
-            return new UserRegisterResult
-            {
-                IsSuccess = true,
-                ClaimList = claims
-            };
-
         }
 
         /// <summary>
