@@ -1,0 +1,57 @@
+﻿@page
+@model OnlineBookStore.Pages.Payment.PaymentQrModel
+@{
+    ViewData["Title"] = "支付二维码";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/order.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/qr.css" asp-append-version="true" />
+</head>
+
+<main class="main-content">
+
+    <div class="content-container">
+
+        <div class="content-title">
+		    扫码支付
+        </div>
+
+        <div class="contain-body">
+
+		    <p>请使用手机扫描二维码进行支付：</p>
+            <div class="middle">
+		        <img src="@Model.QrbaseUrl" alt="支付二维码" style="width:200px;height:200px;" />
+            </div>
+		    <div>或者点击下面链接模拟扫码：</div>
+		    <a href="@Model.CodeUrl" target="_blank">模拟跳转至第三方平台支付扫码支付</a>
+            <div class="order-number">订单编号:@Model.OrderNumber</div>
+	    </div>
+
+    </div>
+
+</main>
+
+
+
+@section Scripts {
+    <script>
+		// 每隔3秒轮询支付状态
+        setInterval(async () => 
+        {
+            const res = await fetch(`?handler=CheckOrderStatus&orderNumber=@Model.OrderNumber`);
+            const data = await res.json();
+
+            if (data.result === "Success") 
+                window.location.href = "/Shared/Notification?message=购买成功&redirectUrl=/Index&seconds=5";
+
+            else if (data.result === "Fail")
+                window.location.href = "/Shared/Notification?message=购买失败&redirectUrl=/Index&seconds=5";
+
+            else if (data.result === "Error")
+                window.location.href = "/Shared/Notification?message=交易异常&redirectUrl=/Index&seconds=5";
+           
+        }, 3000);
+    </script>
+}

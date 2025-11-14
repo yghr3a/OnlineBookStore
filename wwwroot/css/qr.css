@@ -1,0 +1,11 @@
+.middle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.order-number{
+    margin-top:20px;
+    font-size : 13px;
+    color:gray;
+}
