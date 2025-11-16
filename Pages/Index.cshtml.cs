@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
@@ -6,6 +7,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace OnlineBookStore.Pages
 {
+    [Authorize] // 确保用户已登录
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

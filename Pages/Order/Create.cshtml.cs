@@ -4,9 +4,11 @@ using OnlineBookStore.Services;
 using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
 using static SKIT.FlurlHttpClient.Wechat.TenpayV3.Models.CreateNewTaxControlFapiaoApplicationRequest.Types.Fapiao.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineBookStore.Pages.Order
 {
+    [Authorize] // 确保用户已登录
     public class CreateModel : PageModel
     {
         private OrderApplication _orderApplication;

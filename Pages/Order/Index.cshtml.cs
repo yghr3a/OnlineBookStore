@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
@@ -6,6 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace OnlineBookStore.Pages.Order
 {
+    [Authorize] // 确保用户已登录
     public class IndexModel : PageModel
     {
         private OrderApplication _orderApplication;

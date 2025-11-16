@@ -2,12 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineBookStore.Pages.Book
 {
     /// <summary>
     /// 图书首页模型, 展示书籍的详细信息
     /// </summary>
+    [Authorize] // 确保用户已登录
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

@@ -45,7 +45,7 @@ namespace OnlineBookStore
                 options.SlidingExpiration = true; // 在有效期内每次验证都会刷新过期时间
 
             })
-            .AddJwtBearer(options =>    // 添加JWT验证设置
+            .AddJwtBearer("ApiScheme", options =>    // 添加JWT验证设置,为 JWT 指定它自己的 scheme
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -59,6 +59,13 @@ namespace OnlineBookStore
                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
                 };
             });
+
+            //// 全局授权过滤器, 保护所有Razor页面, 需要认证后才能访问
+            //builder.Services.AddRazorPages(options =>
+            //{
+            //    options.Conventions.AuthorizeFolder("/");
+            //});
+
 
             // 关闭默认的Claim类型映射, 以防止JWT中的Claim类型被自动转换成标准类型
             // 甄姬吧坑啊

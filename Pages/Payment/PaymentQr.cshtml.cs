@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Services;
 using OnlineBookStore.Models.Entities;
 using QRCoder;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineBookStore.Pages.Payment
 {
+    [Authorize] // 确保用户已登录才能访问支付页面
     public class PaymentQrModel : PageModel
     {
         private MockPaymentGateway _mockQrPayMentService;
