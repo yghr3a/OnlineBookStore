@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Services;
 using System.Runtime.CompilerServices;
+using static SKIT.FlurlHttpClient.Wechat.TenpayV3.Models.DepositMarketingMemberCardOpenCardCodesResponse.Types;
 
 namespace OnlineBookStore.Pages.Order
 {
@@ -31,6 +32,35 @@ namespace OnlineBookStore.Pages.Order
             else
             {
                 ErrorMsg = res.ErrorMsg;
+            }
+        }
+
+        /// <summary>
+        /// 重新下单Post请求
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostReplaceOrderAsync(int orderNumber)
+        {
+            var result = await _orderApplication.ReplaceOrderAsync(orderNumber);
+
+            // 这部分逻辑和Create.cshtml.cs里边的OnPostAsync一模一样
+            if (result.IsSuccess == true)
+            {
+                return RedirectToPage("/Payment/PaymentQr", new
+                {
+                    OrderNumber = result.Data!.TransactionId,
+                    CodeUrl = result.Data!.CodeUrl
+                });
+            }
+            else
+            {
+                return RedirectToPage("/Shared/Notification", new
+                {
+                    Message = "购买失败",
+                    RedirectUrl = "/Index",
+                    Seconds = 5
+                });
             }
         }
     }

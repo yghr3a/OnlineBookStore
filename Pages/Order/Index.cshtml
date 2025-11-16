@@ -101,14 +101,27 @@
 										@if(order.OrderStatus == OrderStatus.Success)
 										{
 											<button class="order-button-finished">
-												已完成
+												支付成功
 											</button>
 									    }
 										else if (order.OrderStatus == OrderStatus.Fail)
 										{
-											<button class="order-button-unfinished">
-												未完成
-											</button>
+										<form method="post" asp-page-handler="ReplaceOrder" class="remove-item-form">
+											<input type="hidden" name="orderNumber" value="@order.Number" />
+												<button type ="submit" class="order-button-unfinished">
+													重新支付
+												</button>
+											</form>
+										}
+										else if (order.OrderStatus == OrderStatus.WaitingForPayment)
+										{
+											<!--理论上, 等待支付的订单可以直接向第三方平台索要链接的,但是没实现, 干脆重新再要一次-->
+										<form method="post" asp-page-handler="ReplaceOrder" class="remove-item-form">
+												<input type="hidden" name="orderNumber" value="@order.Number" />
+												<button type="submit" class="order-button-unfinished">
+													重新支付
+												</button>
+											</form>
 										}
 									</div>
 							</div>

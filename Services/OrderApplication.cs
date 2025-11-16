@@ -76,6 +76,39 @@ namespace OnlineBookStore.Services
             }
         }
 
+        /// <summary>
+        /// 重新下单业务方法
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public async Task<DataResult<PlaceOrderPaymentResponse>> ReplaceOrderAsync(int orderNumber)
+        {
+            try
+            {
+                // ---------- 获取订单相关操作 -------------
+                var order = await CheckAsync(_orderDomainService.GetOrderByOrderNumber(orderNumber));
+                // 让订单重新变为待支付状态
+                order.OrderStatus = OrderStatus.WaitingForPayment;
+                await CheckAsync(_orderDomainService.UpdateAsync(order!));
+
+                // ---------- 调用第三方（Mock）统一下单 -------------
+                var mockPaymentQr = await CheckAsync(_mockPaymentGateway.CreatePaymentAsync(order!));
+
+                var res = new PlaceOrderPaymentResponse()
+                {
+                    CodeUrl = mockPaymentQr.CodeUrl,           // 最重要的支付二维码
+                    TransactionId = mockPaymentQr.OrderNumber, // 暂时使用订单号代替, 反正是模拟的
+                    ExpireAt = mockPaymentQr.ExpireAt          // 二维码过期时间
+                };
+
+                return DataResult<PlaceOrderPaymentResponse>.Success(res);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<PlaceOrderPaymentResponse>.Fail("重新下单失败 " + ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// 获取用户历史订单业务方法
