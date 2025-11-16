@@ -61,7 +61,7 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// [2025/10/20] 业务减重重构
         /// [2025/11/03] 采用ExceptionChecker简化代码
-        public async Task<DataResult<CartViewModel>> GetUserCartAsync(int pageIndex = 1, int pageSize = 30)
+        public async Task<DataResult<CartViewModel>> GetUserCartAsync(int pageIndex = 1, int pageSize = 10)
         {
             try
             {
@@ -75,6 +75,56 @@ namespace OnlineBookStore.Services
 
                 // 构建购物车视图模型
                 var cartVM = Check(_cartFactory.CreateCartViewModel(cart, books, user));
+
+                // TODO: 后续再考虑将分页操作下放领域类处理
+                // 分页调整cartVM里的CartItemViewModels
+                var cartItems = cartVM.CartItemViewModels.Skip(pageIndex -1).Take(pageSize).ToList();
+                cartVM.CartItemViewModels = cartItems;
+
+                return DataResult<CartViewModel>.Success(cartVM);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<CartViewModel>.Fail(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取被搜索的用户购物车
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<DataResult<CartViewModel>> GetSearchedUserCartAsync(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            try
+            {
+                // 获取用户实体对象和购物车实体对象
+                var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
+                var cart = await CheckAsync(_cartDomainService.GetCartByUserIdAsync(user.Id));
+
+                // 获取书籍列表
+                var bookIds = cart.CartItems.Select(ci => ci.BookId).ToList();
+                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+
+                // 构建购物车视图模型
+                var cartVM = Check(_cartFactory.CreateCartViewModel(cart, books, user));
+
+                // TODO: 后续再考虑将关键字查询操作下放领域类处理
+                // 构建关键字查询
+                var query = cartVM.CartItemViewModels.AsQueryable();
+                if(string.IsNullOrWhiteSpace(keyword) == false)
+                {
+                    query = query.Where(ci =>
+                    ci.BookTitle.Contains(keyword) ||
+                    ci.BookAuthor.Contains(keyword));
+                }
+
+                // TODO: 后续再考虑将分页操作下放领域类处理
+                // 分页查询
+                var cartItems = query.Skip(pageIndex - 1).Take(pageSize).ToList();
+                cartVM.CartItemViewModels = cartItems;
 
                 return DataResult<CartViewModel>.Success(cartVM);
             }

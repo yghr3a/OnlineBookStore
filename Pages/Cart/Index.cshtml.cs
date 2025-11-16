@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Services;
+using OnlineBookStore.Models.Data;
 
 namespace OnlineBookStore.Pages.Cart
 {
@@ -12,8 +13,9 @@ namespace OnlineBookStore.Pages.Cart
         public CartViewModel CartViewModel { get; set; } = new();
         public List<CartItemViewModel> CartItemViewModels => CartViewModel.CartItemViewModels;
         public int UserNumber => CartViewModel.UserNumber;
-        public int PageIndex { get; set; } = 1;
-        public string ErrorMsg { get; set; }
+        [BindProperty(SupportsGet = true)] public int PageIndex { get; set; } = 1;
+        [BindProperty(SupportsGet = true)] public string KeyWord { get; set; } = string.Empty;
+        public string ErrorMsg { get; set; } = string.Empty;
 
         public IndexModel(CartApplication cartApplication)
         {
@@ -22,9 +24,14 @@ namespace OnlineBookStore.Pages.Cart
 
         public async Task OnGet()
         {
-            var cartResult = await _cartApplication.GetUserCartAsync(PageIndex);
+            var cartResult = new DataResult<CartViewModel>();
 
-            if(cartResult.IsSuccess == true)
+            if (KeyWord == string.Empty)
+                cartResult = await _cartApplication.GetUserCartAsync(PageIndex);
+            else
+                cartResult = await _cartApplication.GetSearchedUserCartAsync(KeyWord, PageIndex);
+
+            if (cartResult.IsSuccess == true)
             {
                 CartViewModel = cartResult.Data!;
             }

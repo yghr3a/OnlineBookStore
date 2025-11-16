@@ -22,10 +22,12 @@
 						搜索购物车商品
 					</span>
 					<div class="content-body">
-						<div class="search-bar">
-							<input class="search-input" type="text" placeholder="请输入商品名字..." />
-							<button class="search-button" asp-page="/Search">搜索</button>
-						</div>
+						<form method="get" asp-page="./Book/Search">
+							<div class="search-bar">
+								<input class="search-input" type="text" name="keyWord" placeholder="请输入商品名字..." />
+								<button class="search-button" asp-page="/Cart/Index">搜索</button>
+							</div>
+						</form>
 					</div>
 				</div>
 
@@ -83,15 +85,18 @@
 
 					<div class="page-change-body">
 						<!-- 上一页按钮 -->
-						<a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)"
+						<a asp-page="./Index" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex - 1)"
 							class="next-last-page-btn"
 							disabled="@(Model.PageIndex <= 1)">
 							上一页
 						</a>
 
 						<!-- 下一页按钮 -->
-						<a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)"
-							class="next-last-page-btn">
+						<!--如果当前页面的购物车项小于十, 肯定说明没有下一页的内容了, 所以让按钮变灰-->
+						<!--但是没有考虑刚刚好就剩十个的情况-->
+						<a asp-page="./Index" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex + 1)"
+							class="next-last-page-btn"
+							disabled="@(Model.CartItemViewModels!.Count < 10)">
 							下一页
 						</a>
 					</div>
@@ -113,7 +118,7 @@
 							<input type="hidden" name="OrderItems[@i].BookNumber" value="@Model.CartItemViewModels![i].BookNumber" />
 							<input type="hidden" name="OrderItems[@i].Count" value="@Model.CartItemViewModels![i].Count" min="1" />
 						}
-						<button type="submit" class="checkout-button">创建订单</button>
+						<button type="submit" class="checkout-button">为当前页面的购物车项创建订单</button>
 					</form>
 
 					<!--清空购物车表单, 按下后, 执行OnPostClearCartAsync方法-->
