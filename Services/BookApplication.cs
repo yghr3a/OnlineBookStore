@@ -49,7 +49,7 @@ namespace OnlineBookStore.Services
                 Number = b.Number,
                 Name = b.Name,
                 Authors = b.Authors,
-                Price = ((float)b.Price),
+                Price = b.Price,
                 Sales = b.Sales
             }).ToList();
 
@@ -74,7 +74,7 @@ namespace OnlineBookStore.Services
                     Number = b.Number,
                     Name = b.Name,
                     Authors = b.Authors,
-                    Price = ((float)b.Price),
+                    Price = b.Price,
                     Sales = b.Sales
                 }).ToList();
 
@@ -119,7 +119,7 @@ namespace OnlineBookStore.Services
                 Category = bookEM.Categorys,
                 Introduction = bookEM.Introduction,
                 CoverImageUrl = bookEM.CoverImageUrl,
-                Price = ((float)bookEM.Price),
+                Price = bookEM.Price,
                 Sales = bookEM.Sales
             };
 
