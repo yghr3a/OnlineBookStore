@@ -9,7 +9,7 @@ namespace OnlineBookStore.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly BookService _bookService;
+        private readonly BookApplication _bookService;
 
         public List<BookViewModel> Books { get; set; } = new List<BookViewModel>();
 
@@ -20,7 +20,7 @@ namespace OnlineBookStore.Pages
         // 每页多少条数据，可以写死，也可以通过 URL 传递
         public int PageSize { get; set; } = 50;
 
-        public IndexModel(ILogger<IndexModel> logger, BookService bookService)
+        public IndexModel(ILogger<IndexModel> logger, BookApplication bookService)
         {
             _logger = logger;
             _bookService = bookService;

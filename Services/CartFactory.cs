@@ -63,9 +63,9 @@ namespace OnlineBookStore.Services
                 {
                     Number = ci.Id, // 先使用Id作为唯一标识, 忘记给CartItem添加Number属性了
                     BookNumber = bookDict[ci.BookId].Number,
-                    BookTitle = bookDict[ci.BookId].Name ?? "未知书籍",
-                    BookCoverImageUrl = bookDict[ci.BookId].CoverImageUrl ?? string.Empty,
-                    BookAuthor = bookDict[ci.BookId].Authors?.FirstOrDefault() ?? "未知作者",
+                    BookTitle = bookDict[ci.BookId].Name,
+                    BookCoverImageUrl = bookDict[ci.BookId].CoverImageUrl,
+                    BookAuthor = bookDict[ci.BookId].Authors,
                     Count = ci.Count,
                     AddedDate = ci.CreatedDate,
                     Price = (float)bookDict[ci.BookId].Price,

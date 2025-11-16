@@ -12,22 +12,22 @@
         public required string Name { get; set; }
 
         // 图书作者(可能不止一位)(EFCore自动建立子表)
-        public List<string?>? Authors { get; set; }
+        public string Authors { get; set; } = string.Empty;
 
         // 出版社
-        public string? Publisher { get; set; }
+        public string Publisher { get; set; } = string.Empty;
 
         // 出版年份
-        public int? PublishYear { get; set; }
+        public int PublishYear { get; set; }
 
         // 图书类别(EFCore自动建立子表)
-        public List<string?>? Categorys { get; set; }
+        public string Categorys { get; set; } = string.Empty;
 
         // 图书介绍
-        public string? Introduction { get; set; }
+        public string Introduction { get; set; } = string.Empty;
 
         // 图书封面图片链接
-        public string? CoverImageUrl { get; set; }
+        public string CoverImageUrl { get; set; } = string.Empty;
 
         // 图书价格
         public required decimal Price { get; set; }

@@ -9,7 +9,7 @@ namespace OnlineBookStore.Services
     /// </summary>
     public class BookDomainService : DomainService<Book>
     {
-        public BookDomainService(Repository<Book> bookRespository) 
+        public BookDomainService(Repository<Book> bookRespository)
             : base(bookRespository)
         {
         }
@@ -86,6 +86,26 @@ namespace OnlineBookStore.Services
             return DataResult<Book>.Success(book);
         }
 
+        /// <summary>
+        /// 根据关键字搜索图书实体模型列表
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<Book>>> GetSearchedBooksByKeywordAync(string keyword, int pageIndex = 1, int pageSize = 50)
+        {
+            var query = _repository.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(b => 
+                    b.Name.Contains(keyword) || 
+                    b.Authors.Contains(keyword));
+            }
 
+            // 分页获取搜索到的书籍实体模型
+            var searchedBookEMs = await _repository.GetPagedAsync(query, pageIndex, pageSize);
+            return DataResult<List<Book>>.Success(searchedBookEMs);
+        }
     }
 }

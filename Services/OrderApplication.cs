@@ -18,16 +18,19 @@ namespace OnlineBookStore.Services
         private OrderDomainService _orderDomainService;
         private UserDomainService _userDomainService;
         private BookDomainService _bookDomainService;
+        private MockPaymentGateway _mockPaymentGateway;
         private OrderFactory _orderFactory;
 
         public OrderApplication(OrderDomainService orderDomainService,
                             BookDomainService bookDomainService,
                             UserDomainService userDomainService,
-                            OrderFactory orderFactor) 
+                            MockPaymentGateway mockPaymentGateway,
+                            OrderFactory orderFactor)
         {
             _orderDomainService = orderDomainService;
             _userDomainService = userDomainService;
             _bookDomainService = bookDomainService;
+            _mockPaymentGateway = mockPaymentGateway;
             _orderFactory = orderFactor;
         }
 
@@ -37,7 +40,7 @@ namespace OnlineBookStore.Services
         /// [2025/11/03] 使用ExceptionChecker简化代码
         /// <param name="createOrderResponse"></param>
         /// <returns></returns>
-        public async Task<InfoResult> PlayerOrderAsync(CreateOrderResponse createOrderResponse)
+        public async Task<DataResult<PlaceOrderPaymentResponse>> PlaceOrderAsync(CreateOrderResponse createOrderResponse)
         {
             // 具体的支付API相关的调用就先不实现先
             // 还有购买完成后向用户发送下载链接的操作也不实现先
@@ -45,20 +48,34 @@ namespace OnlineBookStore.Services
 
             try
             {
+                // ---------- 创建订单相关操作 -------------
                 var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
                 var Numbers = createOrderResponse.Items.Select(i => i.BookNumber).ToList();
                 var books = await CheckAsync(_bookDomainService.GetBookByNumberAsync(Numbers));
 
                 var order = Check(_orderFactory.CreateOrderEntity(books!, user!, createOrderResponse));
-                await CheckAsync(_orderDomainService.AddOrder(user!, order!, books!, createOrderResponse));
+                await CheckAsync(_orderDomainService.AddOrderAsync(user!, order!, books!, createOrderResponse));
 
-                return InfoResult.Success();
+                // ---------- 调用第三方（Mock）统一下单 -------------
+                var mockPaymentQr = await CheckAsync(_mockPaymentGateway.CreatePaymentAsync(order!));
+
+                var res = new PlaceOrderPaymentResponse()
+                {
+                    CodeUrl = mockPaymentQr.CodeUrl,           // 最重要的支付二维码
+                    TransactionId = mockPaymentQr.OrderNumber, // 暂时使用订单号代替, 反正是模拟的
+                    ExpireAt = mockPaymentQr.ExpireAt          // 二维码过期时间
+                };
+
+                return DataResult<PlaceOrderPaymentResponse>.Success(res);
             }
+            // TODO: 注意一下, 如果订单创建成功, 但是支付调用失败的话, 目前的实现是不会回滚订单创建的
+            // 为了契合ExceptCheck的设计方式, 可以考虑顶一个对该情况专门的业务异常类, 在这里捕获后, 手动回滚订单创建
             catch (Exception ex)
             {
-                return InfoResult.Fail("创建订单失败 " +  ex.Message);
+                return DataResult<PlaceOrderPaymentResponse>.Fail("创建订单失败 " + ex.Message);
             }
         }
+
 
         /// <summary>
         /// 获取用户历史订单业务方法
@@ -90,5 +107,63 @@ namespace OnlineBookStore.Services
             }
         }
 
+        /// <summary>
+        /// 根据订单编号获取订单状态业务方法
+        /// </summary>
+        /// <param name="OrderNumber"></param>
+        /// <returns></returns>
+        public async Task<DataResult<OrderStatus>> CheckOrderStatusByOrderNumber(int OrderNumber)
+        {
+            try
+            {
+                var order = await CheckAsync(_orderDomainService.GetOrderByOrderNumber(OrderNumber));
+                return DataResult<OrderStatus>.Success(order!.OrderStatus);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<OrderStatus>.Fail("获取订单状态失败 " + ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// 更新订单支付状态业务方法
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <param name="orderStatus"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> UpdateOrderPaymentStatusAsync(int orderNumber, OrderStatus orderStatus)
+        {
+            try
+            {
+                var order = await CheckAsync(_orderDomainService.GetOrderByOrderNumber(orderNumber));
+                order.OrderStatus = orderStatus;
+                await CheckAsync(_orderDomainService.UpdateAsync(order));
+                return InfoResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return InfoResult.Fail("更新订单支付状态失败 " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 更新订单支付状态业务方法
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <param name="orderStatus"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> UpdateOrderPaymentStatusAsync(string orderNumber, OrderStatus orderStatus)
+        {
+            try
+            {
+                var orderNumberNum = int.Parse(orderNumber);
+                return await UpdateOrderPaymentStatusAsync(orderNumberNum, orderStatus);    
+            }
+            catch (Exception ex)
+            {
+                return InfoResult.Fail("更新订单支付状态失败 " + ex.Message);
+            }
+        }
     }
 }

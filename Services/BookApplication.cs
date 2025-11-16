@@ -2,16 +2,21 @@
 using OnlineBookStore.Models.Entities;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Repository;
+using OnlineBookStore.Infrastructure;
+using static OnlineBookStore.Infrastructure.ExceptionChecker;
+using Microsoft.VisualBasic;
 
 namespace OnlineBookStore.Services
 {
     // 图书服务, 提供与图书相关的业务逻辑
-    public class BookService
+    public class BookApplication
     {
         private Repository<Book> _bookRepository;
-        public BookService(Repository<Book> repository)
+        private BookDomainService _bookDomainService;
+        public BookApplication(BookDomainService bookDomainService,Repository<Book> repository)
         {
             _bookRepository = repository;
+            _bookDomainService = bookDomainService;
         }
 
         // 目前只是简单地返回所有图书, 以后可以根据销量等指标进行排序和筛选
@@ -54,10 +59,31 @@ namespace OnlineBookStore.Services
         /// <summary>
         /// 获取所搜索图书列表
         /// </summary>
+        /// <param name="keyWord"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<BookViewModel>> GetSearchedBooksAsync(string keyWord, int pageIndex = 1, int pageSize = 30)
+        public async Task<DataResult<List<BookViewModel>>> GetSearchedBooksAsync(string keyWord, int pageIndex = 1, int pageSize = 50)
         {
-            throw new Exception("Not Implemented");
+            try
+            {
+                var books = await CheckAsync(_bookDomainService.GetSearchedBooksByKeywordAync(keyWord, pageIndex, pageSize));
+                var bookVMs = books.Select(b => new BookViewModel()
+                {
+                    Id = b.Id,
+                    Number = b.Number,
+                    Name = b.Name,
+                    Authors = b.Authors,
+                    Price = ((float)b.Price),
+                    Sales = b.Sales
+                }).ToList();
+
+                return DataResult<List<BookViewModel>>.Success(bookVMs);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<List<BookViewModel>>.Fail("搜索书籍失败" + ex.Message);
+            }
         }
 
         /// <summary>
@@ -90,7 +116,7 @@ namespace OnlineBookStore.Services
                 Authors = bookEM.Authors,
                 Publisher = bookEM.Publisher,
                 PublishYear = bookEM.PublishYear,
-                Category = bookEM.Categorys != null ? string.Join(", ", bookEM.Categorys) : null,
+                Category = bookEM.Categorys,
                 Introduction = bookEM.Introduction,
                 CoverImageUrl = bookEM.CoverImageUrl,
                 Price = ((float)bookEM.Price),

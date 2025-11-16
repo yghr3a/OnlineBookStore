@@ -23,6 +23,8 @@ namespace OnlineBookStore
             builder.Services.AddRazorPages();
             // 添加控制器服务, 以支持API控制器可通过DI获取服务实例
             builder.Services.AddControllers();
+            // 适配View
+            builder.Services.AddControllersWithViews();
 
             // 添加身份验证方案
             builder.Services.AddAuthentication(options =>
@@ -76,7 +78,7 @@ namespace OnlineBookStore
             builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
 
             // 注册图书服务类型
-            builder.Services.AddScoped<BookService, BookService>();
+            builder.Services.AddScoped<BookApplication, BookApplication>();
             // 注册图书领域服务类型
             builder.Services.AddScoped<BookDomainService, BookDomainService>();
 
@@ -116,6 +118,8 @@ namespace OnlineBookStore
 
             // 注册工作单元
             builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
+            // 注册模拟支付网关服务类型
+            builder.Services.AddHttpClient<MockPaymentGateway, MockPaymentGateway>();
             // 注册编号工厂服务类型, 这里得是单例注册
             builder.Services.AddSingleton<NumberFactory, NumberFactory>();
             // 注册Url相关配置服务类型

@@ -11,7 +11,7 @@ namespace OnlineBookStore.Pages.Book
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly BookService _bookService;
+        private readonly BookApplication _bookService;
         private readonly CartApplication _cartApplication;
 
         // 书籍视图模型
@@ -20,7 +20,7 @@ namespace OnlineBookStore.Pages.Book
         // 书籍编号，从 URL 上获取
         [BindProperty(SupportsGet = true)] public int BookNumber { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, BookService bookService, CartApplication cartApplication)
+        public IndexModel(ILogger<IndexModel> logger, BookApplication bookService, CartApplication cartApplication)
         {
             _logger = logger;
             _bookService = bookService;

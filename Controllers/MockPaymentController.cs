@@ -90,7 +90,7 @@ namespace OnlineBookStore.Controllers
 
             // 成功返回支付成功Veiw,失败返回支付失败View
             if (success == true)
-                return View("PayView");
+                return View("PaySuccess");
             else
                 return View("PayFail");
         }

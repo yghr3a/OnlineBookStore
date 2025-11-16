@@ -9,7 +9,7 @@ namespace OnlineBookStore.Pages.Order
 {
     public class CreateModel : PageModel
     {
-        private OrderApplication _orderService;
+        private OrderApplication _orderApplication;
 
         [BindProperty(SupportsGet = true)]
         public List<OrderItemDto> OrderItems { get; set; } = new();
@@ -31,7 +31,7 @@ namespace OnlineBookStore.Pages.Order
 
         public CreateModel(OrderApplication orderService)
         {
-            _orderService = orderService;
+            _orderApplication = orderService;
         }
 
         public void OnGet()
@@ -44,20 +44,19 @@ namespace OnlineBookStore.Pages.Order
             if (OrderItems == null || !OrderItems.Any() || string.IsNullOrEmpty(PaymentMethodString)) 
                 return BadRequest();
 
-            var result = await _orderService.PlayerOrderAsync(new CreateOrderResponse
+            var result = await _orderApplication.PlaceOrderAsync(new CreateOrderResponse
             {
                 PaymentMethod = _paymentMethod,
-                OrderState = OrderStatus.Finished,
+                OrderState = OrderStatus.WaitingForPayment,
                 Items = OrderItems
             });
 
             if(result.IsSuccess == true)
             {
-                return RedirectToPage("/Shared/Notification", new
+                return RedirectToPage("/Payment/PaymentQr", new
                 {
-                    Message = "¹ºÂò³É¹¦",
-                    RedirectUrl = "/Index",
-                    Seconds = 5
+                    OrderNumber = result.Data!.TransactionId,
+                    CodeUrl = result.Data!.CodeUrl
                 });
             }
             else

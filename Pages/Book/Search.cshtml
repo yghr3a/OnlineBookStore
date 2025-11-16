@@ -1,7 +1,7 @@
 ﻿@page
-@model IndexModel
+@model OnlineBookStore.Pages.Book.SearchModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "书籍搜索结果页面";
 }
 
 <head>
@@ -11,24 +11,13 @@
 <div class="page">
 
     <main class="main-content">
-        <div class="text-area">
-            <div class="space-area"></div>
-            <h1 class="big-title"> OnlineBookStore</h1>
-            <div class="small-title">轻松购书,拉近你与书的距离</div>
-            <div class="content-container">
-                <p class="site-introduction">⚠本站点仅用于学习与展示⚠</p>
-                <p class="site-introduction">
-                    欢迎来到OnlineBookStore,这里是一个专注于提供优质图书的在线平台。无论你是文学爱好者、学术研究者，还是休闲读者，我们都能满足你的需求。
-                </p>
-            </div>
-        </div>
         <div class="features-area">
             <div class="content-container">
                 <span class="content-title">
                     搜索图书📕或者作者
                 </span>
                 <div class="content-body">
-                    <form method="get" asp-page="./Book/Search">
+                    <form method="get" asp-page="~/Book/Search">
                         <div class="search-bar">
                             <input class="search-input" type="text" name="keyWord" placeholder="请输入书名或作者..." />
                             <button class="search-button" type="submit">搜索</button>
@@ -38,17 +27,17 @@
             </div>
             <div class="content-container">
                 <span class="content-title">
-                    热销书籍📕
+                    书籍搜索结果📕
                 </span>
                 <div class="book-grid">
                     @foreach (var book in Model.Books)
                     {
-                        <a class="book-card" asp-page="./Book/Index" asp-route-BookNumber="@book.Number">
+                        <a class="book-card" asp-page="/Book/Index" asp-route-BookNumber="@book.Number">
                             <div class="book-cover-wrapper">
                                 @if (string.IsNullOrEmpty(book.CoverImageUrl) == false)
                                 {
                                     <img src="@book.CoverImageUrl" alt="@book.Name" class="book-cover-image"
-                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                                     <!--如果封面url为空,加载得比较慢或者是不可用了,则使用简便灰色作为封面-->
                                     <div class="book-cover-placeholder">
                                         <span class="book-title-overlay">@book.Name</span>
@@ -67,19 +56,19 @@
 
                 <div class="page-change-body">
                     <!-- 上一页按钮 -->
-                    <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)"
-                        class="next-last-page-btn"
-                        disabled="@(Model.PageIndex <= 1)">
+                    <a asp-page="./Book/Search" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex - 1)"
+                       class="next-last-page-btn"
+                       disabled="@(Model.PageIndex <= 1)">
                         上一页
                     </a>
 
                     <!-- 下一页按钮 -->
-                    <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)"
-                    class="next-last-page-btn">
+                    <a asp-page="./Book/Search" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex + 1)"
+                       class="next-last-page-btn">
                         下一页
                     </a>
                 </div>
-                
+
             </div>
         </div>
     </main>

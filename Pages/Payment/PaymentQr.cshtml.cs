@@ -67,11 +67,14 @@ namespace OnlineBookStore.Pages.Payment
         /// <returns></returns>
         private async Task<string> GenerateQrCodeBase64Async(string content)
         {
-            using var qrGenerator = new QRCodeGenerator();
-            using var qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
-            using var qrCode = new PngByteQRCode(qrCodeData);
-            var qrBytes = qrCode.GetGraphic(20);
-            return $"data:image/png;base64,{Convert.ToBase64String(qrBytes)}";
+            return await Task.Run(() =>
+            {
+                using var qrGenerator = new QRCodeGenerator();
+                using var qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
+                using var qrCode = new PngByteQRCode(qrCodeData);
+                var qrBytes = qrCode.GetGraphic(20);
+                return $"data:image/png;base64,{Convert.ToBase64String(qrBytes)}";
+            });
         }
     }
 }

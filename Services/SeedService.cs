@@ -25,11 +25,11 @@ namespace OnlineBookStore.Services
                     {
                         Number = numberFactory.CreateNumber<Book>(),
                         Name = $"测试书籍{i}",
-                        Authors = new List<string?>() { $"作者{i}" } ,
+                        Authors =  $"作者{i}"  ,
                         Publisher = $"出版社{random.Next(1, 10)}",
                         Price = random.Next(20, 90),
                         Sales = random.Next(30, 500),
-                        CoverImageUrl = null, // 可以留空或填默认图片
+                        CoverImageUrl = string.Empty, // 可以留空或填默认图片
                         Introduction = $"这是第{i}本书的介绍"
                     });
                 }

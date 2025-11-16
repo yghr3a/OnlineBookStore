@@ -1,7 +1,7 @@
 ﻿@page
 @model OnlineBookStore.Pages.Book.IndexModel
 @{
-
+    
 }
 
 <head>
@@ -40,10 +40,10 @@
 
                     <!-- 信息栏 -->
                     <div class="book-meta">
-                        <div class="meta-item">作者：@Model.Book.Authors?.FirstOrDefault()</div>
+                        <div class="meta-item">作者：@Model.Book.Authors</div>
                         <div class="meta-item">出版社：@Model.Book.Publisher</div>
                         <div class="meta-item">出版年份：@Model.Book.PublishYear</div>
-                        <div class="meta-item">分类：@Model.Book.Category?.First()</div>
+                        <div class="meta-item">分类：@Model.Book.Category</div>
                     </div>
 
                     <!-- 操作区 -->

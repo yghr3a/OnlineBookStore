@@ -28,7 +28,7 @@ namespace OnlineBookStore.Services
         /// 添加订单, 更新书籍销量, 更新用户历史订单
         /// [2025/10/16] 错误情况处理先简单实现, 后续使用业务异常来处理更好
         /// </summary>  
-        public async Task<InfoResult> AddOrder(User user, Order order, List<Book> books, CreateOrderResponse response)
+        public async Task<InfoResult> AddOrderAsync(User user, Order order, List<Book> books, CreateOrderResponse response)
         {
             if (user is null) return InfoResult.Fail("用户信息为空");
             if (order is null) return InfoResult.Fail("订单信息为空");
@@ -91,6 +91,22 @@ namespace OnlineBookStore.Services
             // 不知道会不会由orders为null的情况
 
             return DataResult<List<Order>>.Success(pageOrders);
+        }
+
+        /// <summary>
+        /// 根据订单编号获取订单
+        /// </summary>
+        /// <param name="OrderNumber"></param>
+        /// <returns></returns>
+        public async Task<DataResult<Order>> GetOrderByOrderNumber(int OrderNumber)
+        {
+            var orderQuery = _repository.AsQueryable()
+                                               .Include(o => o.OrderItems)
+                                               .Where(o => o.Number == OrderNumber);
+            var order = await _repository.GetSingleByQueryAsync(orderQuery);
+            if (order is null)
+                return DataResult<Order>.Fail($"订单编号{OrderNumber}的订单不存在");
+            return DataResult<Order>.Success(order);
         }
     }
 }

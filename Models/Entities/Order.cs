@@ -6,8 +6,10 @@ namespace OnlineBookStore.Models.Entities
     // 订单状态
     public enum OrderStatus
     {
-        Unfinished, //未完成
-        Finished    //已完成
+        None = 0,
+        WaitingForPayment, //等待支付
+        Fail,              //支付失败
+        Success,           //支付成功
     }
 
     // 支付方式
@@ -30,7 +32,7 @@ namespace OnlineBookStore.Models.Entities
         public User? User { get; set; }
 
         // 订单状态
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.Unfinished;
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.WaitingForPayment;
         // 支付方式
         public PaymentMethod PaymentMethod { get; set; }
         // 订单创建时间

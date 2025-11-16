@@ -14,7 +14,7 @@ namespace OnlineBookStore.Models.ViewModels
 
 
         // 订单状态
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.Unfinished;
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.WaitingForPayment;
         // 总计金额
         public float Total => OrderItemViewModels.Sum(x => x.Total);
         // 支付方式
@@ -29,7 +29,20 @@ namespace OnlineBookStore.Models.ViewModels
         // 总计金额字符串格式化, 保留两位小数
         public string TotalString => Total.ToString("F2");
         // 订单状态字符串
-        public string OrderStatusString => OrderStatus == OrderStatus.Finished ? "已完成" : "未完成";
+        public string OrderStatusString
+        {
+            get
+            {
+                return OrderStatus switch
+                {
+                    OrderStatus.None => "无状态",
+                    OrderStatus.WaitingForPayment => "等待支付",
+                    OrderStatus.Fail => "支付失败",
+                    OrderStatus.Success => "支付成功",
+                    _ => "未知状态"
+                };
+            }
+        }
         // 支付方式字符串
         public string PaymentMethodString => PaymentMethod == PaymentMethod.WeChat ? "微信支付" : "支付宝支付";
         // 订单编号字符串

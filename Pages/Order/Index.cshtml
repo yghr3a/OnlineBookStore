@@ -98,13 +98,13 @@
 									</div>
 								</div>
 									<div class="order-buttons">
-										@if(order.OrderStatus == OrderStatus.Finished)
+										@if(order.OrderStatus == OrderStatus.Success)
 										{
 											<button class="order-button-finished">
 												已完成
 											</button>
 									    }
-										else if (order.OrderStatus == OrderStatus.Unfinished)
+										else if (order.OrderStatus == OrderStatus.Fail)
 										{
 											<button class="order-button-unfinished">
 												未完成
