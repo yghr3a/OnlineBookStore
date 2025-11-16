@@ -135,35 +135,6 @@
     .remove-item-button:hover {
         background-color: #c9302c;
     }
-
-/* ====== 分页部分 ====== */
-.page-change-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    margin-top: 24px;
-}
-
-.next-last-page-btn {
-    padding: 8px 14px;
-    border-radius: 6px;
-    background-color: #0078d7;
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
-    transition: background-color 0.2s ease;
-}
-
-    .next-last-page-btn:hover {
-        background-color: #005ea2;
-    }
-
-    .next-last-page-btn[disabled] {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
-
 /* 右边部分（结算栏） */
 .cart-layout-right {
     width: 280px;

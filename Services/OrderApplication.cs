@@ -116,7 +116,7 @@ namespace OnlineBookStore.Services
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<DataResult<List<OrderViewModel>>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 30)
+        public async Task<DataResult<List<OrderViewModel>>> GetUserOrderAsync(int pageIndex = 1, int pageSize = 10)
         {
             try
             {
@@ -131,6 +131,42 @@ namespace OnlineBookStore.Services
 
                 var arge = new CreateOrderViewModelArge() { User = user, Books = books, Orders = orders };
                 var orderVMs = Check(_orderFactory.CreateOrderViewModels(arge));
+
+                // 实现分页, 后续考虑下放
+                orderVMs.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+                return DataResult<List<OrderViewModel>>.Success(orderVMs);
+            }
+            catch (Exception ex)
+            {
+                return DataResult<List<OrderViewModel>>.Fail(ex.Message);
+            }
+        }
+
+        public async Task<DataResult<List<OrderViewModel>>> GetUserSearchedOrderAsync(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            try
+            {
+                var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
+                var orders = await CheckAsync(_orderDomainService.GetPagedOrdersByUserId(user!.Id, pageIndex, pageSize));
+
+                var bookIds = orders.SelectMany(o => o.OrderItems)  // 多重select, 确保结果类型是List<int>, 而不是List<IEnumberable<int>>
+                                    .Select(oi => oi.BookId)
+                                    .Distinct()     // 去重
+                                    .ToList();
+                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+
+                var arge = new CreateOrderViewModelArge() { User = user, Books = books, Orders = orders };
+                var orderVMs = Check(_orderFactory.CreateOrderViewModels(arge));
+
+                // 实现关键字查询, 后续考虑下放
+                var qurey = orderVMs.AsQueryable();
+                if (string.IsNullOrEmpty(keyword) == false)
+                    qurey = qurey.Where(orderVM => orderVM.OrderItemViewModels
+                        .Any(item => item.BookTitle.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
+
+                // 实现分页, 后续考虑下放
+                orderVMs = qurey.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
                 return DataResult<List<OrderViewModel>>.Success(orderVMs);
             }

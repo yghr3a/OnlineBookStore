@@ -19,10 +19,12 @@
 				搜索订单
 			</span>
 			<div class="content-body">
-				<div class="search-bar">
-					<input class="search-input" type="text" placeholder="请输入关键字..." />
-					<button class="search-button" asp-page="/Search">搜索</button>
-				</div>
+				<form method="get" asp-page="/Order/Index">
+					<div class="search-bar">
+						<input class="search-input" type="text" name="keyWord" placeholder="请输入关键字..." />
+						<button class="search-button" >搜索</button>
+					</div>
+				</form>
 			</div>
 		</div>
 
@@ -132,6 +134,23 @@
 				{
 					<p>您还没有历史订单。</p>
 				}
+			</div>
+
+
+			<div class="page-change-body">
+				<!-- 上一页按钮 -->
+				<a asp-page="./Index" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex - 1)"
+				   class="next-last-page-btn"
+				   disabled="@(Model.PageIndex <= 1)">
+					上一页
+				</a>
+
+				<!-- 下一页按钮 -->
+				<a asp-page="./Index" asp-route-keyWord="@Model.KeyWord" asp-route-pageIndex="@(Model.PageIndex + 1)"
+				   class="next-last-page-btn"
+				   disabled="@(Model.OrderViewModels!.Count < 10)">
+					下一页
+				</a>
 			</div>
 		</div>
 	</div>

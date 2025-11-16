@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Services;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static SKIT.FlurlHttpClient.Wechat.TenpayV3.Models.DepositMarketingMemberCardOpenCardCodesResponse.Types;
 
@@ -13,19 +15,25 @@ namespace OnlineBookStore.Pages.Order
     {
         private OrderApplication _orderApplication;
 
-        [BindProperty] public List<OrderViewModel> OrderViewModels { set; get; } = new();
-        [BindProperty] public int PageIndex { get; set; } = 1;
-        [BindProperty] public string ErrorMsg { get; set; } = string.Empty;
+        public List<OrderViewModel> OrderViewModels { set; get; } = new();
+        public string ErrorMsg { get; set; } = string.Empty;
+        [BindProperty(SupportsGet = true)] public int PageIndex { get; set; } = 1;
+        [BindProperty(SupportsGet = true)] public string KeyWord { get; set; } = string.Empty;
 
         public IndexModel(OrderApplication orderApplication)
         {
             _orderApplication = orderApplication;
         }
-        public async Task OnGet()
+        public async Task OnGetAsync()
         {
-            var res = await _orderApplication.GetUserOrderAsync(PageIndex);
+            var res = new DataResult<List<OrderViewModel>>();
 
-            if(res.IsSuccess == true)
+            if(string.IsNullOrEmpty(KeyWord) == true)
+                res = await _orderApplication.GetUserOrderAsync(PageIndex);
+            else
+                res = await _orderApplication.GetUserSearchedOrderAsync(KeyWord, PageIndex);
+
+            if (res.IsSuccess == true)
             {
                 OrderViewModels = res.Data!;
             }

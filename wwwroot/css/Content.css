@@ -178,32 +178,35 @@ html {
     border-radius: 4px;
 }
 
-/*上下页按钮相关*/
 
-/*页面切换体*/
+/* ====== 分页部分 ====== */
 .page-change-body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 0;
-    gap: 10px;
+    gap: 16px;
+    margin-top: 24px;
 }
 
-/*上下页切换按钮*/
 .next-last-page-btn {
-    padding: 8px 16px;
-    font-size: 16px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    text-decoration: none; /* 去掉下划线 */
+    padding: 8px 14px;
+    border-radius: 6px;
+    background-color: #0078d7;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
 }
 
-.btn-link:hover {
-    background-color: #0056b3;
-}
+    .next-last-page-btn:hover {
+        background-color: #005ea2;
+    }
+
+    /*禁用状态样式, 正常来说, disabled对a元素默认无效*/
+    .next-last-page-btn[disabled] {
+        background-color: #ccc;
+        cursor: not-allowed;
+        pointer-events: none; /* 禁止点击 */
+    }
 
 
