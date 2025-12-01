@@ -1,0 +1,143 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "用户信息";
+}
+
+<style>
+    .page-container {
+    max-width: 1000px;
+    margin: 15px auto;
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.20);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .page-container-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #2d2d2d;
+    font-weight: 600;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e2e2e2;
+    }
+
+    /* 用户信息区域 */
+    .user-info-flex {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    }
+
+    .user-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .user-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 15px;
+    }
+
+    .user-info-text div span {
+    font-weight: 600;
+    color: #444;
+    }
+
+    /* 导航按钮区域 */
+    .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 10px;
+    }
+
+    .nav-item {
+    display: block;
+    padding: 14px;
+    background-color: #fafafa;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 15px;
+    color: #333;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    color: #0d6efd;
+    }
+
+    /* 退出登录按钮视觉略有区分 */
+
+    .login-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 17px;
+    background-color: #51a8ff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    }
+
+    .login-btn:hover {
+    background-color: #2f94ff;
+    }
+
+</style>
+
+
+<!-- ========================================================= -->
+<!-- 用户信息展示框 -->
+<!-- ========================================================= -->
+<div class="page-container">
+    <div class="page-container-title">用户信息</div>
+
+    <div class="user-info-flex">
+
+        <img src="~/images/user_image.jpg" class="user-image" />
+
+        <div class="user-info-text">
+            <div><span>编号：</span>@Model.UserNumber</div>
+            <div><span>姓名：</span>@Model.UserName</div>
+            <div><span>验证邮箱：</span>@Model.Email</div>
+            <div><span>身份：</span>@Model.Role</div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="page-container">
+    <form method="post">
+        <div class="page-container-title">
+            杂项操作
+        </div>
+
+        <div class="nav-grid">
+
+
+            <button type="submit" class="login-btn">
+                退出登录
+            </button>
+
+            @if(Model.Role == "Manager")
+            {
+                <a href="/Admin" class="nav-item">管理后台导航页面</a>
+            }
+        </div>
+    </form>
+</div>
+

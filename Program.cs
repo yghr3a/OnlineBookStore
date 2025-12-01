@@ -69,12 +69,7 @@ namespace OnlineBookStore
                     policy.RequireClaim("role", "Manager"));
             });
 
-            //// 全局授权过滤器, 保护所有Razor页面, 需要认证后才能访问
-            //builder.Services.AddRazorPages(options =>
-            //{
-            //    options.Conventions.AuthorizeFolder("/");
-            //});
-
+            //// 全局授权过滤器, 保护/Admin后台页面, 只允许管理员访问
             builder.Services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizeFolder("/Admin", "ManagerOnly");

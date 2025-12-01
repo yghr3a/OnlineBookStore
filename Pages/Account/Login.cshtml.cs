@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using OnlineBookStore.Services;
+using OnlineBookStore.Infrastructure;
+using OnlineBookStore.Models.Entities;
 
 namespace OnlineBookStore.Pages.Account
 {
@@ -78,8 +80,13 @@ namespace OnlineBookStore.Pages.Account
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
-                    authProperties
+                authProperties
                 );
+
+                // 如果是管理员用户, 跳转到后台管理页面
+                Claim? roleClaim = userVerifyResult.ClaimList.FirstOrDefault(c => c.Type == "role");
+                if(roleClaim is not null && roleClaim.Value == "Manager") 
+                    return RedirectToPage("/Admin/Index");
 
                 // 登录成功, 跳转到首页
                 return RedirectToPage("/Index");
