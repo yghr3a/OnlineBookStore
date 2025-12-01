@@ -5,6 +5,7 @@ namespace OnlineBookStore.Models.Entities
 {
     public enum UserRole
     {
+        None,
         Manager,
         Customer
     }

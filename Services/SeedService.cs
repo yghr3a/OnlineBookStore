@@ -54,8 +54,8 @@ namespace OnlineBookStore.Services
                 var user = new User()
                 {
                     Number = 1001,
-                    UserName = "testuser",
-                    UserRole = UserRole.Customer,
+                    UserName = "root",
+                    UserRole = UserRole.Manager,
                     Email = "test@onlinebookstore",
                     IsEmailVerified = true,
                     RegistrationDate = DateTime.Now,

@@ -14,15 +14,23 @@ namespace OnlineBookStore.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+        public bool IsAuthenticated =>
+            _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
-        // TODO :发现UserContext里的UserId(用户编号)是string类型, 但是User实体类里的Number(用户编号)是int类型
-        public string? UserId => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        public string? UserName => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
-        // 后续可以改为电话号码, 或者添加电话号码字段
-        public string? Email => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+        // 用户编号（数字）
+        public string? UserId =>
+            _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        // 其他自定义字段
+        // 用户名
+        public string? UserName =>
+            _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
+
+        // 邮箱
+        public string? Email =>
+            _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+
+        // ⚠ 使用方案 1：角色 Claim 改为 "role"
+        public string? RawRoleString =>
+            _httpContextAccessor.HttpContext?.User?.FindFirst("role")?.Value;
     }
-
 }

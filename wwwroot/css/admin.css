@@ -1,0 +1,126 @@
+﻿.admin-index-content-container {
+    max-width: 1300px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+
+/* 分页容器 */
+.pagination-container {
+    margin-top: 12px;
+    text-align: center;
+    padding: 10px;
+    background: #f3f3f3;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* 分页按钮 */
+.page-btn {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 0 3px;
+    border: 1px solid #9b9b9b;
+    background: linear-gradient(#ffffff, #e0e0e0);
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+    .page-btn:hover {
+        background: linear-gradient(#fafafa, #d6d6d6);
+    }
+
+    /* 当前页 */
+    .page-btn.current {
+        font-weight: bold;
+        background: #cfe3ff;
+        border-color: #7aa7dd;
+    }
+
+    /* 禁用 */
+    .page-btn.disabled {
+        background: #eeeeee;
+        color: #aaaaaa;
+        border-color: #d0d0d0;
+        cursor: default;
+    }
+
+/* 省略号 */
+.page-dot {
+    margin: 0 5px;
+    color: #666;
+}
+
+/* PageSize 表单整体布局 */
+.page-size-form {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+    font-size: 13px;
+}
+
+/* "每页显示:" 文本 */
+.page-size-label {
+    margin-right: 6px;
+    color: #333;
+}
+
+/* 数字输入框 */
+.page-size-input {
+    width: 60px;
+    padding: 3px 5px;
+    border: 1px solid #9b9b9b;
+    border-radius: 3px;
+    background: linear-gradient(#ffffff, #f0f0f0);
+    color: #333;
+    font-size: 13px;
+}
+
+/* 应用按钮 */
+.page-size-apply {
+    margin-left: 6px;
+    padding: 3px 10px;
+    border: 1px solid #9b9b9b;
+    border-radius: 3px;
+    background: linear-gradient(#ffffff, #e0e0e0);
+    cursor: pointer;
+}
+
+    .page-size-apply:hover {
+        background: linear-gradient(#fafafa, #d6d6d6);
+    }
+
+/* 样式让 a 和 button 看起来一样 */
+.table-action-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #0d6efd;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: underline;
+    font-family: inherit;
+}
+
+    /* hover 统一样式 */
+    .table-action-link:hover {
+        color: #0a58ca;
+        text-decoration: none;
+    }
+
+    /* 去掉按钮的默认 focus 框 */
+    .table-action-link:focus {
+        outline: none;
+        box-shadow: none;
+    }

@@ -1,0 +1,95 @@
+﻿/* 内容容器 */
+.content-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+/* 标题 */
+.content-title {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* 内容区 */
+.content-body {
+    margin-top: 15px;
+}
+
+/* Form 布局 */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 30px;
+}
+
+.form-item-full {
+    grid-column: span 2;
+}
+
+/* 输入框与标签 */
+.form-item label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #444;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+    .form-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0,123,255,.3);
+        outline: none;
+    }
+
+/* 按钮样式 */
+.form-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-primary {
+    padding: 10px 18px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+.btn-secondary {
+    padding: 10px 18px;
+    background: #6c757d;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+    .btn-secondary:hover {
+        background: #555;
+    }

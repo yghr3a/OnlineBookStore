@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 namespace OnlineBookStore
 {
@@ -60,11 +61,24 @@ namespace OnlineBookStore
                 };
             });
 
+            // 添加访问策略
+            builder.Services.AddAuthorization(options =>
+            {
+                // 只允许管理员访问策略
+                options.AddPolicy("ManagerOnly", policy =>
+                    policy.RequireClaim("role", "Manager"));
+            });
+
             //// 全局授权过滤器, 保护所有Razor页面, 需要认证后才能访问
             //builder.Services.AddRazorPages(options =>
             //{
             //    options.Conventions.AuthorizeFolder("/");
             //});
+
+            builder.Services.AddRazorPages(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin", "ManagerOnly");
+            });
 
 
             // 关闭默认的Claim类型映射, 以防止JWT中的Claim类型被自动转换成标准类型

@@ -1,0 +1,97 @@
+﻿@page
+@model OnlineBookStore.Pages.Admin.Books.EditModel
+
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/admin-edit.css" asp-append-version="true" />
+</head>
+
+<div class="content-container">
+
+    <span class="content-title">编辑图书信息</span>
+
+    <div class="content-body">
+
+        <form method="post" class="form-card">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Book.Id" />
+
+            <div class="form-grid">
+
+                <div class="form-item">
+                    <label asp-for="Book.Name"></label>
+                    <input asp-for="Book.Name" class="form-input" />
+                    <span asp-validation-for="Book.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.Authors"></label>
+                    <input asp-for="Book.Authors" class="form-input" />
+                    <span asp-validation-for="Book.Authors" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.Publisher"></label>
+                    <input asp-for="Book.Publisher" class="form-input" />
+                    <span asp-validation-for="Book.Publisher" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.PublishYear"></label>
+                    <input asp-for="Book.PublishYear" class="form-input" />
+                    <span asp-validation-for="Book.PublishYear" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.Categorys"></label>
+                    <input asp-for="Book.Categorys" class="form-input" />
+                    <span asp-validation-for="Book.Categorys" class="text-danger"></span>
+                </div>
+
+                <div class="form-item form-item-full">
+                    <label asp-for="Book.Introduction"></label>
+                    <textarea asp-for="Book.Introduction" class="form-input" rows="3"></textarea>
+                    <span asp-validation-for="Book.Introduction" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.CoverImageUrl"></label>
+                    <input asp-for="Book.CoverImageUrl" class="form-input" />
+                    <span asp-validation-for="Book.CoverImageUrl" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.Price"></label>
+                    <input asp-for="Book.Price" class="form-input" />
+                    <span asp-validation-for="Book.Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Book.Sales"></label>
+                    <input asp-for="Book.Sales" class="form-input" />
+                    <span asp-validation-for="Book.Sales" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">保存</button>
+                <a asp-page="./Index" class="btn-secondary">返回列表</a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

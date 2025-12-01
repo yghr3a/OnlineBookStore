@@ -1,0 +1,165 @@
+﻿@page
+@model OnlineBookStore.Pages.Admin.Books.IndexModel
+
+@{
+    ViewData["Title"] = "书籍管理操作页面";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/content.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+
+
+<div class="admin-index-content-container">
+	<div class="content-title">书籍管理操作页面</div>
+	<p>
+		<a asp-page="Create">Create New</a>
+	</p>
+	<div class="content-body">
+		<!-- 图书列表表格部分 -->
+		<form method="post">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Number)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Name)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Authors)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Publisher)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].PublishYear)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Categorys)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Price)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Book[0].Sales)
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.Book)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.Number)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Name)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Authors)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Publisher)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.PublishYear)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Categorys)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Price)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Sales)
+						</td>
+						<td>
+							<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+							<button class="table-action-link" formaction="?handler=Delete&id=@item.Id">Delete</button>
+							<input type="hidden" name="PageSize" value="@Model.PageSize" />
+							<input type="hidden" name="PageIndex" value="@Model.PageIndex" />
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		</form>
+	</div>
+	
+
+	<!--翻页按钮部分-->
+	@if (Model.TotalPageCount > 1)
+	{
+		<div class="pagination-container">
+			@* 上一页 *@
+			@if (Model.PageIndex > 1)
+			{
+				<a class="page-btn" href="?pageSize=@(Model.PageSize)&pageIndex=@(Model.PageIndex - 1)">◀ 上一页</a>
+			}
+			else
+			{
+				<span class="page-btn disabled">◀ 上一页</span>
+			}
+
+			@* 页码按钮：只显示当前页前后 2 页 *@
+			@{
+				int start = Math.Max(1, Model.PageIndex - 2);
+				int end = Math.Min(Model.TotalPageCount, Model.PageIndex + 2);
+			}
+
+			@if (start > 1)
+			{
+				<a class="page-btn" href="?pageSize=@(Model.PageSize)&pageIndex=1">1</a>
+				@if (start > 2)
+				{
+					<span class="page-dot">...</span>
+				}
+			}
+
+			@for (int i = start; i <= end; i++)
+			{
+				if (i == Model.PageIndex)
+				{
+					<span class="page-btn current">@i</span>
+				}
+				else
+				{
+					<a class="page-btn" href="?pageSize=@(Model.PageSize)&pageIndex=@i">@i</a>
+				}
+			}
+
+			@if (end < Model.TotalPageCount)
+			{
+				@if (end < Model.TotalPageCount - 1)
+				{
+					<span class="page-dot">...</span>
+				}
+				<a class="page-btn" href="?pageSize=@(Model.PageSize)&pageIndex=@Model.TotalPageCount">@Model.TotalPageCount</a>
+			}
+
+			@* 下一页 *@
+			@if (Model.PageIndex < Model.TotalPageCount)
+			{
+				<a class="page-btn" href="?pageSize=@(Model.PageSize)&pageIndex=@(Model.PageIndex + 1)">下一页 ▶</a>
+			}
+			else
+			{
+				<span class="page-btn disabled">下一页 ▶</span>
+			}
+
+			<!-- 页面数据多少 设置 -->
+			<form method="get" class="page-size-form">
+				<span class="page-size-label">每页显示:</span>
+				<input type="number" name="pageSize" class="page-size-input" value="@Model.PageSize" min="1" max="100" />
+				<input type="hidden" name="pageIndex" value="@Model.PageIndex" />
+				<button type="submit" class="page-size-apply">应用</button>
+			</form>
+
+		</div>
+	}
+</div>
+

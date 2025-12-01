@@ -52,7 +52,8 @@ namespace OnlineBookStore.Services
                     // 这里传递的是用户编号,而非数据库内容使用的主键id
                     new Claim(ClaimTypes.NameIdentifier, user.Number.ToString()),
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email ?? "")
+                    new Claim(ClaimTypes.Email, user.Email ?? ""),
+                    new Claim("role", UserRoleHelper.UserRole2String(user.UserRole))
                 };
 
                 return new UserVerifyResult
