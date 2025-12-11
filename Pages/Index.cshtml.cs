@@ -33,7 +33,9 @@ namespace OnlineBookStore.Pages
         // [2025/10/4] 增加分页参数
         public async Task OnGet()
         {
-            Books = await _bookService.GetPopularBooksAsync(PageIndex, PageSize);
+            var res = await _bookService.GetPopularBooksAsync(PageIndex, PageSize);
+            if(res.IsSuccess)
+                Books = res.Data!;
         }
     }
 }

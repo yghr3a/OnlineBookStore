@@ -13,15 +13,18 @@ namespace OnlineBookStore.Services
 
     {
         private readonly HttpClient _http;
+        private UrlFactory _urlFactory;
+
 
         // 这里直接使用IConfiguration读取配置, 先以实现为目标
         // 后续可以考虑使用专门的配置类来绑定配置节, 不容易犯"魔法字符串"的错误
         private readonly IConfiguration _cfg; // 可从配置读取mock平台地址
 
-        public MockPaymentGateway(HttpClient http, IConfiguration cfg)
+        public MockPaymentGateway(HttpClient http, UrlFactory urlFactory, IConfiguration cfg)
         {
             _http = http;
             _cfg = cfg;
+            _urlFactory = urlFactory;
         }
 
         /// <summary>
@@ -32,9 +35,6 @@ namespace OnlineBookStore.Services
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<DataResult<MockPaymentResponse>> CreatePaymentAsync(Order order)
         {
-            // 
-            var notifyUrl = _cfg["MockPayment:NofiyUrl"]; 
-
             var orderAmount = order.OrderItems.Sum(oi => oi.Price * oi.Count);
             var createReq = new MockPayCreateRequest
             {
@@ -42,11 +42,11 @@ namespace OnlineBookStore.Services
                 Amount = (decimal)orderAmount,
                 MerchantId = _cfg["MockPayment:MerchantId"] ?? "demo_shop",
                 // TODO:notifyUrl的警告处理
-                NotifyUrl = notifyUrl!
+                NotifyUrl = _urlFactory.GetNofiyUrl()
             };
 
             // 获取模拟第三方支付平台的api
-            var apiUrl = _cfg["MockPayment:MockPaymentCreateUrl"];
+            var apiUrl = _urlFactory.GetMockPaymentCreateUrl();
             var res = await _http.PostAsJsonAsync(apiUrl, createReq);
             // TODO:这里的异常处理可以更完善一些, 目前Application负责兜底捕获并处理
             res.EnsureSuccessStatusCode();

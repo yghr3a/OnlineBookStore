@@ -12,6 +12,7 @@ namespace OnlineBookStore.Services
         public BookDomainService(Repository<Book> bookRespository)
             : base(bookRespository)
         {
+
         }
 
         /// <summary>
@@ -106,6 +107,23 @@ namespace OnlineBookStore.Services
             // 分页获取搜索到的书籍实体模型
             var searchedBookEMs = await _repository.GetPagedAsync(query, pageIndex, pageSize);
             return DataResult<List<Book>>.Success(searchedBookEMs);
+        }
+
+        /// <summary>
+        /// 获取热销数据实体模型
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<DataResult<List<Book>>> GeGetPopularBooksAsync(int pageIndex = 1, int pageSize = 50)
+        {
+            // 获取书籍仓储的可查询对象
+            var query = _repository.AsQueryable();
+            // 查询并按销量降序排序
+            var popularQuery = query.OrderByDescending(b => b.Sales);
+            // 分页获取热销书籍实体模型
+            var popularBooks = await _repository.GetPagedAsync(popularQuery, pageIndex, pageSize);
+            return DataResult<List<Book>>.Success(popularBooks);
         }
     }
 }

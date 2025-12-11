@@ -83,12 +83,13 @@ namespace OnlineBookStore
             // 添加 HttpContext 访问器服务, 以便在其他服务中访问当前请求的HttpContext
             builder.Services.AddHttpContextAccessor();
 
-            // MySQL 配置, 若开发时间充分, 可将配置信息放进appsetting.json, 便于修改
-            var connectionString = "server=localhost;port=3306;database=online_book_store;User=root;password=Abcd753!;";
-
-            // 将AppDbContext注册成服务
+            // 注册DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            {
+                var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
+            });
+
 
             // 注册泛型仓储服务, 注意这里注册的始开放泛型类型, 相当于注册了Repository所有的具体类型
             builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
@@ -97,6 +98,8 @@ namespace OnlineBookStore
             builder.Services.AddScoped<BookApplication, BookApplication>();
             // 注册图书领域服务类型
             builder.Services.AddScoped<BookDomainService, BookDomainService>();
+            // 注册图书工厂服务类型
+            builder.Services.AddScoped<BookFactory, BookFactory>();
 
             // 注册购物车应用类型
             builder.Services.AddScoped<CartApplication, CartApplication>();

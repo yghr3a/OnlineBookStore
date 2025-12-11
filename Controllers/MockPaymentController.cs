@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineBookStore.Models.Data;
+using OnlineBookStore.Services;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
@@ -19,6 +20,13 @@ namespace OnlineBookStore.Controllers
 
         private static readonly HttpClient _http = new();
 
+        private UrlFactory _urlFactory;
+        public MockPaymentController(UrlFactory urlFactory)
+        {
+            _urlFactory = urlFactory;
+        }   
+
+
         /// <summary>
         /// 下单 API（商户调用）, 生成二维码Url返回给商家
         /// </summary>
@@ -34,8 +42,8 @@ namespace OnlineBookStore.Controllers
             // code_url 指向扫码打开的页面（模拟微信的 code_url）
             // 这个操作就是根据Http请求的信息生成一个URL，指向当前服务器的/mockpay/{token}路径， 其实正式环境中可以直接用我们项目的域名来访问更好
             //var codeUrl = $"{Request.Scheme}://{Request.Host}/mockpay/{token}";
-            // 内网测试，所以用内网IP
-            var codeUrl = $"https://192.168.42.157:7109/mockpay/{token}";
+            // 统一使用url工厂来生成URL,自动根据配置获取内网ip或者公网地址
+            var codeUrl = _urlFactory.CreateTokenMockPayUrl("mockpay", token);
 
             _store[token] = (req.OrderNumber, req.Amount, req.NotifyUrl, tx);
 

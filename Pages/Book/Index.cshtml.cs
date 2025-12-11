@@ -33,8 +33,10 @@ namespace OnlineBookStore.Pages.Book
         {
             try
             {
-                Book = await _bookService.GetBookInformationByNumberAsync(BookNumber);
-                if (Book == null)
+                var res = await _bookService.GetBookInformationByNumberAsync(BookNumber);
+                if (res.IsSuccess == true)
+                    Book = res.Data!;
+                else
                     throw new Exception("Book Not Found");
             }
             catch

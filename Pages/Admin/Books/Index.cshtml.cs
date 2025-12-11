@@ -17,7 +17,7 @@ namespace OnlineBookStore.Pages.Admin.Books
         private readonly Repository<Entity> _repository;
         private readonly AppDbContext _context;
         [BindProperty(SupportsGet = true)] public int PageIndex { get; set; } = 1;
-        [BindProperty(SupportsGet = true)] public int PageSize { get; set; } = 50;
+        [BindProperty(SupportsGet = true)] public int PageSize { get; set; } = 15;
         public int TotalPageCount {  get; set; }
 
         public IndexModel(Repository<Entity> repository, AppDbContext context)

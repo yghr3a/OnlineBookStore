@@ -30,9 +30,6 @@ namespace OnlineBookStore.Services
         /// </summary>  
         public async Task<InfoResult> AddOrderAsync(User user, Order order, List<Book> books, CreateOrderResponse response)
         {
-            if (user is null) return InfoResult.Fail("用户信息为空");
-            if (order is null) return InfoResult.Fail("订单信息为空");
-            if (books is null) return InfoResult.Fail("书籍信息为空");
             if (books.Count != response.Items.Count) return InfoResult.Fail("部分书籍不存在");
 
             // 建立字典
