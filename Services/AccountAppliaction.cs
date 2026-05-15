@@ -46,6 +46,7 @@ namespace OnlineBookStore.Services
             {
                 var user = await CheckAsync(_userDomainService.GetUserByUserNameAsync(userName));
                 Check(_userDomainService.VerifyUserPassword(user!, password));
+                Check(_userDomainService.IsUserVerifiedByEmail(user!));
 
                 var claims = new List<Claim>
                 {

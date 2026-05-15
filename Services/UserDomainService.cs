@@ -86,6 +86,13 @@ namespace OnlineBookStore.Services
             return InfoResult.Success();
         }
 
+        public InfoResult IsUserVerifiedByEmail(User user)
+        {
+            if (!user.IsEmailVerified)
+                return InfoResult.Fail("用户邮箱未验证");
+            return InfoResult.Success();
+        }
+
         /// <summary>
         /// 验证用户注册信息
         /// </summary>

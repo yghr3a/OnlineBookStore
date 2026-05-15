@@ -44,7 +44,7 @@ namespace OnlineBookStore.Infrastructure
         {
             var res = await job;
             if (res.IsSuccess == false)
-                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常\
+                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常
 
             // 如果没有问题就返回数据
             return res.Data!;
@@ -60,7 +60,7 @@ namespace OnlineBookStore.Infrastructure
         {
             var res = await job;
             if (res.IsSuccess == false)
-                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常\
+                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace OnlineBookStore.Infrastructure
         {
             var res = job;
             if (res.IsSuccess == false)
-                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常\
+                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常
 
             // 如果没有问题就返回数据
             return res.Data!;
@@ -90,7 +90,7 @@ namespace OnlineBookStore.Infrastructure
         {
             var res = job;
             if (res.IsSuccess == false)
-                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常\
+                throw new Exception(res.ErrorMsg);  // TODO: 后续这里应该改为抛出业务异常
         }
     }
 }

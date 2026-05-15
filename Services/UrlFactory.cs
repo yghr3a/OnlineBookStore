@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using OnlineBookStore.Infrastructure;
 
 namespace OnlineBookStore.Services

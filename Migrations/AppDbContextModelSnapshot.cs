@@ -210,7 +210,7 @@ namespace OnlineBookStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Ma");
                 });
 
             modelBuilder.Entity("OnlineBookStore.Models.Entities.Cart", b =>
