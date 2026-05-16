@@ -1,5 +1,13 @@
 ﻿namespace OnlineBookStore.Models.Entities
 {
+    public enum BookStatus
+    {
+        OnDraft,      // 草稿状态, 还未上架
+        OnSale,       // 销售状态, 已经上架
+        OnOffSale,     // 下架状态, 已经下架
+    }
+
+
     public class Book : IEntityModel
     {
         // 图书Id
@@ -7,6 +15,9 @@
 
         // 图书编号
         public required int Number { get; set; }
+
+        // 图书状态
+        public required BookStatus Status { get; set; } = BookStatus.OnSale;
 
         // 图书名称
         public required string Name { get; set; }

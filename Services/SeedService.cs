@@ -24,6 +24,7 @@ namespace OnlineBookStore.Services
                     books.Add(new Book
                     {
                         Number = numberFactory.CreateNumber<Book>(),
+                        Status = BookStatus.OnSale,
                         Name = $"测试书籍{i}",
                         Authors =  $"作者{i}"  ,
                         Publisher = $"出版社{random.Next(1, 10)}",
