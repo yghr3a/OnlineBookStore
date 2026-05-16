@@ -96,8 +96,8 @@ namespace OnlineBookStore
 
             // 注册图书服务类型
             builder.Services.AddScoped<BookApplication, BookApplication>();
-            // 注册图书领域服务类型
-            builder.Services.AddScoped<BookDomainService, BookDomainService>();
+            // 注册图书查询服务类型
+            builder.Services.AddScoped<BookQueryService, BookQueryService>();
             // 注册图书工厂服务类型
             builder.Services.AddScoped<BookFactory, BookFactory>();
 

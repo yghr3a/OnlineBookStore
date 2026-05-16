@@ -11,11 +11,11 @@ namespace OnlineBookStore.Services
     // 图书服务, 提供与图书相关的业务逻辑
     public class BookApplication
     {
-        private BookDomainService _bookDomainService;
+        private BookQueryService _bookQueryService;
         private BookFactory _bookFactory;
-        public BookApplication(BookDomainService bookDomainService,BookFactory bookFactory)
+        public BookApplication(BookQueryService bookQueryService,BookFactory bookFactory)
         {
-            _bookDomainService = bookDomainService;
+            _bookQueryService = bookQueryService;
             _bookFactory = bookFactory;
         }
 
@@ -32,7 +32,7 @@ namespace OnlineBookStore.Services
         {
             try
             {
-                var books = await CheckAsync(_bookDomainService.GeGetPopularBooksAsync(pageIndex, pageSize));
+                var books = await CheckAsync(_bookQueryService.GeGetPopularBooksAsync(pageIndex, pageSize));
                 // 使用 Task.WhenAll 将每个 book 的处理并发化
                 var bookVMTasks = books.Select(book => Task.Run(() => Check(_bookFactory.CreateBookViewModel(book))));
                 // 等待所有异步任务执行完毕
@@ -58,7 +58,7 @@ namespace OnlineBookStore.Services
         {
             try
             {
-                var books = await CheckAsync(_bookDomainService.GetSearchedBooksByKeywordAync(keyWord, pageIndex, pageSize));
+                var books = await CheckAsync(_bookQueryService.GetSearchedBooksByKeywordAync(keyWord, pageIndex, pageSize));
                 // 使用 Task.WhenAll 将每个 book 的处理并发化
                 var bookVMTasks = books.Select(book => Task.Run(() => Check(_bookFactory.CreateBookViewModel(book))));
                 // 等待所有异步任务执行完毕
@@ -82,7 +82,7 @@ namespace OnlineBookStore.Services
         {
             try
             {
-                var book = await CheckAsync(_bookDomainService.GetBookByNumberAsync(Number));
+                var book = await CheckAsync(_bookQueryService.GetBookByNumberAsync(Number));
                 var bookVM = Check(_bookFactory.CreateBookViewModel(book));
                 return DataResult<BookViewModel>.Success(bookVM);
             }

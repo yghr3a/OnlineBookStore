@@ -17,19 +17,19 @@ namespace OnlineBookStore.Services
     {
         private OrderDomainService _orderDomainService;
         private UserDomainService _userDomainService;
-        private BookDomainService _bookDomainService;
+        private BookQueryService _bookQueryService;
         private MockPaymentGateway _mockPaymentGateway;
         private OrderFactory _orderFactory;
 
         public OrderApplication(OrderDomainService orderDomainService,
-                            BookDomainService bookDomainService,
+                            BookQueryService bookQueryService,
                             UserDomainService userDomainService,
                             MockPaymentGateway mockPaymentGateway,
                             OrderFactory orderFactor)
         {
             _orderDomainService = orderDomainService;
             _userDomainService = userDomainService;
-            _bookDomainService = bookDomainService;
+            _bookQueryService = bookQueryService;
             _mockPaymentGateway = mockPaymentGateway;
             _orderFactory = orderFactor;
         }
@@ -51,7 +51,7 @@ namespace OnlineBookStore.Services
                 // ---------- 创建订单相关操作 -------------
                 var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
                 var Numbers = createOrderResponse.Items.Select(i => i.BookNumber).ToList();
-                var books = await CheckAsync(_bookDomainService.GetBookByNumberAsync(Numbers));
+                var books = await CheckAsync(_bookQueryService.GetBookByNumberAsync(Numbers));
 
                 var order = Check(_orderFactory.CreateOrderEntity(books!, user!, createOrderResponse));
                 await CheckAsync(_orderDomainService.AddOrderAsync(user!, order!, books!, createOrderResponse));
@@ -127,7 +127,7 @@ namespace OnlineBookStore.Services
                                     .Select(oi => oi.BookId)
                                     .Distinct()     // 去重
                                     .ToList();
-                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+                var books = await CheckAsync(_bookQueryService.GetBookByIdAsync(bookIds));
 
                 var arge = new CreateOrderViewModelArge() { User = user, Books = books, Orders = orders };
                 var orderVMs = Check(_orderFactory.CreateOrderViewModels(arge));
@@ -154,7 +154,7 @@ namespace OnlineBookStore.Services
                                     .Select(oi => oi.BookId)
                                     .Distinct()     // 去重
                                     .ToList();
-                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+                var books = await CheckAsync(_bookQueryService.GetBookByIdAsync(bookIds));
 
                 var arge = new CreateOrderViewModelArge() { User = user, Books = books, Orders = orders };
                 var orderVMs = Check(_orderFactory.CreateOrderViewModels(arge));

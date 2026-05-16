@@ -13,26 +13,26 @@ namespace OnlineBookStore.Services
         private UserContext _userContext;
         private CartDomainService _cartDomainService;
         private UserDomainService _userDomainService;
-        private BookDomainService _bookDomainService;
+        private BookQueryService _bookQueryService;
         private CartFactory _cartFactory;
 
         public CartApplication(UserContext userContext,
                            CartDomainService cartDomainService,
                            UserDomainService userDomainService,
-                           BookDomainService bookDomainService,
+                           BookQueryService bookQueryService,
                            CartFactory cartFactory)
         {
             _userContext = userContext;
             _cartDomainService = cartDomainService;
             _userDomainService = userDomainService;
-            _bookDomainService = bookDomainService;
+            _bookQueryService = bookQueryService;
             _cartFactory = cartFactory;
         }
 
         /// <summary>
         /// 将书籍添加到当前登录用户的购物车
         /// </summary>
-        /// [2025/10/20] 业务优化, 获取用户的工作交给UserDomainService, 获取购物车的工作交给CartDomainService, 获取书籍的工作交给BookDomainService
+        /// [2025/10/20] 业务优化, 获取用户的工作交给UserDomainService, 获取购物车的工作交给CartDomainService, 获取书籍的工作交给BookQueryService
         /// [2025/11/03] 采用ExceptionChecker, 简化代码
         /// <param name="bookNumber"></param>
         /// <returns></returns>
@@ -43,7 +43,7 @@ namespace OnlineBookStore.Services
                 // 获取用户实体对象和购物车实体对象
                 var user = await CheckAsync(_userDomainService.GetCurrentUserEntityModelAsync());
                 var cart = await CheckAsync(_cartDomainService.GetCartByUserIdAsync(user.Id));
-                var book = await CheckAsync(_bookDomainService.GetBookByNumberAsync(bookNumber));
+                var book = await CheckAsync(_bookQueryService.GetBookByNumberAsync(bookNumber));
 
                 // 将书籍添加到购物车里
                 await (_cartDomainService.AddBookToCartAsync(book!, cart!));
@@ -71,7 +71,7 @@ namespace OnlineBookStore.Services
 
                 // 获取书籍列表
                 var bookIds = cart.CartItems.Select(ci => ci.BookId).ToList();
-                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+                var books = await CheckAsync(_bookQueryService.GetBookByIdAsync(bookIds));
 
                 // 构建购物车视图模型
                 var cartVM = Check(_cartFactory.CreateCartViewModel(cart, books, user));
@@ -106,7 +106,7 @@ namespace OnlineBookStore.Services
 
                 // 获取书籍列表
                 var bookIds = cart.CartItems.Select(ci => ci.BookId).ToList();
-                var books = await CheckAsync(_bookDomainService.GetBookByIdAsync(bookIds));
+                var books = await CheckAsync(_bookQueryService.GetBookByIdAsync(bookIds));
 
                 // 构建购物车视图模型
                 var cartVM = Check(_cartFactory.CreateCartViewModel(cart, books, user));

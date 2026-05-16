@@ -5,14 +5,15 @@ using OnlineBookStore.Repository;
 namespace OnlineBookStore.Services
 {
     /// <summary>
-    /// 书籍领域模型
+    /// 书籍查询服务, 负责所有与图书相关的查询操作
     /// </summary>
-    public class BookDomainService : DomainService<Book>
+    public class BookQueryService
     {
-        public BookDomainService(Repository<Book> bookRespository)
-            : base(bookRespository)
-        {
+        private readonly Repository<Book> _repository;
 
+        public BookQueryService(Repository<Book> bookRespository)
+        {
+            _repository = bookRespository;
         }
 
         /// <summary>
