@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OnlineBookStore.Models.Entities;
 
 namespace OnlineBookStore.Models.ViewModels
 {
@@ -9,6 +10,8 @@ namespace OnlineBookStore.Models.ViewModels
 
         // 图书编号
         public required int Number { get; set; }
+
+        public required BookStatus Status { get; set; }
 
         // 图书名称
         public required string Name { get; set; }

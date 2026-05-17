@@ -43,10 +43,10 @@ namespace OnlineBookStore.Services
                 // 更新各个书籍的销量
                 foreach (var book in books)
                 {
-                    book.Sales += BookNumber2Count[book.Number];
+                    book.IncreaseSales( BookNumber2Count[book.Number] );
                     _bookRespository.Update(book);
                 }
-
+                
                 // 更新用户历史订单
                 user.Orders.Add(order);
             });

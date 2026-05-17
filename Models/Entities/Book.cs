@@ -1,10 +1,12 @@
-﻿namespace OnlineBookStore.Models.Entities
+﻿using OnlineBookStore.Models.Data;
+
+namespace OnlineBookStore.Models.Entities
 {
     public enum BookStatus
     {
         OnDraft,      // 草稿状态, 还未上架
         OnSale,       // 销售状态, 已经上架
-        OnOffSale,     // 下架状态, 已经下架
+        OnOffSale,    // 下架状态, 已经下架
     }
 
 
@@ -17,7 +19,7 @@
         public required int Number { get; set; }
 
         // 图书状态
-        public required BookStatus Status { get; set; } = BookStatus.OnSale;
+        public required BookStatus Status { get; set; } = BookStatus.OnDraft;
 
         // 图书名称
         public required string Name { get; set; }
@@ -45,5 +47,53 @@
 
         // 图书销量
         public required int Sales { get; set; } = 0;
+
+
+        // [2026/5/17] 开始为Books实体添加一些方法, 尝试过度到充血模型, 目前只简单添加下面的
+
+        /// <summary>
+        /// 将图书上架, 下架状态和草稿都能下进行
+        /// </summary>
+        /// <returns></returns>
+        public InfoResult OnSale()
+        {
+            if (Status == BookStatus.OnSale)
+            {
+                return InfoResult.Fail("图书已经处于销售状态");
+            }
+
+            Status = BookStatus.OnSale;
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 将图书下架, 只能在销售状态下进行
+        /// </summary>
+        /// <returns></returns>
+        public InfoResult OffSale()
+        {
+            if (Status == BookStatus.OnOffSale)
+            {
+                return InfoResult.Fail("图书已经处于下架状态");
+            }
+            Status = BookStatus.OnOffSale;
+            return InfoResult.Success();
+        }
+
+        /// <summary>
+        /// 销量增加方法
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public InfoResult IncreaseSales(int count)
+        {
+            // 检查销量增加数值是否为负数
+            if (count < 0)
+                return InfoResult.Fail("试图增加负数的销量");
+
+            Sales += count;
+            return InfoResult.Success();
+        }
+
     }
 }

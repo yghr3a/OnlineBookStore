@@ -13,10 +13,13 @@ namespace OnlineBookStore.Services
     {
         private BookQueryService _bookQueryService;
         private BookFactory _bookFactory;
-        public BookApplication(BookQueryService bookQueryService,BookFactory bookFactory)
+        private BookDomainService _bookDomainService;
+
+        public BookApplication(BookQueryService bookQueryService,BookFactory bookFactory, BookDomainService bookDomainService)
         {
             _bookQueryService = bookQueryService;
             _bookFactory = bookFactory;
+            _bookDomainService = bookDomainService;
         }
 
         // 目前只是简单地返回所有图书, 以后可以根据销量等指标进行排序和筛选
@@ -89,6 +92,27 @@ namespace OnlineBookStore.Services
             catch (Exception ex)
             {
                 return DataResult<BookViewModel>.Fail("获取书籍详情失败" + ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// 创建书籍
+        /// </summary>
+        /// <param name="bookViewModel"></param>
+        /// <returns></returns>
+        public async Task<InfoResult> CreateNewBookAsync(CreateBookResponse response)
+        {
+            try
+            {
+                var book = Check(_bookFactory.CreateBook(response));
+                await CheckAsync(_bookDomainService.AddBookAsync(book));
+
+                return InfoResult.Success();
+            }
+            catch(Exception ex)
+            {
+                return InfoResult.Fail("创建书籍失败" + ex.Message);
             }
         }
     }
