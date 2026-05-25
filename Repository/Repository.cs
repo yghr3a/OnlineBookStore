@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using OnlineBookStore.Models.Entities;
 
 namespace OnlineBookStore.Repository
@@ -10,14 +11,16 @@ namespace OnlineBookStore.Repository
     /// <typeparam name="T"></typeparam>
     public class Repository<T> where T : class, IEntityModel
     {
+        private readonly IServiceScopeFactory _serviceFactory;  // 域服务构造工厂, 在高并发的场景下构造多个DbContext实例
         private AppDbContext _context;
         private DbSet<T> _dbSet;
 
         // 依赖注入, 获取应用数据库上下文
-        public Repository(AppDbContext context)
+        public Repository(AppDbContext context, IServiceScopeFactory serviceFactory)
         {
             _context = context;
-            _dbSet = context.Set<T>();
+            _dbSet = _context.Set<T>();
+            _serviceFactory = serviceFactory;   
         }
 
         // 异步获取全部实体
@@ -28,7 +31,7 @@ namespace OnlineBookStore.Repository
         // 异步添加实体
         public async Task AddAsync(T entity) { await _dbSet.AddAsync(entity); }
         // 删除实体
-        public void  Delete(T entity) { _dbSet.Remove(entity); }
+        public void Delete(T entity) { _dbSet.Remove(entity); }
         // 更改实体
         public void Update(T entity) {_dbSet.Update(entity); }
         // 保存更改
@@ -85,6 +88,47 @@ namespace OnlineBookStore.Repository
         {
             return await query.ToListAsync();
         }
+
+        /// <summary>
+        /// 并行添加实体, 适用于需要同时添加多个实体的场景, 可以提高性能; 
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public async Task ParallelAddAsync(IEnumerable<T> entities, int batchsize = 20, int max_concurrent = 5)
+        {
+            // 使用semaphoreslim来限制最大并发数, 使用using自动释放资源
+            using var semaphore = new SemaphoreSlim(max_concurrent);
+
+            var tasks = new List<Task>();
+            var count = entities.Count();
+            for (int i = 0; i < count; i += batchsize)
+            {
+                var batch = entities.Skip(i).Take(batchsize).ToList();
+                tasks.Add(Task.Run(async () =>
+                {
+                    // 异步环境优先使用异步等待
+                    await semaphore.WaitAsync();
+
+                    try
+                    {
+                        using (var scope = _serviceFactory.CreateScope())
+                        {
+                            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                            await context.Set<T>().AddRangeAsync(batch);
+                            await context.SaveChangesAsync();
+                        }
+                    }
+                    finally 
+                    {
+                        // 最终释放
+                        semaphore.Release();
+                    }
+                }));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
     }
 }
 

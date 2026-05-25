@@ -84,11 +84,27 @@ namespace OnlineBookStore
             builder.Services.AddHttpContextAccessor();
 
             // 注册DbContext
-            builder.Services.AddDbContext<AppDbContext>(options =>
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //{
+            //    var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+            //    options.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
+            //});
+
+            // 使用DbContext池化, 可以提高性能, 但需要注意线程安全问题, 适用于短时间内大量创建和销毁DbContext的场景
+            // 设定池的最大容量为64, 也就是最多同时存在64个DbContext实例, 超过这个数量的请求会等待直到有可用的DbContext实例
+            builder.Services.AddDbContextPool<AppDbContext>(options =>
             {
                 var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
                 options.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
-            });
+            }, 64);
+
+            // 注册DbContext工厂, 以便在需要时通过工厂创建DbContext实例, 适用于需要在后台线程或长时间运行的服务中使用DbContext的场景
+            // 后续因为项目有多处地方是直接注入DbContext实例, 使用工厂涉及到的改动太多, 并且存在问题
+            //builder.Services.AddDbContextFactory<AppDbContext>(options =>
+            //{
+            //    var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+            //    options.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
+            //});
 
 
             // 注册泛型仓储服务, 注意这里注册的始开放泛型类型, 相当于注册了Repository所有的具体类型

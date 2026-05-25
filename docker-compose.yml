@@ -1,0 +1,41 @@
+services:
+  # MySQL 数据库
+  db:
+    image: mysql:8.0
+    container_name: bookstore-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: online_book_store
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ASP.NET Core 应用
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__DefaultConnection=server=db;port=3306;database=online_book_store;User=root;password=${DB_ROOT_PASSWORD};Charset=utf8mb4;SslMode=none;AllowPublicKeyRetrieval=True
+      - Jwt__Secret=${JWT_SECRET}
+      - Jwt__Issuer=OnlineBookStore
+      - Jwt__Audience=OnlineBookStore
+      - UrlOptions__Mode=Public
+      - UrlOptions__PublicUrl=${PUBLIC_URL}
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql-data:
