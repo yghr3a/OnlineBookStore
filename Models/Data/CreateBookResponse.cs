@@ -7,9 +7,6 @@ namespace OnlineBookStore.Models.Data
     /// </summary>
     public class CreateBookResponse
     {
-        // 图书状态
-        public required BookStatus Status { get; set; } = BookStatus.OnDraft;
-
         // 图书名称
         public required string Name { get; set; }
 

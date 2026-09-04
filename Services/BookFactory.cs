@@ -38,16 +38,20 @@ namespace OnlineBookStore.Services
         /// </summary>
         /// <param name="vm"></param>
         /// <returns></returns>
-        public DataResult<Book> CreateBook(CreateBookResponse response)
+        public Book CreateBook(CreateBookResponse response)
         {
             var number = _numberFactory.CreateNumber<Book>();
 
+            // 新书强制从草稿状态开始, 上架必须走领域方法 OnSale()
             var book = new Book
             {
                 Number = number,
-                Status = response.Status,
+                Status = BookStatus.OnDraft,
                 Name = response.Name,
                 Authors = response.Authors,
+                Publisher = response.Publisher,
+                PublishYear = response.PublishYear,
+                Categorys = response.Categorys,
                 Price = response.Price,
                 Sales = response.Sales,
 
@@ -55,7 +59,7 @@ namespace OnlineBookStore.Services
                 Introduction = response.Introduction
             };
 
-            return DataResult<Book>.Success(book);
+            return book;
         }
     }
 }

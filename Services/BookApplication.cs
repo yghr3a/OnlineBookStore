@@ -1,5 +1,6 @@
 ﻿using OnlineBookStore.Models.Data;
 using OnlineBookStore.Models.Entities;
+using OnlineBookStore.Models.Exceptions;
 using OnlineBookStore.Models.ViewModels;
 using OnlineBookStore.Repository;
 using OnlineBookStore.Infrastructure;
@@ -105,14 +106,19 @@ namespace OnlineBookStore.Services
         {
             try
             {
-                var book = Check(_bookFactory.CreateBook(response));
+                var book = _bookFactory.CreateBook(response);
                 await CheckAsync(_bookDomainService.AddBookAsync(book));
 
                 return InfoResult.Success();
             }
-            catch(Exception ex)
+            catch (DomainException ex)
             {
-                return InfoResult.Fail("创建书籍失败" + ex.Message);
+                // 领域异常的消息面向用户, 直接透传
+                return InfoResult.Fail(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return InfoResult.Fail("创建书籍失败: " + ex.Message);
             }
         }
     }
